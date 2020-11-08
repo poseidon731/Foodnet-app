@@ -1,6 +1,0 @@
-module Pods_foodnet {
-  umbrella header "Pods-foodnet-umbrella.h"
-
-  export *
-  module * { export * }
-}
