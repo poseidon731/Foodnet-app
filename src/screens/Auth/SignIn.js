@@ -69,8 +69,10 @@ class SignIn extends Component {
                     }
                 })
                 .catch((error) => {
-                    this.setState({ loading: false });
-                    Toast.show('Invalid credential', Toast.LONG)
+                    Toast.show('Invalid credential', Toast.LONG);
+                    setTimeout(() => {
+                        this.setState({ loading: false });
+                    }, 1000)
                 });
         }
     }
@@ -145,7 +147,13 @@ class SignIn extends Component {
                         <Text style={styles.rememberText}>{i18n.translate('Keep me logged in')}</Text>
                     </TouchableOpacity>
                     <View style={[styles.buttonView, { marginTop: 35 }]}>
-                        <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => this.onLogin()}>
+                        <TouchableOpacity
+                            disabled={isEmpty(this.state.email) || isEmpty(this.state.password) || this.state.errorEmail || this.state.errorPassword ? true : false}
+                            style={[styles.button, {
+                                backgroundColor: isEmpty(this.state.email) || isEmpty(this.state.password) || this.state.errorEmail || this.state.errorPassword ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
+                            }]}
+                            onPress={() => this.onLogin()}
+                        >
                             <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Log in')}</Text>
                         </TouchableOpacity>
                     </View>
