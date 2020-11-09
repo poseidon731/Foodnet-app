@@ -18,9 +18,9 @@ import i18n from '@utils/i18n';
 
 export default SignIn = (props) => {
     const [loading, setLoading] = useState(false);
-    const [email, setEmail] = useState('erdosjozsef20@gmail.com');
+    const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
-    const [password, setPassword] = useState('123456');
+    const [password, setPassword] = useState('');
     const [errorPassword, setErrorPassword] = useState(false);
     const [secureTextEntry, setSecureTextEntry] = useState(true);
     const [rememberMe, setRememberMe] = useState(true);
