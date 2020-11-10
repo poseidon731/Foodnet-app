@@ -39,7 +39,7 @@ export const colors = {
         SECONDARY: '#EFEFEF',
     },
     YELLOW: {
-        DEFAULT: '#00FFFF',
+        DEFAULT: 'yellow',
         PRIMARY: '#F78F1E'
     }
 }

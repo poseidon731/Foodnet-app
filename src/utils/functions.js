@@ -2,12 +2,19 @@ import axios from 'axios';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 
-import { EMAIL_PATTERN, PASSWORD_PATTERN, ALIAS_PATTERN, MOBILE_PATTERN } from '@constants/regexs';
+import { NAME_PATTERN, EMAIL_PATTERN, PASSWORD_PATTERN, ALIAS_PATTERN, MOBILE_PATTERN } from '@constants/regexs';
 
 export const navOptionHandler = () => ({
     headerShown: false,
     animationEnabled: false,
 });
+
+export const validateName = (value) => {
+    if (NAME_PATTERN.test(value)) {
+        return true;
+    }
+    return false;
+}
 
 export const validateEmail = (value) => {
     if (EMAIL_PATTERN.test(value)) {

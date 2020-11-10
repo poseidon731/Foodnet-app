@@ -19,44 +19,21 @@ import i18n from '@utils/i18n';
 export default SignIn = (props) => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
-    const [errorEmail, setErrorEmail] = useState(false);
+    const [errorEmail, setErrorEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorPassword, setErrorPassword] = useState(false);
+    const [errorPassword, setErrorPassword] = useState('');
     const [secureTextEntry, setSecureTextEntry] = useState(true);
-    const [rememberMe, setRememberMe] = useState(true);
+    const [rememberMe, setRememberMe] = useState(false);
 
     const dispatch = useDispatch();
 
-    const onValidateEmail = (value) => {
-        setEmail(value, () => {
-            if (isEmpty(email) || !validateEmail(email)) {
-                setErrorEmail(true);
-            } else {
-                setErrorEmail(false);
-            }
-        });
-    }
-
-    const onValidatePassword = (value) => {
-        setPassword(value, () => {
-            if (isEmpty(password) || !validatePassword(password)) {
-                setErrorPassword(true);
-            } else {
-                setErrorPassword(false);
-            }
-        });
-    }
+    useEffect(() => {
+        isEmpty(email) ? setErrorEmail('Email is required') : !validateEmail(email) ? setErrorEmail('Email is not valid') : setErrorEmail('');
+        isEmpty(password) ? setErrorPassword('Password is required') : !validatePassword(password) ? setErrorPassword('Password should be 3+ characters') : setErrorPassword('');
+    }, [email, password]);
 
     const onLogin = async () => {
-        if (isEmpty(email)) {
-            Toast.show('Email is required', Toast.LONG);
-        } else if (!isEmpty(email) && errorEmail) {
-            Toast.show('Invalid email', Toast.LONG);
-        } else if (isEmpty(password)) {
-            Toast.show('Password is required', Toast.LONG);
-        } else if (!isEmpty(password) && errorPassword) {
-            Toast.show('Password should be 3+ characters', Toast.LONG);
-        } else if (!isEmpty(email) && !isEmpty(password) && !errorEmail && !errorPassword) {
+        if (!isEmpty(email) && !isEmpty(password) && isEmpty(errorEmail) && isEmpty(errorPassword)) {
             setLoading(true);
             await AuthService.login(email, password)
                 .then((response) => {
@@ -67,10 +44,10 @@ export default SignIn = (props) => {
                     }
                 })
                 .catch((error) => {
-                    Toast.show('Invalid credential', Toast.LONG);
+                    Toast.show('Credential is not valid', Toast.LONG);
                     setTimeout(() => {
                         setLoading(false);
-                    }, 1000)
+                    }, 1000);
                 });
         }
     }
@@ -97,32 +74,34 @@ export default SignIn = (props) => {
                         keyboardType='email-address'
                         autoCapitalize='none'
                         returnKeyType='next'
+                        fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
                         value={email}
-                        fontSize={16}
-                        containerStyle={[styles.textContainer, { borderColor: errorEmail ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        error={errorEmail}
+                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
                         inputContainerStyle={styles.inputContainer}
-                        onChangeText={(value) => onValidateEmail(value)}
+                        onChangeText={(value) => setEmail(value)}
                     />
                 </View>
-                <View style={styles.inputView}>
+                <View style={[styles.inputView, { marginTop: 50 }]}>
                     <View style={styles.labelView}>
                         <Text style={styles.labelText}>{i18n.translate('Password')}</Text>
-                        <TouchableOpacity onPress={() => alert(i18n.translate('Reset password'))}>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('Forgot')}>
                             <Text style={[styles.labelText, { color: colors.YELLOW.PRIMARY }]}>{i18n.translate('Reset password')}</Text>
                         </TouchableOpacity>
                     </View>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='done'
+                        fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
                         clearTextOnFocus={true}
                         value={password}
+                        error={errorPassword}
                         secureTextEntry={secureTextEntry}
-                        fontSize={16}
-                        containerStyle={[styles.textContainer, { borderColor: errorPassword ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorPassword) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
                         inputContainerStyle={styles.inputContainer}
                         renderRightAccessory={() => {
                             let name = secureTextEntry ? 'eye' : 'eye-off';
@@ -130,7 +109,7 @@ export default SignIn = (props) => {
                                 <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry(!secureTextEntry)} />
                             )
                         }}
-                        onChangeText={(value) => onValidatePassword(value)}
+                        onChangeText={(value) => setPassword(value)}
                     />
                 </View>
                 <TouchableOpacity style={styles.rememberMe} onPress={() => setRememberMe(!rememberMe)}>
@@ -218,7 +197,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 40,
         width: '100%',
     },
     rememberText: {
@@ -232,8 +211,8 @@ const styles = StyleSheet.create({
     button: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: wp('40%'),
-        height: 50,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
         borderRadius: 6,
     },
     buttonText: {
@@ -244,10 +223,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        // width: wp('60%'),
-        paddingLeft: 20,
-        paddingRight: 20,
-        height: 50,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
         borderRadius: 6,
         borderWidth: 1,
         borderColor: '#C4C4C4'

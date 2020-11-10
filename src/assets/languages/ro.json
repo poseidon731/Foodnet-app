@@ -2,12 +2,20 @@
     "Registration": "Înregistrare",
     "Log in": "Autentificare",
     "Continue without registration": "Voi continua fără înregistrare",
+
     "Reset password": "Ai uitat parola?",
     "Keep me logged in": "Ține-mă logat",
     "Password": "Parolă",
     "E-mail": "E-mail",
     "Foodnet coupon code shopping": "Foodnet voucher",
     "Google Log in": "Google autentificare",
+
+    "Name": "Nume",
+
+    
+    "Forgotten Password": "Parola uitată",
+    "Please enter your email address to send us your new password": "Vă rugăm să introduceți adresa de e-mail pentru a ne trimite nouă parolă",
+    "Save": "Salvare",
 
     "Home": "Home"
 }

@@ -2,12 +2,19 @@
     "Registration": "Registration",
     "Log in": "Log in",
     "Continue without registration": "Continue without registration",
+    
     "Reset password": "Reset password",
     "Keep me logged in": "Keep me logged in",
     "Password": "Password",
     "E-mail": "E-mail",
     "Foodnet coupon code shopping": "Foodnet coupon code shopping",
     "Google Log in": "Google Log in",
+
+    "Name": "Name",
+
+    "Forgotten Password": "Forgotten Password",
+    "Please enter your email address to send us your new password": "Please enter your email address to send us your new password",
+    "Save": "Save",
 
     "Home": "Home"
 }

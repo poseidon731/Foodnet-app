@@ -50,7 +50,7 @@ export default Splash = (props) => {
             </View>
             <View style={styles.bottomView}>
                 <View style={styles.buttonView}>
-                    <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => alert(i18n.translate('Registration'))}>
+                    <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => props.navigation.navigate('Auth', { screen: 'SignUp' })}>
                         <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Registration')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.button, { backgroundColor: colors.WHITE }]} onPress={() => props.navigation.navigate('Auth', { screen: 'SignIn' })}>
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: wp('40%'),
-        height: 50,
+        paddingVertical: 15,
         borderRadius: 6,
     },
     buttonText: {
