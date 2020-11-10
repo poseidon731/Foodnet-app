@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Title, Content, Left, Right } from 'native-base';
-import { TextField } from 'react-native-material-textfield';
-import Toast from 'react-native-simple-toast';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
 import { deleteToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { isEmpty } from '@utils/functions';
 import { themes, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
 import { BackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
@@ -20,16 +18,6 @@ export default Home = (props) => {
 
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
-
-    const onLogout = () => {
-        dispatch(deleteToken());
-        props.navigation.reset({
-            index: 1,
-            routes: [
-                { name: 'Splash' }
-            ]
-        })
-    }
 
     return (
         <Container style={styles.container}>

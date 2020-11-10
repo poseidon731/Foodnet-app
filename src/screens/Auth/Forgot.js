@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Title, Content, Left, Right } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
 import Toast from 'react-native-simple-toast';
 import CodeInput from 'react-native-code-input';
+import CountDown from 'react-native-countdown-component';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
@@ -21,6 +22,7 @@ export default Forgot = (props) => {
     const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [resend, setResend] = useState(false);
     const [code, setCode] = useState(0);
 
     // const dispatch = useDispatch();
@@ -29,28 +31,17 @@ export default Forgot = (props) => {
         isEmpty(email) ? setErrorEmail('Email is required') : !validateEmail(email) ? setErrorEmail('Email is not valid') : setErrorEmail('');
     }, [email]);
 
-    const onSendCode = async () => {
+    const onVerification = async () => {
         setLoading(true);
-        await AuthService.sendCode(email)
+        await AuthService.verification(email)
             .then(async (response) => {
                 if (response.status == 200) {
-                    await AuthService.verification(email)
-                        .then(async (response) => {
-                            if (response.status == 200) {
-                                setLoading(false);
-                                setVisible(true);
-                                setCode(response.result[0].code[0].reset_code);
-                            } else {
-                                Toast.show(response.result[0].msg, Toast.LONG);
-                                setTimeout(() => setLoading(false), 1000);
-                            }
-                        })
-                        .catch((error) => {
-                            Toast.show(error.message, Toast.LONG);
-                            setTimeout(() => setLoading(false), 1000);
-                        });
+                    setLoading(false);
+                    setVisible(true);
+                    setResend(false);
+                    setCode(response.result[0].reset_code);
                 } else {
-                    Toast.show(response.result[0].msg, Toast.LONG);
+                    Toast.show(response.msg, Toast.LONG);
                     setTimeout(() => setLoading(false), 1000);
                 }
             })
@@ -60,7 +51,7 @@ export default Forgot = (props) => {
             });
     }
     const onFinishCheckingCode = (value) => {
-        code == value ? props.navigation.navigate('Reset') : Toast.show('Incorrect Code', Toast.LONG);
+        code == value ? props.navigation.navigate('Reset', { email, code }) : Toast.show('Incorrect Code', Toast.LONG);
     }
 
     return (
@@ -80,7 +71,7 @@ export default Forgot = (props) => {
             </Header>
             <Content style={styles.content}>
                 {!visible ?
-                    <React.Fragment>
+                    <Fragment>
                         <Text style={styles.descriptionText}>{i18n.translate('Please enter your email address to send us your new password')}</Text>
                         <View style={styles.inputView}>
                             <Text style={styles.labelText}>{i18n.translate('E-mail')}</Text>
@@ -105,13 +96,13 @@ export default Forgot = (props) => {
                                 style={[styles.button, {
                                     backgroundColor: isEmpty(email) || !isEmpty(errorEmail) || visible ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
                                 }]}
-                                onPress={() => onSendCode()}
+                                onPress={() => onVerification()}
                             >
                                 <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Save')}</Text>
                             </TouchableOpacity>
                         </View>
-                    </React.Fragment> :
-                    <React.Fragment>
+                    </Fragment> :
+                    <Fragment>
                         <View style={styles.inputView}>
                             <Text style={[styles.labelText, { width: '100%' }]}>{i18n.translate('Confirm Verification Code')}</Text>
                             <Text style={styles.confirmText}>{i18n.translate('A message with a verification code has been sent to your email for reset password Enter the code to continue')}</Text>
@@ -127,16 +118,34 @@ export default Forgot = (props) => {
                                 codeInputStyle={{ borderWidth: 1.5 }}
                                 onFulfill={(value) => onFinishCheckingCode(value)}
                             />
+                            {!resend && (
+                                <View style={{ width: '100%', paddingHorizontal: 10, alignItems: 'flex-end' }}>
+                                    <CountDown
+                                        size={30}
+                                        until={45}
+                                        onFinish={() => setResend(true)}
+                                        digitStyle={{ backgroundColor: '#FFF', width: 30, height: 30, borderWidth: 0, borderColor: '#1CC625' }}
+                                        digitTxtStyle={{ fontSize: 15, color: '#666' }}
+                                        separatorStyle={{ fontSize: 15, color: '#666' }}
+                                        timeLabelStyle={{ color: 'red', fontWeight: 'bold' }}
+                                        timeToShow={['M', 'S']}
+                                        timeLabels={{ m: null, s: null }}
+                                        showSeparator
+                                    />
+                                </View>)}
                             <View style={styles.bottomView}>
-                                <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => onSendCode()} >
+                                <TouchableOpacity disabled={resend ? false : true} style={[styles.button, { backgroundColor: resend ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY }]} onPress={() => onVerification()} >
                                     <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Resend')}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => setVisible(false)} >
+                                <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => {
+                                    setVisible(false);
+                                    setResend(false);
+                                }} >
                                     <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Cancel')}</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    </React.Fragment>}
+                    </Fragment>}
             </Content>
         </Container>
     );

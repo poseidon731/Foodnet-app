@@ -18,7 +18,7 @@ import i18n from '@utils/i18n';
 const Drawer = createDrawerNavigator();
 export default function DrawerNavigator() {
     return (
-        <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} drawerStyle={{width: wp('100%')}}>
+        <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} drawerStyle={{ width: wp('100%') }}>
             <Drawer.Screen name="Home" component={HomeStack} options={navOptionHandler} />
             {/* <Drawer.Screen name="Logout" component={Logout} /> */}
         </Drawer.Navigator>
@@ -26,6 +26,7 @@ export default function DrawerNavigator() {
 }
 
 const DrawerContent = (props) => {
+    const logged = useSelector(state => state.auth.logged);
     const dispatch = useDispatch();
     const onLogout = () => {
         dispatch(deleteToken());
@@ -80,12 +81,14 @@ const DrawerContent = (props) => {
                     <Text style={styles.menuTitle}>{i18n.translate('Customer service')}</Text>
                 </TouchableOpacity>
             </Content>
-            <Footer style={styles.header}>
-                <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
-                    <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
-                    <Text style={styles.menuTitle}>{i18n.translate('Log out')}</Text>
-                </TouchableOpacity>
-            </Footer>
+            {logged && (
+                <Footer style={styles.header}>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
+                        <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
+                        <Text style={styles.menuTitle}>{i18n.translate('Log out')}</Text>
+                    </TouchableOpacity>
+                </Footer>
+            )}
         </Container>
     )
 }

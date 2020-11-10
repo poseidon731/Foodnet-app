@@ -3,16 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Title, Content, Left, Right } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
-import Toast from 'react-native-simple-toast';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
 import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateEmail, validatePassword } from '@utils/functions';
 import { themes, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
 import { BackIcon, GoogleIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
@@ -36,12 +35,12 @@ export default SignIn = (props) => {
         setLoading(true);
         await AuthService.login(email, password)
             .then((response) => {
-                if (response.status == 201) {
+                if (response.status == 200) {
                     setLoading(false);
                     dispatch(setToken(response.result[0].token));
                     props.navigation.navigate('App');
                 } else {
-                    Toast.show(response.result[0].msg, Toast.LONG);
+                    Toast.show(response.msg, Toast.LONG);
                     setTimeout(() => setLoading(false), 1000);
                 }
             })
@@ -117,7 +116,6 @@ export default SignIn = (props) => {
                         name={rememberMe ? 'check-box-outline' : 'checkbox-blank-outline'}
                         size={25}
                         color={colors.GREY.PRIMARY}
-                    // color={rememberMe ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
                     />
                     <Text style={styles.rememberText}>{i18n.translate('Keep me logged in')}</Text>
                 </TouchableOpacity>
@@ -138,6 +136,7 @@ export default SignIn = (props) => {
                         <Text style={[styles.googleButtonText, { color: '#444' }]}>{i18n.translate('Google Log in')}</Text>
                     </TouchableOpacity>
                 </View>
+                <View style={{height: 50}} />
             </Content>
         </Container>
     );

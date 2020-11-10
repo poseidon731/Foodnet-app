@@ -3,17 +3,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Title, Content, Left, Right } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
-import Toast from 'react-native-simple-toast';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
 import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateName, validateEmail, validatePassword } from '@utils/functions';
 import { themes, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
-import { BackIcon, GoogleIcon } from '@constants/svgs';
+import { BackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default SignUp = (props) => {
@@ -25,7 +24,7 @@ export default SignUp = (props) => {
     const [password, setPassword] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
     const [confirm, setConfirm] = useState('');
-    const [errorConfrim, setErrorConfirm] = useState('');
+    const [errorConfirm, setErrorConfirm] = useState('');
     const [secureTextEntry1, setSecureTextEntry1] = useState(true);
     const [secureTextEntry2, setSecureTextEntry2] = useState(true);
     const [termOfService, setTermOfService] = useState(false);
@@ -49,7 +48,7 @@ export default SignUp = (props) => {
                     dispatch(setToken(response.result[0].token));
                     props.navigation.navigate('App');
                 } else {
-                    Toast.show(response.result[0].msg, Toast.LONG);
+                    Toast.show(response.msg, Toast.LONG);
                     setTimeout(() => setLoading(false), 1000);
                 }
             })
@@ -131,7 +130,7 @@ export default SignUp = (props) => {
                     />
                 </View>
                 <View style={[styles.inputView, { marginTop: 50 }]}>
-                    <Text style={[styles.labelText, { color: !isEmpty(errorConfrim) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('New password again')}</Text>
+                    <Text style={[styles.labelText, { color: !isEmpty(errorConfirm) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('New password again')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
@@ -141,9 +140,9 @@ export default SignUp = (props) => {
                         enablesReturnKeyAutomatically={true}
                         clearTextOnFocus={true}
                         value={confirm}
-                        error={errorConfrim}
+                        error={errorConfirm}
                         secureTextEntry={secureTextEntry2}
-                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorConfrim) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorConfirm) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
                         inputContainerStyle={styles.inputContainer}
                         renderRightAccessory={() => {
                             let name = secureTextEntry2 ? 'eye' : 'eye-off';
@@ -176,15 +175,16 @@ export default SignUp = (props) => {
                 </TouchableOpacity>
                 <View style={[styles.buttonView, { marginTop: 35 }]}>
                     <TouchableOpacity
-                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfrim || !termOfService || !newsLetter ? true : false}
+                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService ? true : false}
                         style={[styles.button, {
-                            backgroundColor: isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfrim || !termOfService || !newsLetter ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
+                            backgroundColor: isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
                         }]}
                         onPress={() => onSignup()}
                     >
                         <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Registration')}</Text>
                     </TouchableOpacity>
                 </View>
+                <View style={{height: 50}} />
             </Content>
         </Container>
     );

@@ -19,15 +19,19 @@ const AuthService = {
             return response.data;
         });
     },
-    sendCode: async function (email) {
-        return await axios.post(`/auth/reset-app`, {
+    verification: async function (email) {
+        return await axios.post(`/auth/verification`, {
             email
         }).then((response) => {
             return response.data;
         });
     },
-    verification: async function (email) {
-        return await axios.post(`/auth/verification/${email}`).then((response) => {
+    reset: async function (email, password, code) {
+        return await axios.post(`/auth/reset-password-app`, {
+            email,
+            newPassword: password,
+            code
+        }).then((response) => {
             return response.data;
         });
     },

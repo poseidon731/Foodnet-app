@@ -3,16 +3,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Title, Content, Left, Right } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
-import Toast from 'react-native-simple-toast';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
+import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
-import { isEmpty, validateEmail, validatePassword } from '@utils/functions';
+import { isEmpty, validatePassword } from '@utils/functions';
 import { themes, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
-import { BackIcon, GoogleIcon } from '@constants/svgs';
+import { BackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default SignIn = (props) => {
@@ -27,38 +27,27 @@ export default SignIn = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (isEmpty(password) || !validatePassword(password)) {
-            setErrorPassword(true);
-        } else {
-            setErrorPassword(false);
-        }
-        if (isEmpty(confirm) || !validatePassword(confirm)) {
-            setErrorConfirm(true);
-        } else {
-            setErrorConfirm(false);
-        }
+        isEmpty(password) ? setErrorPassword('Password is required') : !validatePassword(password) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        isEmpty(confirm) ? setErrorConfirm('Confirm Password is required') : !validatePassword(confirm) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm('Password is not matched') : setErrorConfirm('');
     }, [password, confirm])
 
-    const onValidatePassword = (value) => {
-        setPassword(value);
-    }
-
-    const onValidateConfirm = (value) => {
-        setConfirm(value);
-    }
-
     const onReset = async () => {
-        if (isEmpty(password)) {
-            Toast.show('Password is required', Toast.LONG);
-        } else if (!isEmpty(password) && errorPassword) {
-            Toast.show('Password should be 3+ characters', Toast.LONG);
-        } else if (isEmpty(confirm)) {
-            Toast.show('Password is required', Toast.LONG);
-        } else if (!isEmpty(confirm) && errorConfirm) {
-            Toast.show('Password should be 3+ characters', Toast.LONG);
-        } else if (!isEmpty(password) && !isEmpty(confirm) && !errorPassword && !errorConfirm) {
-            props.navigation.navigate('SignIn');
-        }
+        setLoading(true);
+        await AuthService.reset(props.route.params.email, password, props.route.params.code)
+            .then((response) => {
+                if (response.status == 200) {
+                    setLoading(false);
+                    dispatch(setToken(response.result[0].token));
+                    props.navigation.navigate('App');
+                } else {
+                    Toast.show(response.msg, Toast.LONG);
+                    setTimeout(() => setLoading(false), 1000);
+                }
+            })
+            .catch((error) => {
+                Toast.show(error.message, Toast.LONG);
+                setTimeout(() => setLoading(false), 1000);
+            });
     }
 
     return (
@@ -72,57 +61,58 @@ export default SignIn = (props) => {
                     </TouchableOpacity>
                 </Left>
                 <Title>
-                    <Text style={styles.titleText}>{i18n.translate('Log in')}</Text>
+                    <Text style={styles.titleText}>{i18n.translate('Set a new password')}</Text>
                 </Title>
                 <Right style={{ paddingRight: 10 }} />
             </Header>
             <Content style={styles.content}>
-                <View style={styles.inputView}>
-                    <View style={styles.labelView}>
-                        <Text style={styles.labelText}>{i18n.translate('Password')}</Text>
-                    </View>
+                        <Text style={styles.descriptionText}>{i18n.translate('Enter your new password so you can use the app')}</Text>
+                <View style={[styles.inputView, { marginTop: 50 }]}>
+                    <Text style={[styles.labelText, { color: !isEmpty(errorPassword) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('Password')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
-                        returnKeyType='done'
+                        returnKeyType='next'
+                        fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
                         clearTextOnFocus={true}
                         value={password}
+                        error={errorPassword}
                         secureTextEntry={secureTextEntry1}
-                        fontSize={16}
-                        containerStyle={[styles.textContainer, { borderColor: errorPassword ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorPassword) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
                         inputContainerStyle={styles.inputContainer}
                         renderRightAccessory={() => {
                             let name = secureTextEntry1 ? 'eye' : 'eye-off';
                             return (
-                                <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry(!secureTextEntry)} />
+                                <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry1(!secureTextEntry1)} />
                             )
                         }}
-                        onChangeText={(value) => onValidatePassword(value)}
+                        onChangeText={(value) => setPassword(value)}
                     />
                 </View>
-                <View style={styles.inputView}>
-                    <View style={styles.labelView}>
-                        <Text style={styles.labelText}>{i18n.translate('Password')}</Text>
-                    </View>
+                <View style={[styles.inputView, { marginTop: 50 }]}>
+                    <Text style={[styles.labelText, { color: !isEmpty(errorConfirm) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('New password again')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='done'
+                        fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
                         clearTextOnFocus={true}
                         value={confirm}
+                        error={errorConfirm}
                         secureTextEntry={secureTextEntry2}
-                        fontSize={16}
-                        containerStyle={[styles.textContainer, { borderColor: errorConfirm ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorConfirm) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
                         inputContainerStyle={styles.inputContainer}
                         renderRightAccessory={() => {
                             let name = secureTextEntry2 ? 'eye' : 'eye-off';
                             return (
-                                <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry1(!secureTextEntry1)} />
+                                <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry2(!secureTextEntry2)} />
                             )
                         }}
-                        onChangeText={(value) => onValidateConfirm(value)}
+                        onChangeText={(value) => setConfirm(value)}
                     />
                 </View>
                 <View style={[styles.buttonView, { marginTop: 35 }]}>
@@ -133,9 +123,10 @@ export default SignIn = (props) => {
                         }]}
                         onPress={() => onReset()}
                     >
-                        <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Log in')}</Text>
+                        <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Save')}</Text>
                     </TouchableOpacity>
                 </View>
+                <View style={{height: 50}} />
             </Content>
         </Container>
     );
@@ -163,6 +154,13 @@ const styles = StyleSheet.create({
     content: {
         padding: 20
     },
+    descriptionText: {
+        width: '80%',
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#666',
+        lineHeight: 24,
+    },
     inputView: {
         marginTop: 20,
         width: '100%'
@@ -177,6 +175,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: colors.BLACK
     },
+    characterText: {
+        marginTop: 5,
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#666'
+    },
     textContainer: {
         width: '100%',
         marginTop: 10,
@@ -190,17 +194,6 @@ const styles = StyleSheet.create({
         marginTop: -20,
         borderWidth: 0
     },
-    rememberMe: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        marginTop: 20,
-        width: '100%',
-    },
-    rememberText: {
-        marginLeft: 10,
-        fontSize: 16,
-    },
     buttonView: {
         width: '100%',
         alignItems: 'center'
@@ -208,33 +201,12 @@ const styles = StyleSheet.create({
     button: {
         justifyContent: 'center',
         alignItems: 'center',
-        // width: wp('40%'),
-        // height: 50,
-        padding: 15,
-        paddingLeft: 25,
-        paddingRight: 25,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
         borderRadius: 6,
     },
     buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
     },
-    googleButton: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // width: wp('60%'),
-        // height: 50,
-        padding: 15,
-        paddingLeft: 20,
-        paddingRight: 20,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: '#C4C4C4'
-    },
-    googleButtonText: {
-        marginLeft: 10,
-        fontSize: 16,
-        fontWeight: 'bold'
-    }
 });
