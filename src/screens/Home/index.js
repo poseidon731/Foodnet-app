@@ -36,8 +36,8 @@ export default Home = (props) => {
             <StatusBar />
             <Header style={styles.header}>
                 <Left style={{ paddingLeft: 10 }}>
-                    <TouchableOpacity onPress={() => onLogout()}>
-                        <BackIcon style={styles.backIcon} />
+                    <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
+                    <Icon type='ionicon' name='menu' size={30} color={colors.YELLOW.PRIMARY} />
                     </TouchableOpacity>
                 </Left>
                 <Title>

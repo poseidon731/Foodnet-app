@@ -7,7 +7,7 @@ import Toast from 'react-native-simple-toast';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setToken, setUser } from '@modules/reducers/auth/actions';
+import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateName, validateEmail, validatePassword } from '@utils/functions';
@@ -36,28 +36,27 @@ export default SignUp = (props) => {
     useEffect(() => {
         isEmpty(name) ? setErrorName('Name is required') : !validateName(name) ? setErrorName('Name is not valid') : setErrorName('');
         isEmpty(email) ? setErrorEmail('Email is required') : !validateEmail(email) ? setErrorEmail('Email is not valid') : setErrorEmail('');
-        isEmpty(password) ? setErrorPassword('Password is required') : !validatePassword(password) ? setErrorPassword('Password should be 3+ characters') : setErrorPassword('');
-        isEmpty(confirm) ? setErrorConfirm('Confirm Password is required') : !validatePassword(confirm) ? setErrorConfirm('Confirm Password should be 3+ characters') : setErrorConfirm('');
+        isEmpty(password) ? setErrorPassword('Password is required') : !validatePassword(password) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        isEmpty(confirm) ? setErrorConfirm('Confirm Password is required') : !validatePassword(confirm) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm('Password is not matched') : setErrorConfirm('');
     }, [name, email, password, confirm]);
 
-    const onLogin = async () => {
-        if (!isEmpty(email) && !isEmpty(password) && isEmpty(errorEmail) && isEmpty(errorPassword)) {
-            setLoading(true);
-            await AuthService.login(email, password)
-                .then((response) => {
+    const onSignup = async () => {
+        setLoading(true);
+        await AuthService.register(name, email, password, newsLetter ? 1 : 0)
+            .then((response) => {
+                if (response.status == 201) {
                     setLoading(false);
-                    if (!isEmpty(response.token)) {
-                        dispatch(setToken(response.token));
-                        props.navigation.navigate('Home');
-                    }
-                })
-                .catch((error) => {
-                    Toast.show('Credential is not valid', Toast.LONG);
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 1000);
-                });
-        }
+                    dispatch(setToken(response.result[0].token));
+                    props.navigation.navigate('App');
+                } else {
+                    Toast.show(response.result[0].msg, Toast.LONG);
+                    setTimeout(() => setLoading(false), 1000);
+                }
+            })
+            .catch((error) => {
+                Toast.show(error.message, Toast.LONG);
+                setTimeout(() => setLoading(false), 1000);
+            });
     }
 
     return (
@@ -77,7 +76,7 @@ export default SignUp = (props) => {
             </Header>
             <Content style={styles.content}>
                 <View style={styles.inputView}>
-                    <Text style={styles.labelText}>{i18n.translate('Name')}</Text>
+                    <Text style={[styles.labelText, { color: !isEmpty(errorName) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('Name')}</Text>
                     <TextField
                         keyboardType='default'
                         returnKeyType='next'
@@ -92,7 +91,7 @@ export default SignUp = (props) => {
                     />
                 </View>
                 <View style={[styles.inputView, { marginTop: 50 }]}>
-                    <Text style={styles.labelText}>{i18n.translate('E-mail')}</Text>
+                    <Text style={[styles.labelText, { color: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('E-mail')}</Text>
                     <TextField
                         keyboardType='email-address'
                         autoCapitalize='none'
@@ -108,15 +107,11 @@ export default SignUp = (props) => {
                     />
                 </View>
                 <View style={[styles.inputView, { marginTop: 50 }]}>
-                    <View style={styles.labelView}>
-                        <Text style={styles.labelText}>{i18n.translate('Password')}</Text>
-                        <TouchableOpacity onPress={() => props.navigation.navigate('Forgot')}>
-                            <Text style={[styles.labelText, { color: colors.YELLOW.PRIMARY }]}>{i18n.translate('Reset password')}</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <Text style={[styles.labelText, { color: !isEmpty(errorPassword) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('Password')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
-                        returnKeyType='done'
+                        returnKeyType='next'
                         fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
@@ -135,31 +130,59 @@ export default SignUp = (props) => {
                         onChangeText={(value) => setPassword(value)}
                     />
                 </View>
-                {/* <TouchableOpacity style={styles.rememberMe} onPress={() => setRememberMe(!rememberMe)}>
+                <View style={[styles.inputView, { marginTop: 50 }]}>
+                    <Text style={[styles.labelText, { color: !isEmpty(errorConfrim) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('New password again')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
+                    <TextField
+                        autoCapitalize='none'
+                        returnKeyType='done'
+                        fontSize={16}
+                        autoCorrect={false}
+                        enablesReturnKeyAutomatically={true}
+                        clearTextOnFocus={true}
+                        value={confirm}
+                        error={errorConfrim}
+                        secureTextEntry={secureTextEntry2}
+                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorConfrim) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        inputContainerStyle={styles.inputContainer}
+                        renderRightAccessory={() => {
+                            let name = secureTextEntry2 ? 'eye' : 'eye-off';
+                            return (
+                                <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry2(!secureTextEntry2)} />
+                            )
+                        }}
+                        onChangeText={(value) => setConfirm(value)}
+                    />
+                </View>
+                <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
                     <Icon
                         type='material-community'
-                        name={rememberMe ? 'check-box-outline' : 'checkbox-blank-outline'}
+                        name={termOfService ? 'check-box-outline' : 'checkbox-blank-outline'}
                         size={25}
                         color={colors.GREY.PRIMARY}
-                    // color={rememberMe ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
                     />
-                    <Text style={styles.rememberText}>{i18n.translate('Keep me logged in')}</Text>
-                </TouchableOpacity> */}
+                    <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
+                        <Text style={[styles.rememberText, { color: colors.YELLOW.PRIMARY, textDecorationLine: 'underline' }]} onPress={() => alert('OK')}>{i18n.translate('Terms and Conditions')}</Text>
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.rememberMe, { marginTop: 10 }]} onPress={() => setNewsLetter(!newsLetter)}>
+                    <Icon
+                        type='material-community'
+                        name={newsLetter ? 'check-box-outline' : 'checkbox-blank-outline'}
+                        size={25}
+                        color={colors.GREY.PRIMARY}
+                    />
+                    <Text style={styles.rememberText}>{i18n.translate('I subscribe to the newsletter')}</Text>
+                </TouchableOpacity>
                 <View style={[styles.buttonView, { marginTop: 35 }]}>
                     <TouchableOpacity
-                        disabled={isEmpty(email) || isEmpty(password) || errorEmail || errorPassword ? true : false}
+                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfrim || !termOfService || !newsLetter ? true : false}
                         style={[styles.button, {
-                            backgroundColor: isEmpty(email) || isEmpty(password) || errorEmail || errorPassword ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
+                            backgroundColor: isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfrim || !termOfService || !newsLetter ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
                         }]}
-                        onPress={() => onLogin()}
+                        onPress={() => onSignup()}
                     >
-                        <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Log in')}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={[styles.buttonView, { marginTop: 25 }]}>
-                    <TouchableOpacity style={styles.googleButton} onPress={() => alert(i18n.translate('Google Log in'))}>
-                        <GoogleIcon style={styles.logoIcon} />
-                        <Text style={[styles.googleButtonText, { color: '#444' }]}>{i18n.translate('Google Log in')}</Text>
+                        <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Registration')}</Text>
                     </TouchableOpacity>
                 </View>
             </Content>
@@ -203,6 +226,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: colors.BLACK
     },
+    characterText: {
+        marginTop: 5,
+        fontSize: 16,
+        fontWeight: '400',
+        color: '#666'
+    },
     textContainer: {
         width: '100%',
         marginTop: 10,
@@ -219,13 +248,14 @@ const styles = StyleSheet.create({
     rememberMe: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         marginTop: 40,
         width: '100%',
     },
     rememberText: {
         marginLeft: 10,
         fontSize: 16,
+        paddingRight: 30,
     },
     buttonView: {
         width: '100%',
@@ -242,19 +272,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    googleButton: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: '#C4C4C4'
-    },
-    googleButtonText: {
-        marginLeft: 10,
-        fontSize: 16,
-        fontWeight: 'bold'
-    }
 });

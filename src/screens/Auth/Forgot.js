@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Title, Content, Left, Right } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
 import Toast from 'react-native-simple-toast';
@@ -8,46 +8,59 @@ import CodeInput from 'react-native-code-input';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateEmail } from '@utils/functions';
 import { themes, colors } from '@constants/themes';
 import { images, icons } from '@constants/assets';
-import { BackIcon, GoogleIcon } from '@constants/svgs';
+import { BackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
-import { color } from 'react-native-reanimated';
 
 export default Forgot = (props) => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [code, setCode] = useState(0);
 
     // const dispatch = useDispatch();
 
     useEffect(() => {
         isEmpty(email) ? setErrorEmail('Email is required') : !validateEmail(email) ? setErrorEmail('Email is not valid') : setErrorEmail('');
-    }, [email])
+    }, [email]);
 
-    const onForgot = async () => {
-        if (!isEmpty(email) && isEmpty(errorEmail)) {
-            setVisible(true);
-            // setLoading(true);
-            // await AuthService.forgot(email)
-            //     .then((response) => {
-            //         setLoading(false);
-            //         if (!isEmpty(response)) {
-            //             props.navigation.navigate('Reset');
-            //         }
-            //     })
-            //     .catch((error) => {
-            //         Toast.show('Invalid Email', Toast.LONG);
-            //         setTimeout(() => {
-            //             setLoading(false);
-            //         }, 1000);
-            //     });
-        }
+    const onSendCode = async () => {
+        setLoading(true);
+        await AuthService.sendCode(email)
+            .then(async (response) => {
+                if (response.status == 200) {
+                    await AuthService.verification(email)
+                        .then(async (response) => {
+                            if (response.status == 200) {
+                                setLoading(false);
+                                setVisible(true);
+                                setCode(response.result[0].code[0].reset_code);
+                            } else {
+                                Toast.show(response.result[0].msg, Toast.LONG);
+                                setTimeout(() => setLoading(false), 1000);
+                            }
+                        })
+                        .catch((error) => {
+                            Toast.show(error.message, Toast.LONG);
+                            setTimeout(() => setLoading(false), 1000);
+                        });
+                } else {
+                    Toast.show(response.result[0].msg, Toast.LONG);
+                    setTimeout(() => setLoading(false), 1000);
+                }
+            })
+            .catch((error) => {
+                Toast.show(error.message, Toast.LONG);
+                setTimeout(() => setLoading(false), 1000);
+            });
+    }
+    const onFinishCheckingCode = (value) => {
+        code == value ? props.navigation.navigate('Reset') : Toast.show('Incorrect Code', Toast.LONG);
     }
 
     return (
@@ -66,73 +79,67 @@ export default Forgot = (props) => {
                 <Right style={{ paddingRight: 10 }} />
             </Header>
             <Content style={styles.content}>
-                <Text style={styles.descriptionText}>{i18n.translate('Please enter your email address to send us your new password')}</Text>
-                <View style={styles.inputView}>
-                    <Text style={styles.labelText}>{i18n.translate('E-mail')}</Text>
-                    <TextField
-                        keyboardType='email-address'
-                        autoCapitalize='none'
-                        returnKeyType='next'
-                        fontSize={16}
-                        autoCorrect={false}
-                        enablesReturnKeyAutomatically={true}
-                        value={email}
-                        error={errorEmail}
-                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
-                        inputContainerStyle={styles.inputContainer}
-                        onChangeText={(value) => setEmail(value)}
-                    />
-                </View>
-                <View style={[styles.buttonView, { marginTop: 35 }]}>
-                    <TouchableOpacity
-                        disabled={isEmpty(email) || !isEmpty(errorEmail) ? true : false}
-                        style={[styles.button, {
-                            backgroundColor: isEmpty(email) || !isEmpty(errorEmail) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
-                        }]}
-                        onPress={() => onForgot()}
-                    >
-                        <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Save')}</Text>
-                    </TouchableOpacity>
-                </View>
+                {!visible ?
+                    <React.Fragment>
+                        <Text style={styles.descriptionText}>{i18n.translate('Please enter your email address to send us your new password')}</Text>
+                        <View style={styles.inputView}>
+                            <Text style={styles.labelText}>{i18n.translate('E-mail')}</Text>
+                            <TextField
+                                disabled={visible}
+                                keyboardType='email-address'
+                                autoCapitalize='none'
+                                returnKeyType='next'
+                                fontSize={16}
+                                autoCorrect={false}
+                                enablesReturnKeyAutomatically={true}
+                                value={email}
+                                error={errorEmail}
+                                containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                                inputContainerStyle={styles.inputContainer}
+                                onChangeText={(value) => setEmail(value)}
+                            />
+                        </View>
+                        <View style={[styles.buttonView, { marginTop: 50 }]}>
+                            <TouchableOpacity
+                                disabled={isEmpty(email) || !isEmpty(errorEmail) || visible ? true : false}
+                                style={[styles.button, {
+                                    backgroundColor: isEmpty(email) || !isEmpty(errorEmail) || visible ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
+                                }]}
+                                onPress={() => onSendCode()}
+                            >
+                                <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Save')}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </React.Fragment> :
+                    <React.Fragment>
+                        <View style={styles.inputView}>
+                            <Text style={[styles.labelText, { width: '100%' }]}>{i18n.translate('Confirm Verification Code')}</Text>
+                            <Text style={styles.confirmText}>{i18n.translate('A message with a verification code has been sent to your email for reset password Enter the code to continue')}</Text>
+                            <CodeInput
+                                codeLength={6}
+                                size={50}
+                                secureTextEntry
+                                activeColor={colors.YELLOW.PRIMARY}
+                                inactiveColor={'#666'}
+                                // autoFocus={false}
+                                inputPosition='center'
+                                containerStyle={{ marginTop: 10 }}
+                                codeInputStyle={{ borderWidth: 1.5 }}
+                                onFulfill={(value) => onFinishCheckingCode(value)}
+                            />
+                            <View style={styles.bottomView}>
+                                <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => onSendCode()} >
+                                    <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Resend')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => setVisible(false)} >
+                                    <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Cancel')}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </React.Fragment>}
             </Content>
-            <Verification visible={true} navigation={props.navigation} />
         </Container>
     );
-}
-
-const Verification = (props) => {
-
-    const onFinishCheckingCode = async () => {
-        props.navigation.navigate('Reset');
-    }
-
-    return (
-        <View style={[styles.confirmView, { display: props.visible ? 'flex' : 'none' }]}>
-            <View style={styles.opacityView} />
-            <View style={styles.confirmModal}>
-                <Text style={styles.confirmTitle}>Verification Code</Text>
-                <Text style={styles.confirmDescription}>A message with a verification code has been sent to your email for reset password. Enter the code to continue.</Text>
-                <CodeInput
-                    codeLength={6}
-                    size={50}
-                    secureTextEntry
-                    activeColor={colors.YELLOW.PRIMARY}
-                    inactiveColor={colors.YELLOW.PRIMARY}
-                    // autoFocus={false}
-                    inputPosition='center'
-                    containerStyle={{ marginTop: 0 }}
-                    codeInputStyle={{ margin: 1, width: 20, borderBottomWidth: 1.5 }}
-                    onFulfill={(code) => onFinishCheckingCode(code)}
-                />
-                <TouchableOpacity style={styles.confirmButton}>
-                    <Text style={styles.confirmText}>Didn't Get a Code</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.confirmButton}>
-                    <Text style={styles.confirmText}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    )
 }
 
 const styles = StyleSheet.create({
@@ -166,11 +173,6 @@ const styles = StyleSheet.create({
     },
     inputView: {
         marginTop: 20,
-        width: '100%'
-    },
-    labelView: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         width: '100%'
     },
     labelText: {
@@ -207,52 +209,24 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     confirmView: {
-        position: 'absolute',
-        width: wp('100%'),
-        height: hp('100%'),
+        marginTop: 20,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    opacityView: {
-        position: 'absolute',
-        width: wp('100%'),
-        height: hp('100%'),
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#00000080'
-    },
-    confirmModal: {
-        alignItems: 'center',
-        width: 300,
-        height: 300,
-        backgroundColor: colors.WHITE,
-        borderRadius: 10,
-        shadowColor: colors.BLACK,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5
-    },
-    confirmTitle: {
-        marginTop: 30,
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
-    confirmDescription: {
-        marginTop: 10,
-        width: '80%',
-        textAlign: 'center'
-    },
-    confirmButton: {
         width: '100%',
-        alignItems: 'center',
-        paddingVertical: 10,
-        borderTopWidth: 1,
-        borderTopColor: colors.GREY.PRIMARY
     },
     confirmText: {
+        width: '100%',
         fontSize: 16,
-        fontWeight: 'bold',
-        color: colors.YELLOW.PRIMARY
+        fontWeight: '400',
+        color: '#666',
+        lineHeight: 24,
+    },
+    bottomView: {
+        marginTop: 50,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        paddingHorizontal: 20
     }
 });

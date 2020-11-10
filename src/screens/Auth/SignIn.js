@@ -7,7 +7,7 @@ import Toast from 'react-native-simple-toast';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setToken, setUser } from '@modules/reducers/auth/actions';
+import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateEmail, validatePassword } from '@utils/functions';
@@ -33,23 +33,22 @@ export default SignIn = (props) => {
     }, [email, password]);
 
     const onLogin = async () => {
-        if (!isEmpty(email) && !isEmpty(password) && isEmpty(errorEmail) && isEmpty(errorPassword)) {
-            setLoading(true);
-            await AuthService.login(email, password)
-                .then((response) => {
+        setLoading(true);
+        await AuthService.login(email, password)
+            .then((response) => {
+                if (response.status == 201) {
                     setLoading(false);
-                    if (!isEmpty(response.token)) {
-                        dispatch(setToken(response.token));
-                        props.navigation.navigate('Home');
-                    }
-                })
-                .catch((error) => {
-                    Toast.show('Credential is not valid', Toast.LONG);
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 1000);
-                });
-        }
+                    dispatch(setToken(response.result[0].token));
+                    props.navigation.navigate('App');
+                } else {
+                    Toast.show(response.result[0].msg, Toast.LONG);
+                    setTimeout(() => setLoading(false), 1000);
+                }
+            })
+            .catch((error) => {
+                Toast.show(error.message, Toast.LONG);
+                setTimeout(() => setLoading(false), 1000);
+            });
     }
 
     return (
@@ -69,7 +68,7 @@ export default SignIn = (props) => {
             </Header>
             <Content style={styles.content}>
                 <View style={styles.inputView}>
-                    <Text style={styles.labelText}>{i18n.translate('E-mail')}</Text>
+                    <Text style={[styles.labelText, { color: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('E-mail')}</Text>
                     <TextField
                         keyboardType='email-address'
                         autoCapitalize='none'
@@ -86,7 +85,7 @@ export default SignIn = (props) => {
                 </View>
                 <View style={[styles.inputView, { marginTop: 50 }]}>
                     <View style={styles.labelView}>
-                        <Text style={styles.labelText}>{i18n.translate('Password')}</Text>
+                        <Text style={[styles.labelText, { color: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('Password')}</Text>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Forgot')}>
                             <Text style={[styles.labelText, { color: colors.YELLOW.PRIMARY }]}>{i18n.translate('Reset password')}</Text>
                         </TouchableOpacity>

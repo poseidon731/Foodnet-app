@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { connect } from 'react-redux';
 import { Splash } from '@screens';
+import DrawerNavigator from '@navigations/DrawerNavigator';
 // import BottomTabNavigator from '@navigations/BottomTabNavigator';
 import AuthStack from '@navigations/StackNavigators/AuthStackNavigator';
-import HomeStack from '@navigations/StackNavigators/HomeStackNavigator';
 import { navOptionHandler } from '@utils/functions';
-import { connect } from 'react-redux';
 
 const StackApp = createStackNavigator();
 class AppContainer extends Component {
@@ -17,11 +17,10 @@ class AppContainer extends Component {
     render() {
         return (
             <NavigationContainer>
-                <StackApp.Navigator initialRouteName={'Auth'}>
-                {/* <StackApp.Navigator initialRouteName={this.props.logged ? 'Home' : 'Splash'}> */}
+                <StackApp.Navigator initialRouteName={this.props.logged ? 'App' : 'Splash'}>
                     <StackApp.Screen name='Splash' component={Splash} options={navOptionHandler} />
                     <StackApp.Screen name='Auth' component={AuthStack} options={navOptionHandler} />
-                    <StackApp.Screen name='Home' component={HomeStack} options={navOptionHandler} />
+                    <StackApp.Screen name='App' component={DrawerNavigator} options={navOptionHandler} />
                 </StackApp.Navigator>
             </NavigationContainer>
         );

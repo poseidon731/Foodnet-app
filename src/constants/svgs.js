@@ -19,16 +19,16 @@ const LogoIcon = ({ style }) => (
             <Path d="M27.9922 13.1107C28.2478 13.1107 28.4988 12.9901 28.6562 12.764C28.7581 12.6419 29.4271 12.2803 30.6809 12.1947C31.9301 12.1096 32.6414 12.3748 32.7629 12.4827C33.0673 12.8098 33.5791 12.8298 33.9081 12.5267C34.2382 12.2228 34.2594 11.7088 33.9554 11.3787C33.1225 10.4743 31.1539 10.5337 30.5703 10.5736C29.9869 10.6133 28.0287 10.8216 27.3263 11.8307C27.0699 12.1989 27.1588 12.7078 27.5271 12.9641C27.6692 13.0631 27.8316 13.1107 27.9922 13.1107Z" fill="#F78F1E" />
         </Svg>
     </View>
-)
+);
 
 const BackIcon = ({ style }) => (
     <View style={style}>
         <Svg width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/Svg">
-            <Path d="M19 12H5" stroke="#F78F1E" strokeWidth="2" stroke-linecap="round" stroke-linejoin="round" />
-            <Path d="M12 19L5 12L12 5" stroke="#F78F1E" strokeWidth="2" stroke-linecap="round" stroke-linejoin="round" />
+            <Path d="M19 12H5" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 19L5 12L12 5" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </Svg>
     </View>
-)
+);
 
 const GoogleIcon = ({ style }) => (
     <View style={style}>
@@ -40,10 +40,85 @@ const GoogleIcon = ({ style }) => (
         </Svg>
 
     </View>
-)
+);
+
+const InboxIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/Svg">
+            <Path d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M3 6H21" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const OrderIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M16 4H18C18.5304 4 19.0391 4.21071 19.4142 4.58579C19.7893 4.96086 20 5.46957 20 6V20C20 20.5304 19.7893 21.0391 19.4142 21.4142C19.0391 21.7893 18.5304 22 18 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V6C4 5.46957 4.21071 4.96086 4.58579 4.58579C4.96086 4.21071 5.46957 4 6 4H8" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M15 2H9C8.44772 2 8 2.44772 8 3V5C8 5.55228 8.44772 6 9 6H15C15.5523 6 16 5.55228 16 5V3C16 2.44772 15.5523 2 15 2Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const ProfileIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+
+    </View>
+);
+
+const CouponIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M19 5L5 19" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M6.5 9C7.88071 9 9 7.88071 9 6.5C9 5.11929 7.88071 4 6.5 4C5.11929 4 4 5.11929 4 6.5C4 7.88071 5.11929 9 6.5 9Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M17.5 20C18.8807 20 20 18.8807 20 17.5C20 16.1193 18.8807 15 17.5 15C16.1193 15 15 16.1193 15 17.5C15 18.8807 16.1193 20 17.5 20Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const LocationIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const LanguageIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M4 15C4 15 5 14 8 14C11 14 13 16 16 16C19 16 20 15 20 15V3C20 3 19 4 16 4C13 4 11 2 8 2C5 2 4 3 4 3V15Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M4 22V15" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const ServiceIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M9.09003 8.99999C9.32513 8.33166 9.78918 7.7681 10.4 7.40912C11.0108 7.05015 11.7289 6.91893 12.4272 7.0387C13.1255 7.15848 13.7588 7.52151 14.2151 8.06352C14.6714 8.60552 14.9211 9.29151 14.92 9.99999C14.92 12 11.92 13 11.92 13" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 17H12.01" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+
+    </View>
+);
 
 export {
     LogoIcon,
     BackIcon,
-    GoogleIcon
+    GoogleIcon,
+    InboxIcon,
+    OrderIcon,
+    ProfileIcon,
+    CouponIcon,
+    LocationIcon,
+    LanguageIcon,
+    ServiceIcon
 }

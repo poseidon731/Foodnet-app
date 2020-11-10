@@ -57,7 +57,7 @@ export default Splash = (props) => {
                         <Text style={[styles.buttonText, { color: colors.YELLOW.PRIMARY }]}>{i18n.translate('Log in')}</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Home')}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('App')}>
                     <Text style={styles.continueText}>{i18n.translate('Continue without registration')}</Text>
                 </TouchableOpacity>
             </View>

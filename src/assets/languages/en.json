@@ -11,10 +11,29 @@
     "Google Log in": "Google Log in",
 
     "Name": "Name",
+    "5+ characters": "5+ characters",
+    "Incorrect password": "Incorrect password",
+    "New password again": "New password again",
+    "I accept the ": "I accept the ",
+    "Terms and Conditions": "Terms and Conditions",
+    "I subscribe to the newsletter": "I subscribe to the newsletter",
 
     "Forgotten Password": "Forgotten Password",
     "Please enter your email address to send us your new password": "Please enter your email address to send us your new password",
     "Save": "Save",
+    "Confirm Verification Code": "Confirm Verification Code",
+    "A message with a verification code has been sent to your email for reset password Enter the code to continue": "A message with a verification code has been sent to your email for reset password. Enter the code to continue.",
+    "Resend": "Resend",
+    "Cancel": "Cancel",
+
+    "Navigation": "Navigation",
+    "My orders": "My orders",
+    "Profile": "Profile",
+    "Coupon codes": "Coupon codes",
+    "My addresses": "My addresses",
+    "Language selector": "Language selector",
+    "Customer service": "Customer service",
+    "Log out": "Log out",
 
     "Home": "Home"
 }

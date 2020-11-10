@@ -58,20 +58,6 @@ export default SignIn = (props) => {
             Toast.show('Password should be 3+ characters', Toast.LONG);
         } else if (!isEmpty(password) && !isEmpty(confirm) && !errorPassword && !errorConfirm) {
             props.navigation.navigate('SignIn');
-            // setLoading(true);
-            // await AuthService.reset(password)
-            //     .then((response) => {
-            //         setLoading(false);
-            //         if (!isEmpty(response.token)) {
-            //             props.navigation.navigate('SignIn');
-            //         }
-            //     })
-            //     .catch((error) => {
-            //         Toast.show('Invalid credential', Toast.LONG);
-            //         setTimeout(() => {
-            //             setLoading(false);
-            //         }, 1000);
-            //     });
         }
     }
 

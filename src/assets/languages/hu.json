@@ -11,11 +11,29 @@
     "Google Log in": "Google bejelentkezés",
 
     "Name": "Név",
-
+    "5+ characters": "5+ karakter",
+    "Incorrect password": "Helytelen jelszó",
+    "New password again": "Új jelszó mégegyszer",
+    "I accept the ": "Elfogadom az ",
+    "Terms and Conditions": "Általános Szerződési Feltételeket",
+    "I subscribe to the newsletter": "Feliratkozom a hírlevélre",
     
     "Forgotten Password": "Elfelejtett jelszó",
     "Please enter your email address to send us your new password": "Kérlek add meg az email címed, hogy elküldjük az új jelszót",
     "Save": "Mentés",
+    "Confirm Verification Code": "Confirm Verification Code",
+    "A message with a verification code has been sent to your email for reset password Enter the code to continue": "A message with a verification code has been sent to your email for reset password. Enter the code to continue.",
+    "Resend": "Resend",
+    "Cancel": "Cancel",
 
+    "Navigation": "Navigáció",
+    "My orders": "Rendeléseim",
+    "Profile": "Profil",
+    "Coupon codes": "Kuponkódok",
+    "My addresses": "Címeim",
+    "Language selector": "Nyelvválasztó",
+    "Customer service": "Ügyfélszolgálat",
+    "Log out": "Log out",
+    
     "Home": "Home"
 }
