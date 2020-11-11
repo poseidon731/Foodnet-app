@@ -9,29 +9,28 @@ import Toast from 'react-native-simple-toast';
 import { deleteToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { isEmpty } from '@utils/functions';
-import { themes, colors } from '@constants/themes';
-import { BackIcon } from '@constants/svgs';
+import { common, colors } from '@constants/themes';
 import i18n from '@utils/i18n';
 
 export default Home = (props) => {
     const [loading, setLoading] = useState(false);
 
     const token = useSelector(state => state.auth.token);
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     return (
-        <Container style={styles.container}>
+        <Container style={common.container}>
             <StatusBar />
-            <Header style={styles.header}>
-                <Left style={{ paddingLeft: 10 }}>
+            <Header style={common.header}>
+                <View style={common.headerLeft}>
                     <TouchableOpacity onPress={() => props.navigation.openDrawer()}>
-                    <Icon type='ionicon' name='menu' size={30} color={colors.YELLOW.PRIMARY} />
+                        <Icon type='ionicon' name='menu' size={30} color={colors.YELLOW.PRIMARY} />
                     </TouchableOpacity>
-                </Left>
-                <Title>
-                    <Text style={styles.titleText}>{i18n.translate('Home')}</Text>
-                </Title>
-                <Right style={{ paddingRight: 10 }} />
+                </View>
+                <View style={common.headerTitle}>
+                    <Text style={common.headerTitleText}>{i18n.translate('Home')}</Text>
+                </View>
+                <View style={common.headerRight} />
             </Header>
             <Content style={styles.content}>
                 <View style={styles.inputView}>
@@ -43,24 +42,6 @@ export default Home = (props) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: colors.WHITE
-    },
-    backIcon: {
-        width: 25,
-        height: 25
-    },
-    titleText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: colors.BLACK
-    },
     content: {
         padding: 20
     },

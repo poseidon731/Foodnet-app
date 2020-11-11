@@ -17,7 +17,8 @@ class AppContainer extends Component {
     render() {
         return (
             <NavigationContainer>
-                <StackApp.Navigator initialRouteName={this.props.logged ? 'App' : 'Splash'}>
+                {/* <StackApp.Navigator initialRouteName={'App'}> */}
+                    <StackApp.Navigator initialRouteName={this.props.logged ? 'App' : 'Splash'}>
                     <StackApp.Screen name='Splash' component={Splash} options={navOptionHandler} />
                     <StackApp.Screen name='Auth' component={AuthStack} options={navOptionHandler} />
                     <StackApp.Screen name='App' component={DrawerNavigator} options={navOptionHandler} />

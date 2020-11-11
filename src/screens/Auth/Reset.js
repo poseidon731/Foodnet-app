@@ -10,8 +10,8 @@ import Toast from 'react-native-simple-toast';
 import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
-import { isEmpty, validatePassword } from '@utils/functions';
-import { themes, colors } from '@constants/themes';
+import { isEmpty, validatePassword, validateLength } from '@utils/functions';
+import { common, colors } from '@constants/themes';
 import { BackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
@@ -27,8 +27,8 @@ export default SignIn = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        isEmpty(password) ? setErrorPassword('Password is required') : !validatePassword(password) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
-        isEmpty(confirm) ? setErrorConfirm('Confirm Password is required') : !validatePassword(confirm) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm('Password is not matched') : setErrorConfirm('');
+        (isEmpty(password) || !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        (isEmpty(confirm) || !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
     }, [password, confirm])
 
     const onReset = async () => {
@@ -51,24 +51,24 @@ export default SignIn = (props) => {
     }
 
     return (
-        <Container style={styles.container}>
+        <Container style={common.container}>
             <StatusBar />
             <Loading loading={loading} />
-            <Header style={styles.header}>
-                <Left style={{ paddingLeft: 10 }}>
+            <Header style={common.header}>
+                <View style={common.headerLeft}>
                     <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                        <BackIcon style={styles.backIcon} />
+                        <BackIcon style={common.headerLeftIcon} />
                     </TouchableOpacity>
-                </Left>
-                <Title>
-                    <Text style={styles.titleText}>{i18n.translate('Set a new password')}</Text>
-                </Title>
-                <Right style={{ paddingRight: 10 }} />
+                </View>
+                <View style={common.headerTitle}>
+                    <Text style={common.headerTitleText}>{i18n.translate('Set a new password')}</Text>
+                </View>
+                <View style={common.headerRight} />
             </Header>
             <Content style={styles.content}>
-                        <Text style={styles.descriptionText}>{i18n.translate('Enter your new password so you can use the app')}</Text>
-                <View style={[styles.inputView, { marginTop: 50 }]}>
-                    <Text style={[styles.labelText, { color: !isEmpty(errorPassword) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('Password')}</Text>
+                <Text style={styles.descriptionText}>{i18n.translate('Enter your new password so you can use the app')}</Text>
+                <View style={[styles.inputView, common.marginTop50]}>
+                    <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
@@ -80,7 +80,7 @@ export default SignIn = (props) => {
                         value={password}
                         error={errorPassword}
                         secureTextEntry={secureTextEntry1}
-                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorPassword) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        containerStyle={[styles.textContainer, !isEmpty(errorPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         renderRightAccessory={() => {
                             let name = secureTextEntry1 ? 'eye' : 'eye-off';
@@ -91,8 +91,8 @@ export default SignIn = (props) => {
                         onChangeText={(value) => setPassword(value)}
                     />
                 </View>
-                <View style={[styles.inputView, { marginTop: 50 }]}>
-                    <Text style={[styles.labelText, { color: !isEmpty(errorConfirm) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('New password again')}</Text>
+                <View style={[styles.inputView, common.marginTop50]}>
+                    <Text style={[styles.labelText, !isEmpty(errorConfirm) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
@@ -104,7 +104,7 @@ export default SignIn = (props) => {
                         value={confirm}
                         error={errorConfirm}
                         secureTextEntry={secureTextEntry2}
-                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorConfirm) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        containerStyle={[styles.textContainer, !isEmpty(errorConfirm) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         renderRightAccessory={() => {
                             let name = secureTextEntry2 ? 'eye' : 'eye-off';
@@ -115,42 +115,22 @@ export default SignIn = (props) => {
                         onChangeText={(value) => setConfirm(value)}
                     />
                 </View>
-                <View style={[styles.buttonView, { marginTop: 35 }]}>
+                <View style={[styles.buttonView, common.marginTop35]}>
                     <TouchableOpacity
                         disabled={isEmpty(password) || isEmpty(confirm) || errorPassword || errorConfirm ? true : false}
-                        style={[styles.button, {
-                            backgroundColor: isEmpty(password) || isEmpty(confirm) || errorPassword || errorConfirm ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
-                        }]}
+                        style={[common.button, (isEmpty(password) || isEmpty(confirm) || errorPassword || errorConfirm) ? common.backColorGrey : common.backColorYellow]}
                         onPress={() => onReset()}
                     >
-                        <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Save')}</Text>
+                        <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{height: 50}} />
+                <View style={common.height50} />
             </Content>
         </Container>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: colors.WHITE
-    },
-    backIcon: {
-        width: 25,
-        height: 25
-    },
-    titleText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: colors.BLACK
-    },
     content: {
         padding: 20
     },
@@ -197,16 +177,5 @@ const styles = StyleSheet.create({
     buttonView: {
         width: '100%',
         alignItems: 'center'
-    },
-    button: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 6,
-    },
-    buttonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
     },
 });

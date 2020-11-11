@@ -22,12 +22,14 @@
     "Please enter your email address to send us your new password": "Vă rugăm să introduceți adresa de e-mail pentru a ne trimite nouă parolă",
     "Save": "Salvare",
     "Confirm Verification Code": "Confirm Verification Code",
-    "A message with a verification code has been sent to your email for reset password Enter the code to continue": "A message with a verification code has been sent to your email for reset password. Enter the code to continue.",
+    "If you do not receive the email, you can resend it in x seconds": "Dacă nu primiți e-mailul, îl puteți trimite în x secunde",
     "Resend": "Resend",
     "Cancel": "Cancel",
 
     "Set a new password": " Setați o parolă nouă",
     "Enter your new password so you can use the app": "Introduceți nouă parolă pentru a putea utiliza aplicația",
+    "Email is not valid": "E-mailul nu este valid",
+    "The two passwords do not match": "Cele două parole nu se potrivesc",
     
     "Navigation": "Navigare",
     "My orders": "Comenzile mele",

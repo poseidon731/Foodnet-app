@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Container, Header, Title, Content, Left, Right } from 'native-base';
+import { Container, Header, Content } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -10,8 +10,8 @@ import Toast from 'react-native-simple-toast';
 import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
-import { isEmpty, validateEmail, validatePassword } from '@utils/functions';
-import { themes, colors } from '@constants/themes';
+import { isEmpty, validateEmail, validatePassword, validateLength } from '@utils/functions';
+import { common, colors } from '@constants/themes';
 import { BackIcon, GoogleIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
@@ -27,8 +27,8 @@ export default SignIn = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        isEmpty(email) ? setErrorEmail('Email is required') : !validateEmail(email) ? setErrorEmail('Email is not valid') : setErrorEmail('');
-        isEmpty(password) ? setErrorPassword('Password is required') : !validatePassword(password) ? setErrorPassword('Password should be 3+ characters') : setErrorPassword('');
+        (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
+        (isEmpty(password) || !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
     }, [email, password]);
 
     const onLogin = async () => {
@@ -51,23 +51,23 @@ export default SignIn = (props) => {
     }
 
     return (
-        <Container style={styles.container}>
+        <Container style={common.container}>
             <StatusBar />
             <Loading loading={loading} />
-            <Header style={styles.header}>
-                <Left style={{ paddingLeft: 10 }}>
+            <Header style={common.header}>
+                <View style={common.headerLeft}>
                     <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                        <BackIcon style={styles.backIcon} />
+                        <BackIcon style={common.headerLeftIcon} />
                     </TouchableOpacity>
-                </Left>
-                <Title>
-                    <Text style={styles.titleText}>{i18n.translate('Log in')}</Text>
-                </Title>
-                <Right style={{ paddingRight: 10 }} />
+                </View>
+                <View style={common.headerTitle}>
+                    <Text style={common.headerTitleText}>{i18n.translate('Log in')}</Text>
+                </View>
+                <View style={common.headerRight} />
             </Header>
             <Content style={styles.content}>
                 <View style={styles.inputView}>
-                    <Text style={[styles.labelText, { color: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('E-mail')}</Text>
+                    <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('E-mail')}</Text>
                     <TextField
                         keyboardType='email-address'
                         autoCapitalize='none'
@@ -77,16 +77,16 @@ export default SignIn = (props) => {
                         enablesReturnKeyAutomatically={true}
                         value={email}
                         error={errorEmail}
-                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         onChangeText={(value) => setEmail(value)}
                     />
                 </View>
-                <View style={[styles.inputView, { marginTop: 50 }]}>
+                <View style={[styles.inputView, common.marginTop50]}>
                     <View style={styles.labelView}>
-                        <Text style={[styles.labelText, { color: !isEmpty(errorEmail) ? colors.RED.PRIMARY : colors.BLACK }]}>{i18n.translate('Password')}</Text>
+                        <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Forgot')}>
-                            <Text style={[styles.labelText, { color: colors.YELLOW.PRIMARY }]}>{i18n.translate('Reset password')}</Text>
+                            <Text style={[styles.labelText, common.fontColorYellow]}>{i18n.translate('Reset password')}</Text>
                         </TouchableOpacity>
                     </View>
                     <TextField
@@ -99,7 +99,7 @@ export default SignIn = (props) => {
                         value={password}
                         error={errorPassword}
                         secureTextEntry={secureTextEntry}
-                        containerStyle={[styles.textContainer, { borderColor: !isEmpty(errorPassword) ? colors.RED.PRIMARY : colors.GREY.PRIMARY }]}
+                        containerStyle={[styles.textContainer, !isEmpty(errorPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         renderRightAccessory={() => {
                             let name = secureTextEntry ? 'eye' : 'eye-off';
@@ -119,48 +119,28 @@ export default SignIn = (props) => {
                     />
                     <Text style={styles.rememberText}>{i18n.translate('Keep me logged in')}</Text>
                 </TouchableOpacity>
-                <View style={[styles.buttonView, { marginTop: 35 }]}>
+                <View style={[styles.buttonView, common.marginTop35]}>
                     <TouchableOpacity
                         disabled={isEmpty(email) || isEmpty(password) || errorEmail || errorPassword ? true : false}
-                        style={[styles.button, {
-                            backgroundColor: isEmpty(email) || isEmpty(password) || errorEmail || errorPassword ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY
-                        }]}
+                        style={[common.button, (isEmpty(email) || isEmpty(password) || errorEmail || errorPassword) ? common.backColorGrey : common.backColorYellow]}
                         onPress={() => onLogin()}
                     >
-                        <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Log in')}</Text>
+                        <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Log in')}</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={[styles.buttonView, { marginTop: 25 }]}>
+                <View style={[styles.buttonView, common.marginTop25]}>
                     <TouchableOpacity style={styles.googleButton} onPress={() => alert(i18n.translate('Google Log in'))}>
-                        <GoogleIcon style={styles.logoIcon} />
-                        <Text style={[styles.googleButtonText, { color: '#444' }]}>{i18n.translate('Google Log in')}</Text>
+                        <GoogleIcon />
+                        <Text style={[styles.googleButtonText, common.fontColor444]}>{i18n.translate('Google Log in')}</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{height: 50}} />
+                <View style={common.height50} />
             </Content>
         </Container>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: colors.WHITE
-    },
-    backIcon: {
-        width: 25,
-        height: 25
-    },
-    titleText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: colors.BLACK
-    },
     content: {
         padding: 20
     },
@@ -205,17 +185,6 @@ const styles = StyleSheet.create({
     buttonView: {
         width: '100%',
         alignItems: 'center'
-    },
-    button: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderRadius: 6,
-    },
-    buttonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
     },
     googleButton: {
         flexDirection: 'row',

@@ -4,7 +4,7 @@ import Swiper from 'react-native-swiper';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Picker } from '@components';
-import { colors } from '@constants/themes';
+import { colors, common } from '@constants/themes';
 import { images, icons } from '@constants/assets';
 import { LogoIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -31,30 +31,30 @@ export default Splash = (props) => {
         setLang(false);
     }
     return (
-        <ImageBackground source={images.bgImage} style={styles.container}>
+        <ImageBackground source={images.bgImage} style={common.container}>
             <StatusBar />
             <TouchableOpacity style={styles.logoIcon} onPress={() => setLang(true)}>
                 <LogoIcon />
             </TouchableOpacity>
-            <View style={styles.titleView}>
+            <View style={styles.descriptionView}>
                 <Swiper
-                    dotStyle={{ marginBottom: -20, width: 10, height: 10, borderRadius: 5 }}
-                    activeDotStyle={{ marginBottom: -20, width: 20, height: 10, borderRadius: 5 }}
+                    dotStyle={[styles.dotStyle, common.width10]}
+                    activeDotStyle={[styles.dotStyle, common.width20]}
                     dotColor={colors.WHITE}
                     activeDotColor={colors.YELLOW.PRIMARY}
                 >
                     {titles.map((title, key) => (
-                        <Text key={key} style={styles.titleText}>{i18n.translate(title)}</Text>
+                        <Text key={key} style={styles.descriptionText}>{i18n.translate(title)}</Text>
                     ))}
                 </Swiper>
             </View>
             <View style={styles.bottomView}>
                 <View style={styles.buttonView}>
-                    <TouchableOpacity style={[styles.button, { backgroundColor: colors.YELLOW.PRIMARY }]} onPress={() => props.navigation.navigate('Auth', { screen: 'SignUp' })}>
-                        <Text style={[styles.buttonText, { color: colors.WHITE }]}>{i18n.translate('Registration')}</Text>
+                    <TouchableOpacity style={[styles.button, common.backColorYellow]} onPress={() => props.navigation.navigate('Auth', { screen: 'SignUp' })}>
+                        <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Registration')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, { backgroundColor: colors.WHITE }]} onPress={() => props.navigation.navigate('Auth', { screen: 'SignIn' })}>
-                        <Text style={[styles.buttonText, { color: colors.YELLOW.PRIMARY }]}>{i18n.translate('Log in')}</Text>
+                    <TouchableOpacity style={[styles.button, common.backColorWhite]} onPress={() => props.navigation.navigate('Auth', { screen: 'SignIn' })}>
+                        <Text style={[common.buttonText, common.fontColorYellow]}>{i18n.translate('Log in')}</Text>
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={() => props.navigation.navigate('App')}>
@@ -67,9 +67,6 @@ export default Splash = (props) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     bgImage: {
         width: wp('100%'),
         height: hp('100%'),
@@ -79,18 +76,23 @@ const styles = StyleSheet.create({
         left: 25,
         width: 100,
     },
-    titleView: {
+    descriptionView: {
         top: hp('50%') - 150,
         left: 25,
         height: 100,
     },
-    titleText: {
+    descriptionText: {
         width: 240,
         height: 72,
         fontSize: 24,
         fontWeight: 'bold',
         lineHeight: 36,
         color: colors.WHITE,
+    },
+    dotStyle: {
+        marginBottom: -20,
+        height: 10,
+        borderRadius: 5
     },
     bottomView: {
         position: 'absolute',
@@ -111,10 +113,6 @@ const styles = StyleSheet.create({
         width: wp('40%'),
         paddingVertical: 15,
         borderRadius: 6,
-    },
-    buttonText: {
-        fontSize: 14,
-        fontWeight: 'bold',
     },
     continueText: {
         fontSize: 16,

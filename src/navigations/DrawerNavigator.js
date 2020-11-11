@@ -10,8 +10,7 @@ import { navOptionHandler } from '@utils/functions';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { deleteToken } from '@modules/reducers/auth/actions';
-import { themes, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
+import { common, colors } from '@constants/themes';
 import { InboxIcon, OrderIcon, ProfileIcon, CouponIcon, LocationIcon, LanguageIcon, ServiceIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
@@ -40,20 +39,20 @@ const DrawerContent = (props) => {
     return (
         <Container style={styles.container}>
             <StatusBar />
-            <Header style={styles.header}>
-                <Left style={{ paddingLeft: 10 }}>
+            <Header style={common.header}>
+                <View style={common.headerLeft}>
                     <TouchableOpacity onPress={() => props.navigation.closeDrawer()}>
                         <Icon type='ionicon' name='ios-close' size={30} color={colors.YELLOW.PRIMARY} />
                     </TouchableOpacity>
-                </Left>
-                <Title>
-                    <Text style={styles.titleText}>{i18n.translate('Navigation')}</Text>
-                </Title>
-                <Right style={{ paddingRight: 10 }}>
+                </View>
+                <View style={common.headerTitle}>
+                    <Text style={common.headerTitleText}>{i18n.translate('Home')}</Text>
+                </View>
+                <View style={common.headerRight}>
                     <TouchableOpacity onPress={() => alert('Inbox')}>
                         <InboxIcon />
                     </TouchableOpacity>
-                </Right>
+                </View>
             </Header>
             <Content style={styles.content}>
                 <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
