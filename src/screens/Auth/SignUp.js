@@ -106,7 +106,7 @@ export default SignUp = (props) => {
                     />
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
-                    <Text style={[styles.labelText, isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
+                    <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     inputContainer: {
-        marginTop: -20,
+        marginTop: -10,
         borderWidth: 0
     },
     rememberMe: {

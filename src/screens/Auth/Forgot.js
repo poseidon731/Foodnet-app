@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     inputContainer: {
-        marginTop: -20,
+        marginTop: -10,
         borderWidth: 0
     },
     countView: {
