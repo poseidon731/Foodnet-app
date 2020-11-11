@@ -18,12 +18,16 @@ import i18n from '@utils/i18n';
 export default SignUp = (props) => {
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState('');
+    const [visitName, setVisitName] = useState(false);
     const [errorName, setErrorName] = useState('');
     const [email, setEmail] = useState('');
+    const [visitEmail, setVisitEmail] = useState(false);
     const [errorEmail, setErrorEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [visitPassword, setVisitPassword] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
     const [confirm, setConfirm] = useState('');
+    const [visitConfirm, setVisitConfirm] = useState(false);
     const [errorConfirm, setErrorConfirm] = useState('');
     const [secureTextEntry1, setSecureTextEntry1] = useState(true);
     const [secureTextEntry2, setSecureTextEntry2] = useState(true);
@@ -33,11 +37,11 @@ export default SignUp = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        (isEmpty(name) || !validateName(name)) ? setErrorName('Name is not valid') : setErrorName('');
-        (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-        (isEmpty(password) ||!validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
-        (isEmpty(confirm) || !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
-    }, [name, email, password, confirm]);
+        visitName && (isEmpty(name) || !validateName(name)) ? setErrorName('Name is not valid') : setErrorName('');
+        visitEmail && (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
+        visitPassword && (isEmpty(password) || !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        visitConfirm && (isEmpty(confirm) || !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
+    }, [name, email, password, confirm, visitName, visitEmail, visitPassword, visitConfirm]);
 
     const onSignup = async () => {
         setLoading(true);
@@ -86,7 +90,10 @@ export default SignUp = (props) => {
                         error={errorName}
                         containerStyle={[styles.textContainer, !isEmpty(errorName) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
-                        onChangeText={(value) => setName(value)}
+                        onChangeText={(value) => {
+                            setName(value);
+                            setVisitName(true);
+                        }}
                     />
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
@@ -102,7 +109,10 @@ export default SignUp = (props) => {
                         error={errorEmail}
                         containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
-                        onChangeText={(value) => setEmail(value)}
+                        onChangeText={(value) => {
+                            setEmail(value);
+                            setVisitEmail(true);
+                        }}
                     />
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
@@ -126,7 +136,10 @@ export default SignUp = (props) => {
                                 <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry1(!secureTextEntry1)} />
                             )
                         }}
-                        onChangeText={(value) => setPassword(value)}
+                        onChangeText={(value) => {
+                            setPassword(value);
+                            setVisitPassword(true);
+                        }}
                     />
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
@@ -150,7 +163,10 @@ export default SignUp = (props) => {
                                 <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry2(!secureTextEntry2)} />
                             )
                         }}
-                        onChangeText={(value) => setConfirm(value)}
+                        onChangeText={(value) => {
+                            setConfirm(value);
+                            setVisitConfirm(true);
+                        }}
                     />
                 </View>
                 <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
@@ -222,7 +238,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     inputContainer: {
-        marginTop: -10,
+        marginTop: -20,
         borderWidth: 0
     },
     rememberMe: {

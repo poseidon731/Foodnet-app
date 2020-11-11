@@ -19,7 +19,8 @@ import i18n from '@utils/i18n';
 export default Forgot = (props) => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
-    const [errorEmail, setErrorEmail] = useState(false);
+    const [visitEmail, setVisitEmail] = useState(false);
+    const [errorEmail, setErrorEmail] = useState('');
     const [visible, setVisible] = useState(false);
     const [resend, setResend] = useState(false);
     const [code, setCode] = useState(0);
@@ -27,8 +28,8 @@ export default Forgot = (props) => {
     // const dispatch = useDispatch();
 
     useEffect(() => {
-        (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-    }, [email]);
+        visitEmail && (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
+    }, [email, visitEmail]);
 
     const onVerification = async () => {
         setLoading(true);
@@ -86,7 +87,10 @@ export default Forgot = (props) => {
                                 error={errorEmail}
                                 containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                                 inputContainerStyle={styles.inputContainer}
-                                onChangeText={(value) => setEmail(value)}
+                                onChangeText={(value) => {
+                                    setEmail(value);
+                                    setVisitEmail(true);
+                                }}
                             />
                         </View>
                         <View style={[styles.buttonView, common.marginTop50]}>
@@ -102,7 +106,7 @@ export default Forgot = (props) => {
                     <Fragment>
                         <View style={styles.inputView}>
                             <Text style={[styles.labelText, common.width100P]}>{i18n.translate('Confirm Verification Code')}</Text>
-                            <Text style={styles.confirmText}>{i18n.translate('If you do not receive the email, you can resend it in x seconds')}</Text>
+                            <Text style={styles.confirmText}>{i18n.translate('If you do not receive the email, you can resend it in 45 seconds')}</Text>
                             <CodeInput
                                 codeLength={6}
                                 size={50}
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     inputContainer: {
-        marginTop: -10,
+        marginTop: -20,
         borderWidth: 0
     },
     countView: {

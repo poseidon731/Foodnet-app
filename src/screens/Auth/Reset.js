@@ -18,18 +18,20 @@ import i18n from '@utils/i18n';
 export default SignIn = (props) => {
     const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState('');
-    const [errorPassword, setErrorPassword] = useState(false);
+    const [visitPassword, setVisitPassword] = useState(false);
+    const [errorPassword, setErrorPassword] = useState('');
     const [confirm, setConfirm] = useState('');
-    const [errorConfirm, setErrorConfirm] = useState(false);
+    const [visitConfirm, setVisitConfirm] = useState(false);
+    const [errorConfirm, setErrorConfirm] = useState('');
     const [secureTextEntry1, setSecureTextEntry1] = useState(true);
     const [secureTextEntry2, setSecureTextEntry2] = useState(true);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        (isEmpty(password) || !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
-        (isEmpty(confirm) || !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
-    }, [password, confirm])
+        visitPassword && (isEmpty(password) || !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        visitConfirm && (isEmpty(confirm) || !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
+    }, [password, confirm, visitPassword, visitConfirm])
 
     const onReset = async () => {
         setLoading(true);
@@ -88,7 +90,10 @@ export default SignIn = (props) => {
                                 <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry1(!secureTextEntry1)} />
                             )
                         }}
-                        onChangeText={(value) => setPassword(value)}
+                        onChangeText={(value) => {
+                            setPassword(value);
+                            setVisitPassword(true);
+                        }}
                     />
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
@@ -112,7 +117,10 @@ export default SignIn = (props) => {
                                 <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry2(!secureTextEntry2)} />
                             )
                         }}
-                        onChangeText={(value) => setConfirm(value)}
+                        onChangeText={(value) => {
+                            setConfirm(value);
+                            setVisitConfirm(true);
+                        }}
                     />
                 </View>
                 <View style={[styles.buttonView, common.marginTop35]}>
@@ -171,7 +179,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     inputContainer: {
-        marginTop: -10,
+        marginTop: -20,
         borderWidth: 0
     },
     buttonView: {

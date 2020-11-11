@@ -18,8 +18,10 @@ import i18n from '@utils/i18n';
 export default SignIn = (props) => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
+    const [visitEmail, setVisitEmail] = useState(false);
     const [errorEmail, setErrorEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [visitPassword, setVisitPassword] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
     const [secureTextEntry, setSecureTextEntry] = useState(true);
     const [rememberMe, setRememberMe] = useState(false);
@@ -27,9 +29,9 @@ export default SignIn = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-        (isEmpty(password) || !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
-    }, [email, password]);
+        visitEmail && (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
+        visitPassword && (isEmpty(password) || !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+    }, [email, password, visitEmail, visitPassword]);
 
     const onLogin = async () => {
         setLoading(true);
@@ -79,7 +81,10 @@ export default SignIn = (props) => {
                         error={errorEmail}
                         containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
-                        onChangeText={(value) => setEmail(value)}
+                        onChangeText={(value) => {
+                            setEmail(value);
+                            setVisitEmail(true);
+                        }}
                     />
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
@@ -107,7 +112,10 @@ export default SignIn = (props) => {
                                 <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry(!secureTextEntry)} />
                             )
                         }}
-                        onChangeText={(value) => setPassword(value)}
+                        onChangeText={(value) => {
+                            setPassword(value);
+                            setVisitPassword(true);
+                        }}
                     />
                 </View>
                 <TouchableOpacity style={styles.rememberMe} onPress={() => setRememberMe(!rememberMe)}>
@@ -168,7 +176,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     inputContainer: {
-        marginTop: -10,
+        marginTop: -20,
         borderWidth: 0
     },
     rememberMe: {
