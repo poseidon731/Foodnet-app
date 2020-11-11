@@ -28,7 +28,7 @@ export default Forgot = (props) => {
     // const dispatch = useDispatch();
 
     useEffect(() => {
-        visitEmail && (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
+        (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
     }, [email, visitEmail]);
 
     const onVerification = async () => {

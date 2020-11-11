@@ -37,10 +37,10 @@ export default SignUp = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        visitName && (isEmpty(name) || !validateName(name)) ? setErrorName('Name is not valid') : setErrorName('');
-        visitEmail && (isEmpty(email) || !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-        visitPassword && (isEmpty(password) || !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
-        visitConfirm && (isEmpty(confirm) || !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
+        (visitName && isEmpty(name)) || (visitName && !validateName(name)) ? setErrorName('Name is not valid') : setErrorName('');
+        (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
+        (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
     }, [name, email, password, confirm, visitName, visitEmail, visitPassword, visitConfirm]);
 
     const onSignup = async () => {
