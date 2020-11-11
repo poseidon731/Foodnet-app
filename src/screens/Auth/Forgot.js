@@ -69,7 +69,7 @@ export default Forgot = (props) => {
                 <View style={common.headerRight} />
             </Header>
             <Content style={styles.content}>
-                {visible ?
+                {!visible ?
                     <Fragment>
                         <Text style={styles.descriptionText}>{i18n.translate('Please enter your email address to send us your new password')}</Text>
                         <View style={styles.inputView}>
