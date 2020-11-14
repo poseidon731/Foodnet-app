@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Container, Header, Title, Content, Left, Right } from 'native-base';
+import { Container, Header, Content } from 'native-base';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import Toast from 'react-native-simple-toast';
 import { deleteToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { isEmpty } from '@utils/functions';
@@ -13,10 +12,9 @@ import { common, colors } from '@constants/themes';
 import i18n from '@utils/i18n';
 
 export default Home = (props) => {
-    const [loading, setLoading] = useState(false);
-
-    const token = useSelector(state => state.auth.token);
     // const dispatch = useDispatch();
+    const token = useSelector(state => state.auth.token);
+    const city = useSelector(state => state.auth.city);
 
     return (
         <Container style={common.container}>
@@ -28,7 +26,7 @@ export default Home = (props) => {
                     </TouchableOpacity>
                 </View>
                 <View style={common.headerTitle}>
-                    <Text style={common.headerTitleText}>{i18n.translate('Home')}</Text>
+                    <Text style={common.headerTitleText}>{city}</Text>
                 </View>
                 <View style={common.headerRight} />
             </Header>

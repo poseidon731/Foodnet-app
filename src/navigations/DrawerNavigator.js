@@ -15,7 +15,7 @@ import { InboxIcon, OrderIcon, ProfileIcon, CouponIcon, LocationIcon, LanguageIc
 import i18n from '@utils/i18n';
 
 const Drawer = createDrawerNavigator();
-export default function DrawerNavigator() {
+export default DrawerNavigator = () => {
     return (
         <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} drawerStyle={{ width: wp('100%') }}>
             <Drawer.Screen name="Home" component={HomeStack} options={navOptionHandler} />

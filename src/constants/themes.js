@@ -52,6 +52,12 @@ export const common = StyleSheet.create({
         flex: 1,
     },
 
+    shown: {
+        display: 'flex'
+    },
+    hidden: {
+        display: 'none'
+    },
     width10: {
         width: 10
     },
@@ -172,5 +178,20 @@ export const common = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    
+    errorContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginTop: 10,
+        height: 50,
+        borderWidth: 1,
+        borderColor: colors.RED.PRIMARY,
+        borderRadius: 8,
+        backgroundColor: '#F0505030',
+        paddingLeft: 15,
+        paddingRight: 20,
     },
 });

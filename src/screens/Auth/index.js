@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, ImageBackground, View, Text, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { setCountry } from '@modules/reducers/auth/actions';
 import { Picker } from '@components';
+import { isEmpty } from '@utils/functions';
 import { colors, common } from '@constants/themes';
 import { images, icons } from '@constants/assets';
 import { LogoIcon } from '@constants/svgs';
@@ -22,14 +25,20 @@ const languages = [
 ];
 
 export default Splash = (props) => {
+    const dispatch = useDispatch();
+    const country = useSelector(state => state.auth.country);
+    const city = useSelector(state => state.auth.city);
+
     const [lang, setLang] = useState(false);
-    const [language, setLanguage] = useState({ value: 0, label: 'English', code: 'en' });
+    const [language, setLanguage] = useState(country === 'en' ? { value: 0, label: 'English', code: 'en' } : country === 'hu' ? { value: 1, label: 'Hungarian', code: 'hu' } : { value: 2, label: 'Romanian', code: 'ro' });
 
     const onLanguage = (language) => {
         i18n.setLocale(language.code);
         setLanguage(language);
         setLang(false);
+        dispatch(setCountry(language.code));
     }
+
     return (
         <ImageBackground source={images.bgImage} style={common.container}>
             <StatusBar />
@@ -57,7 +66,9 @@ export default Splash = (props) => {
                         <Text style={[common.buttonText, common.fontColorYellow]}>{i18n.translate('Log in')}</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => props.navigation.navigate('App')}>
+                <TouchableOpacity onPress={() => {
+                    isEmpty(city) ? props.navigation.navigate('Auth', { screen: 'Cities' }) : props.navigation.navigate('App');
+                }}>
                     <Text style={styles.continueText}>{i18n.translate('Continue without registration')}</Text>
                 </TouchableOpacity>
             </View>

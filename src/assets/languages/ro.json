@@ -1,36 +1,43 @@
 {
+    "No internet": "Fără internet",
+    "No internet connection": "Fără conexiune internet",
+    "Please connect to the internet and refresh": "Vă rugăm să vă conectați la internet și să reîmprospătați",
+    "Refresh": "Reîmprospăta",
     "Registration": "Înregistrare",
     "Log in": "Autentificare",
     "Continue without registration": "Voi continua fără înregistrare",
-
     "Reset password": "Ai uitat parola?",
     "Keep me logged in": "Ține-mă logat",
     "Password": "Parolă",
     "E-mail": "E-mail",
     "Foodnet coupon code shopping": "Foodnet voucher",
     "Google Log in": "Google autentificare",
-
     "Name": "Nume",
     "5+ characters": "5+ caractere",
     "Incorrect password": "Parola incorectă",
+    "New password": "New Password",
     "New password again": "Parola nouă din nou",
     "I accept the ": "Accept ",
     "Terms and Conditions": "Termenii și condițiile",
     "I subscribe to the newsletter": "Mă abonez la newsletter",
-    
     "Forgotten Password": "Parola uitată",
     "Please enter your email address to send us your new password": "Vă rugăm să introduceți adresa de e-mail pentru a ne trimite nouă parolă",
     "Save": "Salvare",
+    "Code verification": "Code verification",
     "Confirm Verification Code": "Confirm Verification Code",
     "If you do not receive the email, you can resend it in 45 seconds": "Dacă nu primiți e-mailul, îl puteți trimite în 45 secunde",
     "Resend": "Resend",
     "Cancel": "Cancel",
-
     "Set a new password": " Setați o parolă nouă",
     "Enter your new password so you can use the app": "Introduceți nouă parolă pentru a putea utiliza aplicația",
     "Email is not valid": "E-mailul nu este valid",
     "The two passwords do not match": "Cele două parole nu se potrivesc",
-    
+    "City selector": "Selector de oraș",
+    "Where are you looking for a restaurant?": "Unde cauți restaurant?",
+    "Restaurants from database with current language": "Restaurants from database with current language",
+    "Quick search:": "Căutare rapidă:",
+    "Set up": "Setează",
+    "You can edit the city later by clicking on the city in header": "Puteți edita orașul mai târziu făcând clic pe orașul din antet",
     "Navigation": "Navigare",
     "My orders": "Comenzile mele",
     "Profile": "Profile",
@@ -39,6 +46,5 @@
     "Language selector": "Serviciu clienți",
     "Customer service": "Customer service",
     "Log out": "Log out",
-
     "Home": "Home"
 }

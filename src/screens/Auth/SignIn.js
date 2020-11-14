@@ -6,16 +6,18 @@ import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import Toast from 'react-native-simple-toast';
 import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
-import { isEmpty, validateEmail, validatePassword, validateLength } from '@utils/functions';
+import { isEmpty, validateEmail, validateLength } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { BackIcon, GoogleIcon } from '@constants/svgs';
+import { BackIcon, GoogleIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default SignIn = (props) => {
+    const dispatch = useDispatch();
+    const city = useSelector(state => state.auth.city);
+
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [visitEmail, setVisitEmail] = useState(false);
@@ -25,10 +27,10 @@ export default SignIn = (props) => {
     const [errorPassword, setErrorPassword] = useState('');
     const [secureTextEntry, setSecureTextEntry] = useState(true);
     const [rememberMe, setRememberMe] = useState(false);
-
-    const dispatch = useDispatch();
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
+        setErrorMsg('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
         (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
     }, [email, password, visitEmail, visitPassword]);
@@ -40,15 +42,15 @@ export default SignIn = (props) => {
                 if (response.status == 200) {
                     setLoading(false);
                     dispatch(setToken(response.result[0].token));
-                    props.navigation.navigate('App');
+                    isEmpty(city) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
                 } else {
-                    Toast.show(response.msg, Toast.LONG);
-                    setTimeout(() => setLoading(false), 1000);
+                    setErrorMsg(response.msg);
+                    setLoading(false);
                 }
             })
             .catch((error) => {
-                Toast.show(error.message, Toast.LONG);
-                setTimeout(() => setLoading(false), 1000);
+                setErrorMsg(error.message);
+                setLoading(false);
             });
     }
 
@@ -68,6 +70,13 @@ export default SignIn = (props) => {
                 <View style={common.headerRight} />
             </Header>
             <Content style={styles.content}>
+                {!isEmpty(errorMsg) && (
+                    <View style={common.errorContainer}>
+                        <ErrorIcon />
+                        <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
+                        <View style={{ width: 30 }} />
+                    </View>
+                )}
                 <View style={styles.inputView}>
                     <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('E-mail')}</Text>
                     <TextField

@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Container, Header, Title, Content, Left, Right } from 'native-base';
+import { Container, Header, Content } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import Toast from 'react-native-simple-toast';
 import { setToken } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
-import { isEmpty, validatePassword, validateLength } from '@utils/functions';
+import { isEmpty, validateLength } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { BackIcon } from '@constants/svgs';
+import { BackIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default SignIn = (props) => {
+    const dispatch = useDispatch();
+    const city = useSelector(state => state.auth.city);
+    
     const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState('');
     const [visitPassword, setVisitPassword] = useState(false);
@@ -25,10 +27,10 @@ export default SignIn = (props) => {
     const [errorConfirm, setErrorConfirm] = useState('');
     const [secureTextEntry1, setSecureTextEntry1] = useState(true);
     const [secureTextEntry2, setSecureTextEntry2] = useState(true);
-
-    const dispatch = useDispatch();
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
+        setErrorMsg('');
         (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
         (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
     }, [password, confirm, visitPassword, visitConfirm])
@@ -40,15 +42,15 @@ export default SignIn = (props) => {
                 if (response.status == 200) {
                     setLoading(false);
                     dispatch(setToken(response.result[0].token));
-                    props.navigation.navigate('App');
+                    isEmpty(city) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
                 } else {
-                    Toast.show(response.msg, Toast.LONG);
-                    setTimeout(() => setLoading(false), 1000);
+                    setErrorMsg(response.msg);
+                    setLoading(false);
                 }
             })
             .catch((error) => {
-                Toast.show(error.message, Toast.LONG);
-                setTimeout(() => setLoading(false), 1000);
+                setErrorMsg(error.message);
+                setLoading(false);
             });
     }
 
@@ -58,7 +60,7 @@ export default SignIn = (props) => {
             <Loading loading={loading} />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
-                    <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => props.navigation.replace('Auth', { screen: 'SignIn' })}>
                         <BackIcon style={common.headerLeftIcon} />
                     </TouchableOpacity>
                 </View>
@@ -69,6 +71,13 @@ export default SignIn = (props) => {
             </Header>
             <Content style={styles.content}>
                 <Text style={styles.descriptionText}>{i18n.translate('Enter your new password so you can use the app')}</Text>
+                {!isEmpty(errorMsg) && (
+                    <View style={common.errorContainer}>
+                        <ErrorIcon />
+                        <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
+                        <View style={{ width: 30 }} />
+                    </View>
+                )}
                 <View style={[styles.inputView, common.marginTop50]}>
                     <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>

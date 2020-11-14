@@ -35,6 +35,12 @@ const AuthService = {
             return response.data;
         });
     },
+    cities: async function (country) {
+        return await axios.get(`/location-app/${country}`).then((response) => {
+            // console.log('###########################', response.data);
+            return response.data;
+        });
+    },
 }
 
 export default AuthService;

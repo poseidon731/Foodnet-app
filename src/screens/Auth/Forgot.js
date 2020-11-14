@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Content } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
-import Toast from 'react-native-simple-toast';
 import CodeInput from 'react-native-code-input';
 import CountDown from 'react-native-countdown-component';
 
@@ -13,10 +12,12 @@ import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateEmail } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { BackIcon } from '@constants/svgs';
+import { BackIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default Forgot = (props) => {
+    const dispatch = useDispatch();
+
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [visitEmail, setVisitEmail] = useState(false);
@@ -24,10 +25,10 @@ export default Forgot = (props) => {
     const [visible, setVisible] = useState(false);
     const [resend, setResend] = useState(false);
     const [code, setCode] = useState(0);
-
-    // const dispatch = useDispatch();
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
+        setErrorMsg('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
     }, [email, visitEmail]);
 
@@ -41,17 +42,22 @@ export default Forgot = (props) => {
                     setResend(false);
                     setCode(response.result[0].reset_code);
                 } else {
-                    Toast.show(response.msg, Toast.LONG);
-                    setTimeout(() => setLoading(false), 1000);
+                    setErrorMsg(response.msg);
+                    setLoading(false);
                 }
             })
             .catch((error) => {
-                Toast.show(error.message, Toast.LONG);
-                setTimeout(() => setLoading(false), 1000);
+                setErrorMsg(error.message);
+                setLoading(false);
             });
     }
     const onFinishCheckingCode = (value) => {
-        code == value ? props.navigation.navigate('Reset', { email, code }) : Toast.show('Incorrect Code', Toast.LONG);
+        if (code == value) {
+            props.navigation.navigate('Reset', { email, code })
+        } else {
+            setErrorMsg('Incorrect Code');
+            setLoading(false);
+        };
     }
 
     return (
@@ -73,6 +79,13 @@ export default Forgot = (props) => {
                 {!visible ?
                     <Fragment>
                         <Text style={styles.descriptionText}>{i18n.translate('Please enter your email address to send us your new password')}</Text>
+                        {!isEmpty(errorMsg) && (
+                            <View style={common.errorContainer}>
+                                <ErrorIcon />
+                                <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
+                                <View style={{ width: 30 }} />
+                            </View>
+                        )}
                         <View style={styles.inputView}>
                             <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('E-mail')}</Text>
                             <TextField
@@ -107,6 +120,13 @@ export default Forgot = (props) => {
                         <View style={styles.inputView}>
                             <Text style={[styles.labelText, common.width100P]}>{i18n.translate('Confirm Verification Code')}</Text>
                             <Text style={styles.confirmText}>{i18n.translate('If you do not receive the email, you can resend it in 45 seconds')}</Text>
+                            {!isEmpty(errorMsg) && (
+                                <View style={common.errorContainer}>
+                                    <ErrorIcon />
+                                    <Text style={{ fontWeight: '600', color: '#F05050' }}>{errorMsg}</Text>
+                                    <View style={{ width: 30 }} />
+                                </View>
+                            )}
                             <CodeInput
                                 codeLength={6}
                                 size={50}

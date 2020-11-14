@@ -106,7 +106,35 @@ const ServiceIcon = ({ style }) => (
             <Path d="M9.09003 8.99999C9.32513 8.33166 9.78918 7.7681 10.4 7.40912C11.0108 7.05015 11.7289 6.91893 12.4272 7.0387C13.1255 7.15848 13.7588 7.52151 14.2151 8.06352C14.6714 8.60552 14.9211 9.29151 14.92 9.99999C14.92 12 11.92 13 11.92 13" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             <Path d="M12 17H12.01" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </Svg>
+    </View>
+);
 
+const MapPinIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="#C6C6C6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="#C6C6C6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const ErrorIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#F05050" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 8V12" stroke="#F05050" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 16H12.01" stroke="#F05050" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const InternetIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" stroke="#F05050" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M24 16V24" stroke="#F05050" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M24 32H24.0196" stroke="#F05050" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
     </View>
 );
 
@@ -120,5 +148,8 @@ export {
     CouponIcon,
     LocationIcon,
     LanguageIcon,
-    ServiceIcon
+    ServiceIcon,
+    MapPinIcon,
+    ErrorIcon,
+    InternetIcon
 }
