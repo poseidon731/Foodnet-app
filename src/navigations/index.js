@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
@@ -15,22 +15,26 @@ export default AppContainer = () => {
     const { logged, country } = useSelector(state => state.auth);
     i18n.setLocale(country);
 
-    const unsubscribe = NetInfo.addEventListener(state => {
-        if (!state.isConnected && navigator && global.internet) {
-            global.internet = false;
-            navigator.dispatch(StackActions.push('Internet'));
+    useEffect(() => {
+        const handleEventListener = state => {
+            if (!state.isConnected && navigator && global.internet) {
+                global.internet = false;
+                navigator.dispatch(StackActions.push('Internet'));
+            }
+            if (state.isConnected && navigator && !global.internet) {
+                global.internet = true;
+                navigator.dispatch(StackActions.pop());
+            }
         }
-        if (state.isConnected && navigator && !global.internet) {
-            global.internet = true;
-            navigator.dispatch(StackActions.pop());
+        const unsubscribe = NetInfo.addEventListener(state => handleEventListener(state));
+        return () => {
+            unsubscribe();
         }
-    });
-
-    // unsubscribe();
+    }, []);
 
     return (
         <NavigationContainer ref={nav => navigator = nav}>
-            <StackApp.Navigator initialRouteName={logged ? 'App' : 'Splash'} screenOptions={{ ...TransitionPresets.SlideFromRightIOS }}>
+            <StackApp.Navigator initialRouteName={logged ? 'App' : 'Splash'} screenOptions={{ ...TransitionPresets.SlideFromRightIOS, gestureEnabled: false }}>
                 <StackApp.Screen name='Internet' component={Internet} options={{ headerShown: false, animationEnabled: false }} />
                 <StackApp.Screen name='Splash' component={Splash} options={navOptionHandler} />
                 <StackApp.Screen name='Auth' component={AuthStack} options={navOptionHandler} />

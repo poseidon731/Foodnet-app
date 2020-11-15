@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Platform, BackHandler, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Container, Header } from 'native-base';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -12,6 +12,7 @@ import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { MapPinIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
+import { act } from 'react-test-renderer';
 
 export default Cities = (props) => {
     const dispatch = useDispatch();
@@ -22,43 +23,33 @@ export default Cities = (props) => {
     const [visible, setVisible] = useState(false);
     const [cityName, setCityName] = useState('');
 
-    useEffect(async () => {
-        await AuthService.cities(country)
-            .then((response) => {
-                if (response.status == 200) {
+    useEffect(() => {
+        const handleBackButton = () => {
+            return true;
+        }
+        BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+        const getCities = async () => {
+            await AuthService.cities(country)
+                .then((response) => {
+                    if (response.status == 200) {
+                        setLoading(false);
+                        setCitys(response.locations);
+                        setCityName(response.locations[0].cities);
+                    } else {
+                        setLoading(false);
+                    }
+                })
+                .catch((error) => {
                     setLoading(false);
-                    setCitys(response.locations)
-                    setCityName(response.locations[0].cities)
-                } else {
-                    // setErrorMsg(response.msg);
-                    setLoading(false);
-                }
-            })
-            .catch((error) => {
-                // setErrorMsg(error.message);
-                setLoading(false);
-            });
+                });
+        }
+        getCities();
+
+        return () => {
+            console.log('cities will be unmount');
+        }
     }, []);
-
-    const onselect = (city) => {
-        setActive(false);
-        setCityName(city);
-    }
-
-    const onCity = (city) => {
-        !isEmpty(city) ? setCityName(city) : null;
-        setVisible(true);
-    }
-
-    const onSave = (city) => {
-        setVisible(false);
-        dispatch(setCity(city));
-        props.navigation.navigate('App');
-    }
-
-    const onCancel = () => {
-        setVisible(false);
-    }
 
     return (
         <Container style={common.container}>
@@ -84,7 +75,10 @@ export default Cities = (props) => {
                 {active ? (
                     <ScrollView style={styles.listView}>
                         {!isEmpty(citys) && citys.map((one, key) => (
-                            <TouchableOpacity key={key} style={styles.itemView} onPress={() => onselect(one.cities)}>
+                            <TouchableOpacity key={key} style={styles.itemView} onPress={() => {
+                                setActive(false);
+                                setCityName(one.cities);
+                            }}>
                                 <Text style={styles.itemText} numberOfLines={1}>{one.cities}</Text>
                             </TouchableOpacity>
                         ))}
@@ -95,13 +89,22 @@ export default Cities = (props) => {
                             <View style={styles.searchView}>
                                 {!isEmpty(citys) ? (
                                     <Fragment>
-                                        <TouchableOpacity onPress={() => onCity(citys[0].cities)}>
+                                        <TouchableOpacity onPress={() => {
+                                            setCityName(citys[0].cities);
+                                            setVisible(true);
+                                        }}>
                                             <Text style={styles.searchText}>{citys[0].cities}</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => onCity(citys[1].cities)}>
+                                        <TouchableOpacity onPress={() => {
+                                            setCityName(citys[1].cities);
+                                            setVisible(true);
+                                        }}>
                                             <Text style={styles.searchText}>{citys[1].cities}</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => onCity(citys[2].cities)}>
+                                        <TouchableOpacity onPress={() => {
+                                            setCityName(citys[2].cities);
+                                            setVisible(true);
+                                        }}>
                                             <Text style={styles.searchText}>{citys[2].cities}</Text>
                                         </TouchableOpacity>
                                     </Fragment>
@@ -112,26 +115,34 @@ export default Cities = (props) => {
 
             </View>
             <View style={styles.buttonView}>
-                <TouchableOpacity style={[common.button, common.backColorYellow]} onPress={() => onCity('')} >
+                <TouchableOpacity style={[common.button, common.backColorYellow]} onPress={() => {
+                    setVisible(false);
+                    dispatch(setCity(cityName));
+                    props.navigation.navigate('App');
+                }} >
                     <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
                 </TouchableOpacity>
             </View>
-            <SaveModal
-                visible={visible}
-                cityName={cityName}
-                onSave={() => onSave(cityName)}
-                onCancel={() => onCancel()} />
+            {visible ?
+                <SaveModal
+                    cityName={cityName}
+                    onSave={() => {
+                        setVisible(false);
+                        dispatch(setCity(cityName));
+                        props.navigation.navigate('App');
+                    }}
+                    onCancel={() => setVisible(false)} /> : null}
         </Container >
     );
 }
 
 const SaveModal = (props) => {
     return (
-        <View style={[styles.modalContainer, props.visible ? common.shown : common.hidden]}>
+        <View style={styles.modalContainer}>
             <View style={styles.overlay} />
             <View style={styles.modalView}>
                 <View style={styles.modalMain}>
-                    <Text style={styles.modalTitle}>{i18n.translate('Set up')} {props.cityName}?</Text>
+                    <Text style={styles.modalTitle}>{i18n.translate('Did you mean this city')}: {props.cityName}?</Text>
                     <Text style={styles.modalDescription}>{i18n.translate('You can edit the city later by clicking on the city in header')}</Text>
                 </View>
                 <TouchableOpacity style={styles.modalButton} onPress={props.onSave}>
@@ -236,11 +247,6 @@ const styles = StyleSheet.create({
         height: 200,
         backgroundColor: 'rgba(30, 30, 30, 0.75)',
         borderRadius: 14,
-        shadowColor: colors.BLACK,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.4,
-        shadowRadius: 1,
-        elevation: 1
     },
     modalMain: {
         justifyContent: 'center',

@@ -25,8 +25,9 @@ export default DrawerNavigator = () => {
 }
 
 const DrawerContent = (props) => {
-    const logged = useSelector(state => state.auth.logged);
     const dispatch = useDispatch();
+    const logged = useSelector(state => state.auth.logged);
+    
     const onLogout = () => {
         dispatch(deleteToken());
         props.navigation.reset({

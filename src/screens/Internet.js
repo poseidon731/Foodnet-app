@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-// import { useNetInfo } from "@react-native-community/netinfo";
-import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Container, Header, Content } from 'native-base';
+import React from 'react';
+import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
+import { Container, Header } from 'native-base';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setInternet } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -14,16 +11,6 @@ import { InternetIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default Internet = (props) => {
-    // const dispatch = useDispatch();
-    // const netInfo = useNetInfo();
-
-    // const onConnect = () => {
-    //     if (netInfo.isConnected) {
-    //         global.internet = true;
-    //         console.log('Connected Status: ', netInfo.isConnected, ' - ', global.internet);
-    //         props.navigation.pop();
-    //     }
-    // }
     return (
         <Container style={common.container}>
             <StatusBar />
@@ -38,10 +25,6 @@ export default Internet = (props) => {
                 <InternetIcon />
                 <Text style={styles.mainText}>{i18n.translate('No internet connection')}</Text>
                 <Text style={styles.subText}>{i18n.translate('Please connect to the internet and refresh')}</Text>
-
-                {/* <TouchableOpacity style={styles.button} onPress={() => onConnect()}>
-                    <Text style={[common.buttonText, common.fontColorYellow]}>{i18n.translate('Refresh')}</Text>
-                </TouchableOpacity> */}
                 <View style={common.height50} />
             </View>
         </Container>

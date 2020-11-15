@@ -6,7 +6,7 @@ import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setToken } from '@modules/reducers/auth/actions';
+import { setToken, setUser } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateName, validateEmail, validateLength } from '@utils/functions';
@@ -43,7 +43,7 @@ export default SignUp = (props) => {
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
         (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
         (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
-    }, [name, email, password, confirm, visitName, visitEmail, visitPassword, visitConfirm]);
+    }, [name, visitName, email, visitEmail, password, visitPassword, confirm, visitConfirm])
 
     const onSignup = async () => {
         setLoading(true);
@@ -52,15 +52,16 @@ export default SignUp = (props) => {
                 if (response.status == 201) {
                     setLoading(false);
                     dispatch(setToken(response.result[0].token));
-                    isEmpty(city) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
+                    dispatch(setUser({ email }));
+                    props.navigation.navigate('Cities');
                 } else {
-                    setErrorMsg(response.msg);
                     setLoading(false);
+                    setErrorMsg(i18n.translate(response.msg));
                 }
             })
             .catch((error) => {
-                setErrorMsg(error.message);
                 setLoading(false);
+                setErrorMsg(error.message);
             });
     }
 

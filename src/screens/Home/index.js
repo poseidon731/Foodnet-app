@@ -12,7 +12,7 @@ import { common, colors } from '@constants/themes';
 import i18n from '@utils/i18n';
 
 export default Home = (props) => {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const city = useSelector(state => state.auth.city);
 

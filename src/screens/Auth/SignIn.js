@@ -6,7 +6,7 @@ import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setToken } from '@modules/reducers/auth/actions';
+import { setToken, setUser } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateEmail, validateLength } from '@utils/functions';
@@ -17,6 +17,7 @@ import i18n from '@utils/i18n';
 export default SignIn = (props) => {
     const dispatch = useDispatch();
     const city = useSelector(state => state.auth.city);
+    const user = useSelector(state => state.auth.user);
 
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
@@ -33,24 +34,26 @@ export default SignIn = (props) => {
         setErrorMsg('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
         (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
-    }, [email, password, visitEmail, visitPassword]);
+    }, [email, visitEmail, password, visitPassword]);
 
     const onLogin = async () => {
         setLoading(true);
         await AuthService.login(email, password)
             .then((response) => {
                 if (response.status == 200) {
+                    var userEmail = user.email;
                     setLoading(false);
                     dispatch(setToken(response.result[0].token));
-                    isEmpty(city) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
+                    dispatch(setUser({ email }));
+                    (isEmpty(city) || email !== userEmail) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
                 } else {
-                    setErrorMsg(response.msg);
                     setLoading(false);
+                    setErrorMsg(i18n.translate(response.msg));
                 }
             })
             .catch((error) => {
-                setErrorMsg(error.message);
                 setLoading(false);
+                setErrorMsg(error.message);
             });
     }
 

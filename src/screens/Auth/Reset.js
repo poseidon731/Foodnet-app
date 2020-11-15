@@ -17,7 +17,7 @@ import i18n from '@utils/i18n';
 export default SignIn = (props) => {
     const dispatch = useDispatch();
     const city = useSelector(state => state.auth.city);
-    
+
     const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState('');
     const [visitPassword, setVisitPassword] = useState(false);
@@ -33,7 +33,7 @@ export default SignIn = (props) => {
         setErrorMsg('');
         (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
         (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
-    }, [password, confirm, visitPassword, visitConfirm])
+    }, [password, visitPassword, confirm, visitConfirm]);
 
     const onReset = async () => {
         setLoading(true);
@@ -44,13 +44,13 @@ export default SignIn = (props) => {
                     dispatch(setToken(response.result[0].token));
                     isEmpty(city) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
                 } else {
-                    setErrorMsg(response.msg);
                     setLoading(false);
+                    setErrorMsg(response.msg);
                 }
             })
             .catch((error) => {
-                setErrorMsg(error.message);
                 setLoading(false);
+                setErrorMsg(error.message);
             });
     }
 

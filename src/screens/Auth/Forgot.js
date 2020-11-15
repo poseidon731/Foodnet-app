@@ -42,21 +42,22 @@ export default Forgot = (props) => {
                     setResend(false);
                     setCode(response.result[0].reset_code);
                 } else {
-                    setErrorMsg(response.msg);
                     setLoading(false);
+                    setErrorMsg(i18n.translate(response.msg));
                 }
             })
             .catch((error) => {
-                setErrorMsg(error.message);
                 setLoading(false);
+                setErrorMsg(error.message);
             });
     }
+
     const onFinishCheckingCode = (value) => {
         if (code == value) {
             props.navigation.navigate('Reset', { email, code })
         } else {
-            setErrorMsg('Incorrect Code');
             setLoading(false);
+            setErrorMsg('Incorrect Code');
         };
     }
 
@@ -78,14 +79,15 @@ export default Forgot = (props) => {
             <Content style={styles.content}>
                 {!visible ?
                     <Fragment>
-                        <Text style={styles.descriptionText}>{i18n.translate('Please enter your email address to send us your new password')}</Text>
-                        {!isEmpty(errorMsg) && (
-                            <View style={common.errorContainer}>
-                                <ErrorIcon />
-                                <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
-                                <View style={{ width: 30 }} />
-                            </View>
-                        )}
+                        {isEmpty(errorMsg) ? (
+                            <Text style={styles.descriptionText}>{i18n.translate('Please enter your email address to send us your new password')}</Text>
+                        ) : (
+                                <View style={common.errorContainer}>
+                                    <ErrorIcon />
+                                    <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
+                                    <View style={{ width: 30 }} />
+                                </View>
+                            )}
                         <View style={styles.inputView}>
                             <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('E-mail')}</Text>
                             <TextField

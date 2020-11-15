@@ -6,11 +6,11 @@ import { NAME_PATTERN, EMAIL_PATTERN, PASSWORD_PATTERN, ALIAS_PATTERN, MOBILE_PA
 
 export const navOptionHandler = () => ({
     headerShown: false,
-    animationEnabled: true,
+    animationEnabled: true
 });
 
 export const validateName = (value) => {
-    if (NAME_PATTERN.test(value)) {
+    if (value.length >= 2) {
         return true;
     }
     return false;

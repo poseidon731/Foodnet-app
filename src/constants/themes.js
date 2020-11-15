@@ -56,7 +56,7 @@ export const common = StyleSheet.create({
         display: 'flex'
     },
     hidden: {
-        display: 'none'
+        display: 'none',
     },
     width10: {
         width: 10
