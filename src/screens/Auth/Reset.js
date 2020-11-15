@@ -87,7 +87,7 @@ export default SignIn = (props) => {
                         fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
-                        clearTextOnFocus={true}
+                        // clearTextOnFocus={true}
                         value={password}
                         error={errorPassword}
                         secureTextEntry={secureTextEntry1}

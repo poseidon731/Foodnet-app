@@ -10,6 +10,7 @@ import { navOptionHandler } from '@utils/functions';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { deleteToken } from '@modules/reducers/auth/actions';
+import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { InboxIcon, OrderIcon, ProfileIcon, CouponIcon, LocationIcon, LanguageIcon, ServiceIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -27,7 +28,8 @@ export default DrawerNavigator = () => {
 const DrawerContent = (props) => {
     const dispatch = useDispatch();
     const logged = useSelector(state => state.auth.logged);
-    
+    const city2 = useSelector(state => state.auth.city2);
+
     const onLogout = () => {
         dispatch(deleteToken());
         props.navigation.reset({
@@ -81,14 +83,21 @@ const DrawerContent = (props) => {
                     <Text style={styles.menuTitle}>{i18n.translate('Customer service')}</Text>
                 </TouchableOpacity>
             </Content>
-            {logged && (
+            {logged ? (
                 <Footer style={styles.header}>
                     <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
                         <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
                         <Text style={styles.menuTitle}>{i18n.translate('Log out')}</Text>
                     </TouchableOpacity>
                 </Footer>
-            )}
+            ) : (
+                    <Footer style={styles.header}>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
+                            <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
+                            <Text style={styles.menuTitle}>{i18n.translate('Log in or Registeration')}</Text>
+                        </TouchableOpacity>
+                    </Footer>
+                )}
         </Container>
     )
 }

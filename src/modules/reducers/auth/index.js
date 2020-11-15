@@ -3,6 +3,7 @@ import types from './types';
 const initialState = {
     country: 'en',
     city: '',
+    city2: '',
     logged: false,
     token: null,
     user: {
@@ -22,6 +23,11 @@ export default function authReducer(state = initialState, action) {
                 ...state,
                 city: action.payload,
             };
+        case types.SET_CITY2:
+            return {
+                ...state,
+                city2: action.payload,
+            };
         case types.SET_TOKEN:
             return {
                 ...state,
@@ -39,7 +45,7 @@ export default function authReducer(state = initialState, action) {
                 ...state,
                 user: action.payload,
             };
-            
+
         case types.SIGN_OUT:
             return {
                 ...state,

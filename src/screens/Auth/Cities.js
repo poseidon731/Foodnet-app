@@ -5,18 +5,18 @@ import { Container, Header } from 'native-base';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setCity } from '@modules/reducers/auth/actions';
+import { setCity, setCity2 } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { MapPinIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
-import { act } from 'react-test-renderer';
 
 export default Cities = (props) => {
     const dispatch = useDispatch();
     const country = useSelector(state => state.auth.country);
+    const token = useSelector(state => state.auth.token);
     const [loading, setLoading] = useState(false);
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
@@ -117,7 +117,7 @@ export default Cities = (props) => {
             <View style={styles.buttonView}>
                 <TouchableOpacity style={[common.button, common.backColorYellow]} onPress={() => {
                     setVisible(false);
-                    dispatch(setCity(cityName));
+                    isEmpty(token) ?  dispatch(setCity2(cityName)) : dispatch(setCity(cityName));
                     props.navigation.navigate('App');
                 }} >
                     <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
@@ -128,7 +128,7 @@ export default Cities = (props) => {
                     cityName={cityName}
                     onSave={() => {
                         setVisible(false);
-                        dispatch(setCity(cityName));
+                        isEmpty(token) ?  dispatch(setCity2(cityName)) : dispatch(setCity(cityName));
                         props.navigation.navigate('App');
                     }}
                     onCancel={() => setVisible(false)} /> : null}

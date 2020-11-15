@@ -15,6 +15,7 @@ export default Home = (props) => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const city = useSelector(state => state.auth.city);
+    const city2 = useSelector(state => state.auth.city2);
 
     return (
         <Container style={common.container}>
@@ -26,7 +27,7 @@ export default Home = (props) => {
                     </TouchableOpacity>
                 </View>
                 <View style={common.headerTitle}>
-                    <Text style={common.headerTitleText}>{city}</Text>
+                    <Text style={common.headerTitleText}>{isEmpty(token) ? city2 : city}</Text>
                 </View>
                 <View style={common.headerRight} />
             </Header>

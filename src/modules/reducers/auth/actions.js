@@ -8,6 +8,10 @@ export const setCity = (data) => ({
     type: types.SET_CITY,
     payload: data,
 });
+export const setCity2 = (data) => ({
+    type: types.SET_CITY2,
+    payload: data,
+});
 export const setToken = (data) => ({
     type: types.SET_TOKEN,
     payload: data,
