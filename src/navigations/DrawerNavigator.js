@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Container, Header, Title, Content, Left, Right, Footer } from 'native-base';
+import { Container, Header, Content, Footer } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import HomeStack from '@navigations/StackNavigators/HomeStackNavigator';
-import { navOptionHandler } from '@utils/functions';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { deleteToken } from '@modules/reducers/auth/actions';
-import { isEmpty } from '@utils/functions';
+import { deleteUser } from '@modules/reducers/auth/actions';
+import { isEmpty, navOptionHandler } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { InboxIcon, OrderIcon, ProfileIcon, CouponIcon, LocationIcon, LanguageIcon, ServiceIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -20,24 +19,22 @@ export default DrawerNavigator = () => {
     return (
         <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} drawerStyle={{ width: wp('100%') }}>
             <Drawer.Screen name="Home" component={HomeStack} options={navOptionHandler} />
-            {/* <Drawer.Screen name="Logout" component={Logout} /> */}
         </Drawer.Navigator>
     )
 }
 
 const DrawerContent = (props) => {
     const dispatch = useDispatch();
-    const logged = useSelector(state => state.auth.logged);
-    const city2 = useSelector(state => state.auth.city2);
+    const { logged, user } = useSelector(state => state.auth);
 
     const onLogout = () => {
-        dispatch(deleteToken());
-        props.navigation.reset({
-            index: 1,
-            routes: [
-                { name: 'Splash' }
-            ]
-        })
+        dispatch(deleteUser({
+            token: null,
+            email: user.email,
+            city: user.city,
+            cityStatus: false
+        }));
+        props.navigation.reset({ index: 1, routes: [{ name: 'Splash' }] })
     }
     return (
         <Container style={styles.container}>

@@ -5,14 +5,14 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import NetInfo from '@react-native-community/netinfo';
 import i18n from '@utils/i18n';
 
-import { Internet, Splash } from '@screens';
+import { Internet, Splash, Cities } from '@screens';
 import DrawerNavigator from '@navigations/DrawerNavigator';
 import AuthStack from '@navigations/StackNavigators/AuthStackNavigator';
 import { navOptionHandler, isEmpty } from '@utils/functions';
 
 const StackApp = createStackNavigator();
 export default AppContainer = () => {
-    const { logged, country, city2 } = useSelector(state => state.auth);
+    const { logged, country, city, user } = useSelector(state => state.auth);
     i18n.setLocale(country);
 
     useEffect(() => {
@@ -34,10 +34,13 @@ export default AppContainer = () => {
 
     return (
         <NavigationContainer ref={nav => navigator = nav}>
-            <StackApp.Navigator initialRouteName={logged || !isEmpty(city2) ? 'App' : 'Splash'} screenOptions={{ ...TransitionPresets.SlideFromRightIOS, gestureEnabled: false }}>
+            <StackApp.Navigator
+                initialRouteName={user.cityStatus ? 'Cities' : (logged || !isEmpty(city)) ? 'App' : 'Splash'}
+                screenOptions={{ gestureEnabled: false, ...TransitionPresets.SlideFromRightIOS }}>
                 <StackApp.Screen name='Internet' component={Internet} options={{ headerShown: false, animationEnabled: false }} />
                 <StackApp.Screen name='Splash' component={Splash} options={navOptionHandler} />
                 <StackApp.Screen name='Auth' component={AuthStack} options={navOptionHandler} />
+                <StackApp.Screen name='Cities' component={Cities} options={navOptionHandler} />
                 <StackApp.Screen name='App' component={DrawerNavigator} options={navOptionHandler} />
             </StackApp.Navigator>
         </NavigationContainer>

@@ -26,8 +26,7 @@ const languages = [
 
 export default Splash = (props) => {
     const dispatch = useDispatch();
-    const country = useSelector(state => state.auth.country);
-    const city2 = useSelector(state => state.auth.city2);
+    const { country, city } = useSelector(state => state.auth);
 
     const [lang, setLang] = useState(false);
     const [language, setLanguage] = useState(country === 'en' ? { value: 0, label: 'English', code: 'en' } : country === 'hu' ? { value: 1, label: 'Hungarian', code: 'hu' } : { value: 2, label: 'Romanian', code: 'ro' });
@@ -67,7 +66,7 @@ export default Splash = (props) => {
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={() => {
-                    isEmpty(city2) ? props.navigation.navigate('Auth', { screen: 'Cities' }) : props.navigation.navigate('App');
+                    isEmpty(city) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
                 }}>
                     <Text style={styles.continueText}>{i18n.translate('Continue without registration')}</Text>
                 </TouchableOpacity>

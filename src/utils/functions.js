@@ -6,7 +6,8 @@ import { NAME_PATTERN, EMAIL_PATTERN, PASSWORD_PATTERN, ALIAS_PATTERN, MOBILE_PA
 
 export const navOptionHandler = () => ({
     headerShown: false,
-    animationEnabled: true
+    animationEnabled: true,
+    // gestureEnabled: true
 });
 
 export const validateName = (value) => {

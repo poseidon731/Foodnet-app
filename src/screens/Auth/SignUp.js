@@ -6,7 +6,7 @@ import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setToken, setUser } from '@modules/reducers/auth/actions';
+import { setUser } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateName, validateEmail, validateLength } from '@utils/functions';
@@ -16,7 +16,6 @@ import i18n from '@utils/i18n';
 
 export default SignUp = (props) => {
     const dispatch = useDispatch();
-    const city = useSelector(state => state.auth.city);
 
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState('');
@@ -51,8 +50,12 @@ export default SignUp = (props) => {
             .then((response) => {
                 if (response.status == 201) {
                     setLoading(false);
-                    dispatch(setToken(response.result[0].token));
-                    dispatch(setUser({ email }));
+                    dispatch(setUser({
+                        token: response.result[0].token,
+                        email,
+                        city: '',
+                        cityStatus: true
+                    }));
                     props.navigation.navigate('Cities');
                 } else {
                     setLoading(false);

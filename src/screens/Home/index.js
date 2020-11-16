@@ -13,9 +13,7 @@ import i18n from '@utils/i18n';
 
 export default Home = (props) => {
     const dispatch = useDispatch();
-    const token = useSelector(state => state.auth.token);
-    const city = useSelector(state => state.auth.city);
-    const city2 = useSelector(state => state.auth.city2);
+    const { city, user } = useSelector(state => state.auth);
 
     return (
         <Container style={common.container}>
@@ -27,13 +25,13 @@ export default Home = (props) => {
                     </TouchableOpacity>
                 </View>
                 <View style={common.headerTitle}>
-                    <Text style={common.headerTitleText}>{isEmpty(token) ? city2 : city}</Text>
+                    <Text style={common.headerTitleText}>{isEmpty(user.token) ? city : user.city}</Text>
                 </View>
                 <View style={common.headerRight} />
             </Header>
             <Content style={styles.content}>
                 <View style={styles.inputView}>
-                    <Text style={styles.labelText}>{`Token:${token}`}</Text>
+                    <Text style={styles.labelText}>{`Token:${user.token}`}</Text>
                 </View>
             </Content>
         </Container>

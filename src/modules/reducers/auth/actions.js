@@ -8,24 +8,11 @@ export const setCity = (data) => ({
     type: types.SET_CITY,
     payload: data,
 });
-export const setCity2 = (data) => ({
-    type: types.SET_CITY2,
-    payload: data,
-});
-export const setToken = (data) => ({
-    type: types.SET_TOKEN,
-    payload: data,
-});
-export const deleteToken = (data) => ({
-    type: types.DELETE_TOKEN,
-    payload: data,
-});
 export const setUser = (data) => ({
     type: types.SET_USER,
     payload: data,
 });
-
-export const signOut = (data) => ({
-    type: types.SIGN_OUT,
-    payload: data
+export const deleteUser = (data) => ({
+    type: types.DELETE_USER,
+    payload: data,
 });

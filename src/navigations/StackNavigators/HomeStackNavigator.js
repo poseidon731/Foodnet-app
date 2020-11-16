@@ -8,9 +8,7 @@ const StackHome = createStackNavigator();
 export default HomeStack = () => {
   return (
     <StackHome.Navigator initialRouteName='Home'
-      screenOptions={{
-        ...TransitionPresets.SlideFromRightIOS
-      }}>
+      screenOptions={{...TransitionPresets.SlideFromRightIOS}}>
       <StackHome.Screen name='Home' component={Home} options={navOptionHandler} />
     </StackHome.Navigator>
   )

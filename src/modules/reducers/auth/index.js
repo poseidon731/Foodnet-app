@@ -3,11 +3,12 @@ import types from './types';
 const initialState = {
     country: 'en',
     city: '',
-    city2: '',
     logged: false,
-    token: null,
     user: {
-        email: ''
+        token: null,
+        email: '',
+        city: '',
+        cityStatus: false
     },
 };
 
@@ -23,35 +24,20 @@ export default function authReducer(state = initialState, action) {
                 ...state,
                 city: action.payload,
             };
-        case types.SET_CITY2:
-            return {
-                ...state,
-                city2: action.payload,
-            };
-        case types.SET_TOKEN:
-            return {
-                ...state,
-                logged: true,
-                token: action.payload,
-            };
-        case types.DELETE_TOKEN:
-            return {
-                ...state,
-                logged: false,
-                token: null,
-            };
         case types.SET_USER:
             return {
                 ...state,
+                logged: true,
                 user: action.payload,
             };
-
-        case types.SIGN_OUT:
+        case types.DELETE_USER:
             return {
                 ...state,
                 logged: false,
-                user: initialState
+                user: action.payload,
             };
+
+            
         default:
             return state;
     }

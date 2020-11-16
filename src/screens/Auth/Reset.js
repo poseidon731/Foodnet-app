@@ -6,7 +6,7 @@ import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setToken } from '@modules/reducers/auth/actions';
+import { setUser } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateLength } from '@utils/functions';
@@ -16,7 +16,7 @@ import i18n from '@utils/i18n';
 
 export default SignIn = (props) => {
     const dispatch = useDispatch();
-    const city = useSelector(state => state.auth.city);
+    const { user } = useSelector(state => state.auth);
 
     const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState('');
@@ -41,8 +41,25 @@ export default SignIn = (props) => {
             .then((response) => {
                 if (response.status == 200) {
                     setLoading(false);
-                    dispatch(setToken(response.result[0].token));
-                    isEmpty(city) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
+                    var userEmail = user.email;
+                    var userCity = user.city;
+                    if(isEmpty(userCity) || props.route.params.email !== userEmail) {
+                        dispatch(setUser({
+                            token: response.result[0].token,
+                            email: props.route.params.email,
+                            city: userCity,
+                            cityStatus: true
+                        }));
+                        props.navigation.navigate('Cities') 
+                    } else {
+                        dispatch(setUser({
+                            token: response.result[0].token,
+                            email: props.route.params.email,
+                            city: userCity,
+                            cityStatus: false
+                        }));
+                         props.navigation.navigate('App');
+                    }
                 } else {
                     setLoading(false);
                     setErrorMsg(response.msg);

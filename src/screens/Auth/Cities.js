@@ -5,7 +5,7 @@ import { Container, Header } from 'native-base';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setCity, setCity2 } from '@modules/reducers/auth/actions';
+import { setCity, setUser } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
@@ -15,8 +15,8 @@ import i18n from '@utils/i18n';
 
 export default Cities = (props) => {
     const dispatch = useDispatch();
-    const country = useSelector(state => state.auth.country);
-    const token = useSelector(state => state.auth.token);
+    const { country, user } = useSelector(state => state.auth);
+
     const [loading, setLoading] = useState(false);
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
@@ -117,7 +117,12 @@ export default Cities = (props) => {
             <View style={styles.buttonView}>
                 <TouchableOpacity style={[common.button, common.backColorYellow]} onPress={() => {
                     setVisible(false);
-                    isEmpty(token) ?  dispatch(setCity2(cityName)) : dispatch(setCity(cityName));
+                    isEmpty(user.token) ? dispatch(setCity(cityName)) : dispatch(setUser({
+                        token: user.token,
+                        email: user.email,
+                        city: cityName,
+                        cityStatus: false
+                    }));
                     props.navigation.navigate('App');
                 }} >
                     <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
@@ -128,7 +133,12 @@ export default Cities = (props) => {
                     cityName={cityName}
                     onSave={() => {
                         setVisible(false);
-                        isEmpty(token) ?  dispatch(setCity2(cityName)) : dispatch(setCity(cityName));
+                        isEmpty(user.token) ? dispatch(setCity(cityName)) : dispatch(setUser({
+                            token: user.token,
+                            email: user.email,
+                            city: cityName,
+                            cityStatus: false
+                        }));
                         props.navigation.navigate('App');
                     }}
                     onCancel={() => setVisible(false)} /> : null}
