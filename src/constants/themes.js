@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { color } from 'react-native-reanimated';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 export const themes = {
     LIGHT: {
@@ -112,12 +113,13 @@ export const common = StyleSheet.create({
         height: 25
     },
     headerTitle: {
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         width: '60%'
     },
     headerTitleText: {
-        width: '100%',
+        // width: '100%',
         fontSize: 16,
         fontWeight: 'bold',
         color: colors.BLACK,
@@ -127,6 +129,11 @@ export const common = StyleSheet.create({
         alignItems: 'flex-end',
         paddingRight: 10,
         width: '20%'
+    },
+    headerRightText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: colors.YELLOW.PRIMARY,
     },
 
     backColorYellow: {
@@ -194,4 +201,9 @@ export const common = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 20,
     },
+    errorText: {
+        marginTop: 5,
+        marginHorizontal: 5,
+        color: colors.RED.PRIMARY
+    }
 });

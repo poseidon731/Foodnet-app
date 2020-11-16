@@ -9,7 +9,7 @@ import { Icon } from 'react-native-elements';
 import { setUser } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
-import { isEmpty, validateEmail, validateLength } from '@utils/functions';
+import { isEmpty, validateEmail, validatePassword } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { BackIcon, GoogleIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -26,13 +26,13 @@ export default SignIn = (props) => {
     const [visitPassword, setVisitPassword] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
     const [secureTextEntry, setSecureTextEntry] = useState(true);
-    const [rememberMe, setRememberMe] = useState(false);
+    // const [rememberMe, setRememberMe] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         setErrorMsg('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-        (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
     }, [email, visitEmail, password, visitPassword]);
 
     const onLogin = async () => {
@@ -104,7 +104,7 @@ export default SignIn = (props) => {
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
                         value={email}
-                        error={errorEmail}
+                        // error={errorEmail}
                         containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         onChangeText={(value) => {
@@ -112,6 +112,7 @@ export default SignIn = (props) => {
                             setVisitEmail(true);
                         }}
                     />
+                    <Text style={common.errorText}>{errorEmail}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
                     <View style={styles.labelView}>
@@ -128,7 +129,7 @@ export default SignIn = (props) => {
                         enablesReturnKeyAutomatically={true}
                         // clearTextOnFocus={true}
                         value={password}
-                        error={errorPassword}
+                        // error={errorPassword}
                         secureTextEntry={secureTextEntry}
                         containerStyle={[styles.textContainer, !isEmpty(errorPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
@@ -143,17 +144,9 @@ export default SignIn = (props) => {
                             setVisitPassword(true);
                         }}
                     />
+                    <Text style={common.errorText}>{errorPassword}</Text>
                 </View>
-                <TouchableOpacity style={styles.rememberMe} onPress={() => setRememberMe(!rememberMe)}>
-                    <Icon
-                        type='material-community'
-                        name={rememberMe ? 'check-box-outline' : 'checkbox-blank-outline'}
-                        size={25}
-                        color={colors.GREY.PRIMARY}
-                    />
-                    <Text style={styles.rememberText}>{i18n.translate('Keep me logged in')}</Text>
-                </TouchableOpacity>
-                <View style={[styles.buttonView, common.marginTop35]}>
+                <View style={[styles.buttonView, common.marginTop50]}>
                     <TouchableOpacity
                         disabled={isEmpty(email) || isEmpty(password) || errorEmail || errorPassword ? true : false}
                         style={[common.button, (isEmpty(email) || isEmpty(password) || errorEmail || errorPassword) ? common.backColorGrey : common.backColorYellow]}
@@ -162,12 +155,12 @@ export default SignIn = (props) => {
                         <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Log in')}</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={[styles.buttonView, common.marginTop25]}>
+                {/* <View style={[styles.buttonView, common.marginTop25]}>
                     <TouchableOpacity style={styles.googleButton} onPress={() => alert(i18n.translate('Google Log in'))}>
                         <GoogleIcon />
                         <Text style={[styles.googleButtonText, common.fontColor444]}>{i18n.translate('Google Log in')}</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 <View style={common.height50} />
             </Content>
         </Container>

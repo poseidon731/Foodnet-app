@@ -9,7 +9,7 @@ import { Icon } from 'react-native-elements';
 import { setUser } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
-import { isEmpty, validateLength } from '@utils/functions';
+import { isEmpty, validatePassword } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { BackIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -31,8 +31,8 @@ export default SignIn = (props) => {
 
     useEffect(() => {
         setErrorMsg('');
-        (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
-        (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
+        (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validatePassword(confirm)) ? setErrorConfirm(i18n.translate('Incorrect password')) : (confirm.length >= 5 && password !== confirm) ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
     }, [password, visitPassword, confirm, visitConfirm]);
 
     const onReset = async () => {
@@ -77,9 +77,9 @@ export default SignIn = (props) => {
             <Loading loading={loading} />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
-                    <TouchableOpacity onPress={() => props.navigation.replace('Auth', { screen: 'SignIn' })}>
+                    {/* <TouchableOpacity onPress={() => props.navigation.replace('Auth', { screen: 'SignIn' })}>
                         <BackIcon style={common.headerLeftIcon} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <View style={common.headerTitle}>
                     <Text style={common.headerTitleText}>{i18n.translate('Set a new password')}</Text>
@@ -104,9 +104,7 @@ export default SignIn = (props) => {
                         fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
-                        // clearTextOnFocus={true}
                         value={password}
-                        error={errorPassword}
                         secureTextEntry={secureTextEntry1}
                         containerStyle={[styles.textContainer, !isEmpty(errorPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
@@ -121,6 +119,7 @@ export default SignIn = (props) => {
                             setVisitPassword(true);
                         }}
                     />
+                    <Text style={common.errorText}>{errorPassword}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
                     <Text style={[styles.labelText, !isEmpty(errorConfirm) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
@@ -131,9 +130,7 @@ export default SignIn = (props) => {
                         fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
-                        clearTextOnFocus={true}
                         value={confirm}
-                        error={errorConfirm}
                         secureTextEntry={secureTextEntry2}
                         containerStyle={[styles.textContainer, !isEmpty(errorConfirm) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
@@ -148,6 +145,7 @@ export default SignIn = (props) => {
                             setVisitConfirm(true);
                         }}
                     />
+                    <Text style={common.errorText}>{errorConfirm}</Text>
                 </View>
                 <View style={[styles.buttonView, common.marginTop35]}>
                     <TouchableOpacity

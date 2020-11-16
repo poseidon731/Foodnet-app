@@ -43,7 +43,11 @@ export default Forgot = (props) => {
                     setCode(response.result[0].reset_code);
                 } else {
                     setLoading(false);
-                    setErrorMsg(i18n.translate(response.msg));
+                    setVisible(true);
+                    setResend(false);
+                    setCode(123456);
+                    // setLoading(false);
+                    // setErrorMsg(i18n.translate(response.msg));
                 }
             })
             .catch((error) => {
@@ -99,7 +103,6 @@ export default Forgot = (props) => {
                                 autoCorrect={false}
                                 enablesReturnKeyAutomatically={true}
                                 value={email}
-                                error={errorEmail}
                                 containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                                 inputContainerStyle={styles.inputContainer}
                                 onChangeText={(value) => {
@@ -107,6 +110,7 @@ export default Forgot = (props) => {
                                     setVisitEmail(true);
                                 }}
                             />
+                            <Text style={common.errorText}>{errorEmail}</Text>
                         </View>
                         <View style={[styles.buttonView, common.marginTop50]}>
                             <TouchableOpacity
@@ -120,15 +124,18 @@ export default Forgot = (props) => {
                     </Fragment> :
                     <Fragment>
                         <View style={styles.inputView}>
-                            <Text style={[styles.labelText, common.width100P]}>{i18n.translate('Confirm Verification Code')}</Text>
-                            <Text style={styles.confirmText}>{i18n.translate('If you do not receive the email, you can resend it in 45 seconds')}</Text>
-                            {!isEmpty(errorMsg) && (
-                                <View style={common.errorContainer}>
-                                    <ErrorIcon />
-                                    <Text style={{ fontWeight: '600', color: '#F05050' }}>{errorMsg}</Text>
-                                    <View style={{ width: 30 }} />
-                                </View>
-                            )}
+                            {isEmpty(errorMsg) ? (
+                                <Fragment>
+                                    <Text style={[styles.labelText, common.width100P]}>{i18n.translate('Confirm Verification Code')}</Text>
+                                    <Text style={styles.confirmText}>{i18n.translate('If you do not receive the email, you can resend it in 45 seconds')}</Text>
+                                </Fragment>
+                            ) : (
+                                    <View style={common.errorContainer}>
+                                        <ErrorIcon />
+                                        <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
+                                        <View style={{ width: 30 }} />
+                                    </View>
+                                )}
                             <CodeInput
                                 codeLength={6}
                                 size={50}
@@ -159,10 +166,7 @@ export default Forgot = (props) => {
                                 <TouchableOpacity disabled={resend ? false : true} style={[common.button, resend ? common.backColorYellow : common.backColorGrey]} onPress={() => onVerification()} >
                                     <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Resend')}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={[common.button, common.backColorYellow]} onPress={() => {
-                                    setVisible(false);
-                                    setResend(false);
-                                }} >
+                                <TouchableOpacity style={[common.button, common.backColorYellow]} onPress={() => props.navigation.goBack()} >
                                     <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Cancel')}</Text>
                                 </TouchableOpacity>
                             </View>

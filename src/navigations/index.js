@@ -5,7 +5,7 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import NetInfo from '@react-native-community/netinfo';
 import i18n from '@utils/i18n';
 
-import { Internet, Splash, Cities } from '@screens';
+import { Internet, Splash, Cities, Languages } from '@screens';
 import DrawerNavigator from '@navigations/DrawerNavigator';
 import AuthStack from '@navigations/StackNavigators/AuthStackNavigator';
 import { navOptionHandler, isEmpty } from '@utils/functions';
@@ -41,6 +41,7 @@ export default AppContainer = () => {
                 <StackApp.Screen name='Splash' component={Splash} options={navOptionHandler} />
                 <StackApp.Screen name='Auth' component={AuthStack} options={navOptionHandler} />
                 <StackApp.Screen name='Cities' component={Cities} options={navOptionHandler} />
+                <StackApp.Screen name='Languages' component={Languages} options={navOptionHandler} />
                 <StackApp.Screen name='App' component={DrawerNavigator} options={navOptionHandler} />
             </StackApp.Navigator>
         </NavigationContainer>

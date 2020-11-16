@@ -36,7 +36,8 @@
     "Email is not valid": "Email is not valid",
     "The two passwords do not match": "The two passwords do not match",
     "City selector": "City selector",
-    "Where are you looking for a restaurant?": "Where are you looking for a restaurant?",
+    "Where are you looking for a restaurant": "Where are you looking for a restaurant?",
+    "Choose a city": "Choose a city",
     "Restaurants from database with current language": "Restaurants from database with current language",
     "Quick search:": "Quick search:",
     "Did you mean this city": "Did you mean this city",
@@ -50,5 +51,8 @@
     "Customer service": "Customer service",
     "Log out": "Log out",
     "Log in or Registeration": "Log in or Registeration",
-    "Home": "Home"
+    "Home": "Home",
+    "Languages selector": "Language selector",
+    "Set": "Save",
+    "Language of application": "Language of application"
 }

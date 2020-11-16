@@ -21,7 +21,8 @@ export default Cities = (props) => {
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
     const [visible, setVisible] = useState(false);
-    const [cityName, setCityName] = useState('');
+    const [cityName, setCityName] = useState(i18n.translate('Choose a city'));
+    const [cityStatus, setCityStatus] = useState(false);
 
     useEffect(() => {
         const handleBackButton = () => {
@@ -30,12 +31,12 @@ export default Cities = (props) => {
         BackHandler.addEventListener('hardwareBackPress', handleBackButton);
 
         const getCities = async () => {
+            setLoading(true);
             await AuthService.cities(country)
                 .then((response) => {
                     if (response.status == 200) {
                         setLoading(false);
                         setCitys(response.locations);
-                        setCityName(response.locations[0].cities);
                     } else {
                         setLoading(false);
                     }
@@ -47,6 +48,7 @@ export default Cities = (props) => {
         getCities();
 
         return () => {
+            setLoading(false);
             console.log('cities will be unmount');
         }
     }, []);
@@ -65,7 +67,7 @@ export default Cities = (props) => {
             </Header>
             <View style={styles.content}>
                 <View style={styles.inputView}>
-                    <Text style={styles.labelText}>{i18n.translate('Where are you looking for a restaurant?')}</Text>
+                    <Text style={styles.labelText}>{i18n.translate('Where are you looking for a restaurant')}</Text>
                     <TouchableOpacity style={styles.textContainer} onPress={() => setActive(!active)}>
                         <MapPinIcon />
                         <Text style={styles.itemText} numberOfLines={1}>{cityName}</Text>
@@ -75,9 +77,10 @@ export default Cities = (props) => {
                 {active ? (
                     <ScrollView style={styles.listView}>
                         {!isEmpty(citys) && citys.map((one, key) => (
-                            <TouchableOpacity key={key} style={styles.itemView} onPress={() => {
+                            <TouchableOpacity key={key} style={[styles.itemView, key == citys.length - 1 && styles.noborder]} onPress={() => {
                                 setActive(false);
                                 setCityName(one.cities);
+                                setCityStatus(true);
                             }}>
                                 <Text style={styles.itemText} numberOfLines={1}>{one.cities}</Text>
                             </TouchableOpacity>
@@ -92,18 +95,21 @@ export default Cities = (props) => {
                                         <TouchableOpacity onPress={() => {
                                             setCityName(citys[0].cities);
                                             setVisible(true);
+                                            setCityStatus(true);
                                         }}>
                                             <Text style={styles.searchText}>{citys[0].cities}</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => {
                                             setCityName(citys[1].cities);
                                             setVisible(true);
+                                            setCityStatus(true);
                                         }}>
                                             <Text style={styles.searchText}>{citys[1].cities}</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => {
                                             setCityName(citys[2].cities);
                                             setVisible(true);
+                                            setCityStatus(true);
                                         }}>
                                             <Text style={styles.searchText}>{citys[2].cities}</Text>
                                         </TouchableOpacity>
@@ -115,16 +121,18 @@ export default Cities = (props) => {
 
             </View>
             <View style={styles.buttonView}>
-                <TouchableOpacity style={[common.button, common.backColorYellow]} onPress={() => {
-                    setVisible(false);
-                    isEmpty(user.token) ? dispatch(setCity(cityName)) : dispatch(setUser({
-                        token: user.token,
-                        email: user.email,
-                        city: cityName,
-                        cityStatus: false
-                    }));
-                    props.navigation.navigate('App');
-                }} >
+                <TouchableOpacity
+                    disabled={!cityStatus ? true : false}
+                    style={[common.button, !cityStatus ? common.backColorGrey : common.backColorYellow]} onPress={() => {
+                        setVisible(false);
+                        isEmpty(user.token) ? dispatch(setCity(cityName)) : dispatch(setUser({
+                            token: user.token,
+                            email: user.email,
+                            city: cityName,
+                            cityStatus: false
+                        }));
+                        props.navigation.navigate('App');
+                    }} >
                     <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
                 </TouchableOpacity>
             </View>
@@ -181,7 +189,8 @@ const styles = StyleSheet.create({
     },
     listView: {
         width: '100%',
-        height: 300,
+        height: 250,
+        paddingHorizontal: 10,
         backgroundColor: colors.WHITE,
         borderLeftWidth: 1,
         borderRightWidth: 1,
@@ -196,6 +205,9 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         borderBottomWidth: 1,
         borderBottomColor: colors.GREY.PRIMARY
+    },
+    noborder: {
+        borderBottomWidth: 0
     },
     labelView: {
         flexDirection: 'row',

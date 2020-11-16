@@ -1,4 +1,5 @@
 import Internet from '@screens/Internet';
+import Languages from '@screens/Languages';
 
 import Splash from '@screens/Auth';
 import SignIn from '@screens/Auth/SignIn';
@@ -11,6 +12,7 @@ import Home from '@screens/Home';
 
 export {
     Internet,
+    Languages,
     Splash,
     SignIn,
     SignUp,

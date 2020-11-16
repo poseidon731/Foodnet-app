@@ -9,7 +9,7 @@ import { Icon } from 'react-native-elements';
 import { setUser } from '@modules/reducers/auth/actions';
 import { Loading } from '@components';
 import { AuthService } from '@modules/services';
-import { isEmpty, validateName, validateEmail, validateLength } from '@utils/functions';
+import { isEmpty, validateName, validateEmail, validatePassword } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { BackIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -40,8 +40,8 @@ export default SignUp = (props) => {
         setErrorMsg('');
         (visitName && isEmpty(name)) || (visitName && !validateName(name)) ? setErrorName('Name is not valid') : setErrorName('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-        (visitPassword && isEmpty(password)) || (visitPassword && !validateLength(password, 3)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
-        (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validateLength(confirm, 3)) ? setErrorConfirm(i18n.translate('Incorrect password')) : password !== confirm ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
+        (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validatePassword(confirm)) ? setErrorConfirm(i18n.translate('Incorrect password')) : (confirm.length >= 5 && password !== confirm) ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
     }, [name, visitName, email, visitEmail, password, visitPassword, confirm, visitConfirm])
 
     const onSignup = async () => {
@@ -100,7 +100,6 @@ export default SignUp = (props) => {
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
                         value={name}
-                        error={errorName}
                         containerStyle={[styles.textContainer, !isEmpty(errorName) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         onChangeText={(value) => {
@@ -108,6 +107,7 @@ export default SignUp = (props) => {
                             setVisitName(true);
                         }}
                     />
+                    <Text style={common.errorText}>{errorName}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
                     <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('E-mail')}</Text>
@@ -119,7 +119,6 @@ export default SignUp = (props) => {
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
                         value={email}
-                        error={errorEmail}
                         containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         onChangeText={(value) => {
@@ -127,6 +126,7 @@ export default SignUp = (props) => {
                             setVisitEmail(true);
                         }}
                     />
+                    <Text style={common.errorText}>{errorEmail}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
                     <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
@@ -137,9 +137,7 @@ export default SignUp = (props) => {
                         fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
-                        // clearTextOnFocus={true}
                         value={password}
-                        error={errorPassword}
                         secureTextEntry={secureTextEntry1}
                         containerStyle={[styles.textContainer, !isEmpty(errorPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
@@ -154,6 +152,7 @@ export default SignUp = (props) => {
                             setVisitPassword(true);
                         }}
                     />
+                    <Text style={common.errorText}>{errorPassword}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop50]}>
                     <Text style={[styles.labelText, !isEmpty(errorConfirm) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
@@ -164,9 +163,7 @@ export default SignUp = (props) => {
                         fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
-                        // clearTextOnFocus={true}
                         value={confirm}
-                        error={errorConfirm}
                         secureTextEntry={secureTextEntry2}
                         containerStyle={[styles.textContainer, !isEmpty(errorConfirm) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
@@ -181,6 +178,7 @@ export default SignUp = (props) => {
                             setVisitConfirm(true);
                         }}
                     />
+                    <Text style={common.errorText}>{errorConfirm}</Text>
                 </View>
                 <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
                     <Icon

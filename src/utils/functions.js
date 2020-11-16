@@ -11,7 +11,7 @@ export const navOptionHandler = () => ({
 });
 
 export const validateName = (value) => {
-    if (value.length >= 2) {
+    if (value.length >= 3 && value.length <= 20) {
         return true;
     }
     return false;

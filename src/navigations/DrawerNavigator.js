@@ -71,7 +71,10 @@ const DrawerContent = (props) => {
                     <LocationIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('My addresses')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity style={styles.menuItem} onPress={() => {
+                    props.navigation.closeDrawer();
+                    props.navigation.push('Languages');
+                }}>
                     <LanguageIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Language selector')}</Text>
                 </TouchableOpacity>
