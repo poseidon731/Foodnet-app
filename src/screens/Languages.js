@@ -22,8 +22,8 @@ export default Languages = (props) => {
     const [language, setLanguage] = useState(country === 'en' ? 0 : country === 'hu' ? 1 : 2);
     const [languages, setLanguages] = useState([
         { value: 0, label: 'English', code: 'en' },
-        { value: 1, label: 'Magyar', code: 'hu' },
-        { value: 2, label: 'Română', code: 'ro' }
+        { value: 1, label: 'Hungarian', code: 'hu' },
+        { value: 2, label: 'Romanian', code: 'ro' }
     ]);
     const [visible, setVisible] = useState(false);
 
@@ -55,7 +55,7 @@ export default Languages = (props) => {
                 <View style={styles.inputView}>
                     <Text style={styles.labelText}>{i18n.translate('Language of application')}</Text>
                     <TouchableOpacity style={styles.textContainer} onPress={() => setActive(!active)}>
-                        <Text style={styles.itemText} numberOfLines={1}>{languages[language].label}</Text>
+                        <Text style={styles.itemText} numberOfLines={1}>{i18n.translate(languages[language].label)}</Text>
                         <Icon type='material' name='keyboard-arrow-down' size={30} color={colors.GREY.PRIMARY} />
                     </TouchableOpacity>
                 </View>
@@ -66,7 +66,7 @@ export default Languages = (props) => {
                                 setActive(false);
                                 setLanguage(one.value);
                             }}>
-                                <Text style={styles.itemText} numberOfLines={1}>{one.label}</Text>
+                                <Text style={styles.itemText} numberOfLines={1}>{i18n.translate(one.label)}</Text>
                             </TouchableOpacity>
                         ))}
                     </View>

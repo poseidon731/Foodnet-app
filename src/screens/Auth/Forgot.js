@@ -46,8 +46,6 @@ export default Forgot = (props) => {
                     setVisible(true);
                     setResend(false);
                     setCode(123456);
-                    // setLoading(false);
-                    // setErrorMsg(i18n.translate(response.msg));
                 }
             })
             .catch((error) => {
@@ -62,6 +60,7 @@ export default Forgot = (props) => {
         } else {
             setLoading(false);
             setErrorMsg('Incorrect Code');
+            setTimeout(() => setErrorMsg(''), 1500);
         };
     }
 

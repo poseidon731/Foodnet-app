@@ -8,7 +8,7 @@ const StackAuth = createStackNavigator();
 export default AuthStack = () => {
   return (
     <StackAuth.Navigator initialRouteName='SignIn'
-      screenOptions={{ ...TransitionPresets.SlideFromRightIOS }}>
+      screenOptions={{ gestureEnabled: false, ...TransitionPresets.SlideFromRightIOS }}>
       <StackAuth.Screen name='SignIn' component={SignIn} options={navOptionHandler} />
       <StackAuth.Screen name='SignUp' component={SignUp} options={navOptionHandler} />
       <StackAuth.Screen name='Forgot' component={Forgot} options={navOptionHandler} />

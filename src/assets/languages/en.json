@@ -19,6 +19,8 @@
     "Incorrect password": "Incorrect password",
     "New password": "New Password",
     "New password again": "Confirm Password",
+    "The name must be at least 3 characters long": "The name must be at least 3 characters long",
+    "The password must be at least 3 characters long": "The password must be at least 3 characters long",
     "I accept the ": "I accept the ",
     "Terms and Conditions": "Terms and Conditions",
     "I subscribe to the newsletter": "I subscribe to the newsletter",
@@ -54,5 +56,8 @@
     "Home": "Home",
     "Languages selector": "Language selector",
     "Set": "Save",
-    "Language of application": "Language of application"
+    "Language of application": "Language of application",
+    "English": "English",
+    "Hungarian": "Hungarian",
+    "Romanian": "Romanian"
 }

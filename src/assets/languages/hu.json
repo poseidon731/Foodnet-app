@@ -19,6 +19,8 @@
     "Incorrect password": "Helytelen jelszó",
     "New password": "New Password",
     "New password again": "Új jelszó mégegyszer",
+    "The name must be at least 3 characters long": "A névnem legalább 3 karakter hosszúnak kell lennie",
+    "The password must be at least 3 characters long": "A jelszónak legalább 3 karakter hosszúnak kell lennie",
     "I accept the ": "Elfogadom az ",
     "Terms and Conditions": "Általános Szerződési Feltételeket",
     "I subscribe to the newsletter": "Feliratkozom a hírlevélre",
@@ -54,5 +56,8 @@
     "Home": "Home",
     "Languages selector": "Nyelvválasztó",
     "Set": "Mentés",
-    "Language of application": "Alkalmazás nyelve"
+    "Language of application": "Alkalmazás nyelve",
+    "English": "Angol",
+    "Hungarian": "Magyar",
+    "Romanian": "Román"
 }

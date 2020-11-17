@@ -32,7 +32,7 @@ export default SignIn = (props) => {
     useEffect(() => {
         setErrorMsg('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-        (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
+        // (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
     }, [email, visitEmail, password, visitPassword]);
 
     const onLogin = async () => {

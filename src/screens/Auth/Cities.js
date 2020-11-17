@@ -31,24 +31,16 @@ export default Cities = (props) => {
         BackHandler.addEventListener('hardwareBackPress', handleBackButton);
 
         const getCities = async () => {
-            setLoading(true);
             await AuthService.cities(country)
                 .then((response) => {
                     if (response.status == 200) {
-                        setLoading(false);
                         setCitys(response.locations);
-                    } else {
-                        setLoading(false);
                     }
                 })
-                .catch((error) => {
-                    setLoading(false);
-                });
         }
         getCities();
 
         return () => {
-            setLoading(false);
             console.log('cities will be unmount');
         }
     }, []);

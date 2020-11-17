@@ -19,6 +19,8 @@
     "Incorrect password": "Parola incorectă",
     "New password": "New Password",
     "New password again": "Parola nouă din nou",
+    "The name must be at least 3 characters long": "Nume trebuie să aibă cel puțin 3 caractere",
+    "The password must be at least 3 characters long": "Parola trebuie să aibă cel puțin 3 caractere",
     "I accept the ": "Accept ",
     "Terms and Conditions": "Termenii și condițiile",
     "I subscribe to the newsletter": "Mă abonez la newsletter",
@@ -54,5 +56,8 @@
     "Home": "Home",
     "Languages selector": "Selector de limbă",
     "Set": "Salvare",
-    "Language of application": "Limba de aplicare"
+    "Language of application": "Limba de aplicare",
+    "English": "Engleză",
+    "Hungarian": "Maghiară",
+    "Romanian": "Română"
 }

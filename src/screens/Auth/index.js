@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Platform, StatusBar, StyleSheet, ImageBackground, View, Text, TouchableOpacity } from 'react-native';
+import { Platform, NativeModules, StatusBar, StyleSheet, ImageBackground, View, Text, TouchableOpacity } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { setCountry } from '@modules/reducers/auth/actions';
-import { Picker } from '@components';
 import { isEmpty } from '@utils/functions';
 import { colors, common } from '@constants/themes';
 import { images, icons } from '@constants/assets';
@@ -28,22 +27,26 @@ export default Splash = (props) => {
     const dispatch = useDispatch();
     const { country, city } = useSelector(state => state.auth);
 
-    const [lang, setLang] = useState(false);
-    const [language, setLanguage] = useState(country === 'en' ? { value: 0, label: 'English', code: 'en' } : country === 'hu' ? { value: 1, label: 'Hungarian', code: 'hu' } : { value: 2, label: 'Romanian', code: 'ro' });
-
-    const onLanguage = (language) => {
-        i18n.setLocale(language.code);
-        setLanguage(language);
-        setLang(false);
-        dispatch(setCountry(language.code));
-    }
+    useEffect(() => {
+        const onLanguage = () => {
+            const deviceLanguage = Platform.OS === 'ios' ? NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0] : NativeModules.I18nManager.localeIdentifier;
+            var deviceCode = deviceLanguage.substring(0, 2);
+            if (deviceCode !== 'en' && deviceCode !== 'hu' && deviceCode !== 'ro') {
+                deviceCode = 'en';
+            }
+            i18n.setLocale(deviceCode);
+            dispatch(setCountry(deviceCode));
+        }
+        onLanguage();
+        return () => {
+            console.log(country);
+        }
+    }, []);
 
     return (
         <ImageBackground source={images.bgImage} style={common.container}>
             <StatusBar />
-            <TouchableOpacity style={styles.logoIcon} onPress={() => setLang(true)}>
-                <LogoIcon />
-            </TouchableOpacity>
+            <LogoIcon style={styles.logoIcon} />
             <View style={styles.descriptionView}>
                 <Swiper
                     dotStyle={[styles.dotStyle, common.width10]}
@@ -71,7 +74,6 @@ export default Splash = (props) => {
                     <Text style={styles.continueText}>{i18n.translate('Continue without registration')}</Text>
                 </TouchableOpacity>
             </View>
-            {lang && (<Picker data={languages} one={language} onSelect={(item) => onLanguage(item)} />)}
         </ImageBackground>
     );
 }

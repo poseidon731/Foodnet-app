@@ -8,15 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* foodnetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* foodnetTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* foodnetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* foodnetTests.m */; };
+		442C311A2564385900090088 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 442C31132564385900090088 /* main.m */; };
+		442C311B2564385900090088 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 442C31142564385900090088 /* Images.xcassets */; };
+		442C311C2564385900090088 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 442C31152564385900090088 /* AppDelegate.m */; };
+		442C311F2564395A00090088 /* logo-big.png in Resources */ = {isa = PBXBuildFile; fileRef = 442C311E2564395A00090088 /* logo-big.png */; };
+		442C312425643DB100090088 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 442C312625643DB100090088 /* LaunchScreen.storyboard */; };
 		751AFCD759BCF63F2A1D09BA /* libPods-foodnet-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B108FF492F9D14B041E2A8DE /* libPods-foodnet-tvOSTests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		97E7917714716818D5C5FCD0 /* libPods-foodnet-foodnetTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CE1C5FC24E615D2DB26C072 /* libPods-foodnet-foodnetTests.a */; };
 		B5A26E5111F977BAD1090D78 /* libPods-foodnet-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A6B907CA962DDBF6BB3CBAD /* libPods-foodnet-tvOS.a */; };
 		EBA7A8146FDE6D27F71752F1 /* libPods-foodnet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18294ED6950C89FC54EF9D00 /* libPods-foodnet.a */; };
@@ -40,25 +38,27 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* foodnetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = foodnetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* foodnetTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = foodnetTests.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Foodnet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Foodnet.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = foodnet/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = foodnet/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = foodnet/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = foodnet/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = foodnet/main.m; sourceTree = "<group>"; };
 		18294ED6950C89FC54EF9D00 /* libPods-foodnet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-foodnet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E47B1E0B4A5D006451C7 /* foodnet-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "foodnet-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* foodnet-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "foodnet-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		442C31102564385900090088 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		442C31132564385900090088 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		442C31142564385900090088 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		442C31152564385900090088 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		442C31182564385900090088 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		442C311E2564395A00090088 /* logo-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo-big.png"; path = "../../src/assets/icons/logo-big.png"; sourceTree = "<group>"; };
+		442C313025644AF200090088 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		442C313125644B0E00090088 /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		442C313225644B1700090088 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		459009C9076AFEE424D23B27 /* Pods-foodnet-foodnetTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-foodnet-foodnetTests.release.xcconfig"; path = "Target Support Files/Pods-foodnet-foodnetTests/Pods-foodnet-foodnetTests.release.xcconfig"; sourceTree = "<group>"; };
 		5359FC884A0EFD1BB4E4FB43 /* Pods-foodnet-foodnetTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-foodnet-foodnetTests.debug.xcconfig"; path = "Target Support Files/Pods-foodnet-foodnetTests/Pods-foodnet-foodnetTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5B97BFFCF2213714AF8A1F2E /* Pods-foodnet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-foodnet.release.xcconfig"; path = "Target Support Files/Pods-foodnet/Pods-foodnet.release.xcconfig"; sourceTree = "<group>"; };
 		7A6B907CA962DDBF6BB3CBAD /* libPods-foodnet-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-foodnet-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BB2DAE3F44BE3350AF34876 /* Pods-foodnet-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-foodnet-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-foodnet-tvOS/Pods-foodnet-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = foodnet/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91FE081D0C52C649AC276AA8 /* Pods-foodnet-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-foodnet-tvOS.release.xcconfig"; path = "Target Support Files/Pods-foodnet-tvOS/Pods-foodnet-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		9CE1C5FC24E615D2DB26C072 /* libPods-foodnet-foodnetTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-foodnet-foodnetTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A948F39B707C7701A290C405 /* Pods-foodnet-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-foodnet-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-foodnet-tvOSTests/Pods-foodnet-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -122,20 +122,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* foodnet */ = {
-			isa = PBXGroup;
-			children = (
-				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
-				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.m */,
-				13B07FB51A68108700A75B9A /* Images.xcassets */,
-				13B07FB61A68108700A75B9A /* Info.plist */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
-				13B07FB71A68108700A75B9A /* main.m */,
-			);
-			name = foodnet;
-			sourceTree = "<group>";
-		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -149,6 +135,20 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		442C310F2564385900090088 /* foodnet */ = {
+			isa = PBXGroup;
+			children = (
+				442C312625643DB100090088 /* LaunchScreen.storyboard */,
+				442C311E2564395A00090088 /* logo-big.png */,
+				442C31102564385900090088 /* AppDelegate.h */,
+				442C31132564385900090088 /* main.m */,
+				442C31142564385900090088 /* Images.xcassets */,
+				442C31152564385900090088 /* AppDelegate.m */,
+				442C31182564385900090088 /* Info.plist */,
+			);
+			path = foodnet;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,7 +159,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* foodnet */,
+				442C310F2564385900090088 /* foodnet */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* foodnetTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -313,6 +313,8 @@
 			knownRegions = (
 				en,
 				Base,
+				ro,
+				hu,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -339,8 +341,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				442C311B2564385900090088 /* Images.xcassets in Resources */,
+				442C312425643DB100090088 /* LaunchScreen.storyboard in Resources */,
+				442C311F2564395A00090088 /* logo-big.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,7 +351,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,7 +376,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		0D499B2A0A12EEEE5FB19C8D /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -631,8 +633,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				442C311C2564385900090088 /* AppDelegate.m in Sources */,
+				442C311A2564385900090088 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,8 +642,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
-				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,6 +667,19 @@
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		442C312625643DB100090088 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				442C313025644AF200090088 /* Base */,
+				442C313125644B0E00090088 /* ro */,
+				442C313225644B1700090088 /* hu */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
@@ -915,7 +928,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
@@ -968,7 +981,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
