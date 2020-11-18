@@ -1,19 +1,32 @@
 import types from './types';
 
 const initialState = {
+    loading: false,
     country: 'en',
-    city: '',
+    city: {
+        id: 0,
+        name: '',
+        status: false
+    },
     logged: false,
     user: {
         token: null,
         email: '',
-        city: '',
-        cityStatus: false
+        city: {
+            id: 0,
+            name: '',
+            status: false
+        }
     },
 };
 
 export default function authReducer(state = initialState, action) {
     switch (action.type) {
+        case types.SET_LOADING:
+            return {
+                ...state,
+                loading: action.payload,
+            };
         case types.SET_COUNTRY:
             return {
                 ...state,
@@ -37,7 +50,7 @@ export default function authReducer(state = initialState, action) {
                 user: action.payload,
             };
 
-            
+
         default:
             return state;
     }

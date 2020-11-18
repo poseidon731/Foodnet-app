@@ -6,8 +6,7 @@ import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setUser } from '@modules/reducers/auth/actions';
-import { Loading } from '@components';
+import { setLoading, setUser } from '@modules/reducers/auth/actions';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateName, validateEmail, validatePassword } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -17,7 +16,6 @@ import i18n from '@utils/i18n';
 export default SignUp = (props) => {
     const dispatch = useDispatch();
 
-    const [loading, setLoading] = useState(false);
     const [name, setName] = useState('');
     const [visitName, setVisitName] = useState(false);
     const [errorName, setErrorName] = useState('');
@@ -42,28 +40,30 @@ export default SignUp = (props) => {
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
         (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('The password must be at least 3 characters long')) : setErrorPassword('');
         (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validatePassword(confirm)) ? setErrorConfirm(i18n.translate('The password must be at least 3 characters long')) : (confirm.length >= 5 && password !== confirm) ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
-    }, [name, visitName, email, visitEmail, password, visitPassword, confirm, visitConfirm])
+    }, [name, visitName, email, visitEmail, password, visitPassword, confirm, visitConfirm]);
 
     const onSignup = async () => {
-        setLoading(true);
+        dispatch(setLoading(true));
         await AuthService.register(name, email, password, newsLetter ? 1 : 0)
             .then((response) => {
+                dispatch(setLoading(false));
                 if (response.status == 201) {
-                    setLoading(false);
                     dispatch(setUser({
                         token: response.result[0].token,
                         email,
-                        city: '',
-                        cityStatus: true
+                        city: {
+                            id: 0,
+                            name: '',
+                            status: true
+                        }
                     }));
                     props.navigation.navigate('Cities');
                 } else {
-                    setLoading(false);
                     setErrorMsg(i18n.translate(response.msg));
                 }
             })
             .catch((error) => {
-                setLoading(false);
+                dispatch(setLoading(false));
                 setErrorMsg(error.message);
             });
     }
@@ -71,7 +71,6 @@ export default SignUp = (props) => {
     return (
         <Container style={common.container}>
             <StatusBar />
-            <Loading loading={loading} />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
                     <TouchableOpacity onPress={() => props.navigation.goBack()}>
@@ -202,8 +201,8 @@ export default SignUp = (props) => {
                 </TouchableOpacity>
                 <View style={[styles.buttonView, common.marginTop35]}>
                     <TouchableOpacity
-                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService ? true : false}
-                        style={[common.button, (isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService) ? common.backColorGrey : common.backColorYellow]}
+                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg ? true : false}
+                        style={[common.button, (isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg) ? common.backColorGrey : common.backColorYellow]}
                         onPress={() => onSignup()}
                     >
                         <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Registration')}</Text>

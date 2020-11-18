@@ -1,12 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Platform, BackHandler, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Container } from 'native-base';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setCity, setUser } from '@modules/reducers/auth/actions';
-import { Loading } from '@components';
 import { AuthService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -17,11 +16,10 @@ export default Cities = (props) => {
     const dispatch = useDispatch();
     const { country, logged, user } = useSelector(state => state.auth);
 
-    const [loading, setLoading] = useState(false);
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
     const [visible, setVisible] = useState(false);
-    const [cityName, setCityName] = useState(i18n.translate('Choose a city'));
+    const [cityObj, setCityObj] = useState({ id: 0, cities: i18n.translate('Choose a city') });
     const [cityStatus, setCityStatus] = useState(false);
 
     useEffect(() => {
@@ -29,11 +27,9 @@ export default Cities = (props) => {
         const getCities = async () => {
             await AuthService.cities(country)
                 .then((response) => {
+                    props.onLoading(false);
                     if (response.status == 200) {
-                        props.onLoading(false);
                         setCitys(response.locations);
-                    } else {
-                        props.onLoading(false);
                     }
                 })
                 .catch((error) => {
@@ -50,25 +46,24 @@ export default Cities = (props) => {
     return (
         <Container style={common.container}>
             <StatusBar />
-            <Loading loading={loading} />
             <View style={styles.content}>
                 <View style={styles.inputView}>
                     <Text style={styles.labelText}>{i18n.translate('Where are you looking for a restaurant')}</Text>
                     <TouchableOpacity style={styles.textContainer} onPress={() => setActive(!active)}>
                         <MapPinIcon />
-                        <Text style={styles.itemText} numberOfLines={1}>{cityName}</Text>
+                        <Text style={styles.itemText} numberOfLines={1}>{cityObj.cities}</Text>
                         <Icon type='material' name='keyboard-arrow-down' size={30} color={colors.GREY.PRIMARY} />
                     </TouchableOpacity>
                 </View>
                 {active ? (
                     <ScrollView style={styles.listView}>
-                        {!isEmpty(citys) && citys.map((one, key) => (
+                        {!isEmpty(citys) && citys.map((cityOne, key) => (
                             <TouchableOpacity key={key} style={[styles.itemView, key == citys.length - 1 && styles.noborder]} onPress={() => {
                                 setActive(false);
-                                setCityName(one.cities);
+                                setCityObj(cityOne);
                                 setCityStatus(true);
                             }}>
-                                <Text style={styles.itemText} numberOfLines={1}>{one.cities}</Text>
+                                <Text style={styles.itemText} numberOfLines={1}>{cityOne.cities}</Text>
                             </TouchableOpacity>
                         ))}
                     </ScrollView>
@@ -79,21 +74,21 @@ export default Cities = (props) => {
                                 {!isEmpty(citys) ? (
                                     <Fragment>
                                         <TouchableOpacity onPress={() => {
-                                            setCityName(citys[0].cities);
+                                            setCityObj(citys[0]);
                                             setVisible(true);
                                             setCityStatus(true);
                                         }}>
                                             <Text style={styles.searchText}>{citys[0].cities}</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => {
-                                            setCityName(citys[1].cities);
+                                            setCityObj(citys[1]);
                                             setVisible(true);
                                             setCityStatus(true);
                                         }}>
                                             <Text style={styles.searchText}>{citys[1].cities}</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => {
-                                            setCityName(citys[2].cities);
+                                            setCityObj(citys[2]);
                                             setVisible(true);
                                             setCityStatus(true);
                                         }}>
@@ -111,11 +106,18 @@ export default Cities = (props) => {
                     disabled={!cityStatus ? true : false}
                     style={[common.button, !cityStatus ? common.backColorGrey : common.backColorYellow]} onPress={() => {
                         setVisible(false);
-                        !logged ? dispatch(setCity(cityName)) : dispatch(setUser({
+                        !logged ? dispatch(setCity({
+                            id: cityObj.id,
+                            name: cityObj.cities,
+                            status: false
+                        })) : dispatch(setUser({
                             token: user.token,
                             email: user.email,
-                            city: cityName,
-                            cityStatus: false
+                            city: {
+                                id: cityObj.id,
+                                name: cityObj.cities,
+                                status: false
+                            }
                         }));
                         props.onSave();
                     }} >
@@ -124,14 +126,21 @@ export default Cities = (props) => {
             </View>
             {visible ?
                 <SaveModal
-                    cityName={cityName}
+                    cityObj={cityObj}
                     onSave={() => {
                         setVisible(false);
-                        !logged ? dispatch(setCity(cityName)) : dispatch(setUser({
+                        !logged ? dispatch(setCity({
+                            id: cityObj.id,
+                            name: cityObj.cities,
+                            status: false
+                        })) : dispatch(setUser({
                             token: user.token,
                             email: user.email,
-                            city: cityName,
-                            cityStatus: false
+                            city: {
+                                id: cityObj.id,
+                                name: cityObj.cities,
+                                status: false
+                            }
                         }));
                         props.onSave();
                     }}
@@ -146,7 +155,7 @@ const SaveModal = (props) => {
             <View style={styles.overlay} />
             <View style={styles.modalView}>
                 <View style={styles.modalMain}>
-                    <Text style={styles.modalTitle}>{i18n.translate('Did you mean this city')}: {props.cityName}?</Text>
+                    <Text style={styles.modalTitle}>{i18n.translate('Did you mean this city')}: {props.cityObj.cities}?</Text>
                     <Text style={styles.modalDescription}>{i18n.translate('You can edit the city later by clicking on the city in header')}</Text>
                 </View>
                 <TouchableOpacity style={styles.modalButton} onPress={props.onSave}>

@@ -34,7 +34,7 @@ const DrawerContent = (props) => {
             city: user.city,
             cityStatus: false
         }));
-        props.navigation.reset({ index: 1, routes: [{ name: 'Splash' }] })
+        props.navigation.reset({ index: 1, routes: [{ name: 'Start' }] })
     }
     return (
         <Container style={styles.container}>

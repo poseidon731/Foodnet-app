@@ -1,7 +1,7 @@
 import Internet from '@screens/Internet';
 import Languages from '@screens/Languages';
 
-import Splash from '@screens/Auth';
+import Start from '@screens/Auth';
 import SignIn from '@screens/Auth/SignIn';
 import SignUp from '@screens/Auth/SignUp';
 import Forgot from '@screens/Auth/Forgot';
@@ -13,7 +13,7 @@ import Home from '@screens/Home';
 export {
     Internet,
     Languages,
-    Splash,
+    Start,
     SignIn,
     SignUp,
     Forgot,

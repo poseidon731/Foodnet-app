@@ -8,7 +8,7 @@ import CountDown from 'react-native-countdown-component';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { Loading } from '@components';
+import { setLoading } from '@modules/reducers/auth/actions';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateEmail } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -18,7 +18,6 @@ import i18n from '@utils/i18n';
 export default Forgot = (props) => {
     const dispatch = useDispatch();
 
-    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [visitEmail, setVisitEmail] = useState(false);
     const [errorEmail, setErrorEmail] = useState('');
@@ -33,23 +32,22 @@ export default Forgot = (props) => {
     }, [email, visitEmail]);
 
     const onVerification = async () => {
-        setLoading(true);
+        dispatch(setLoading(true));
         await AuthService.verification(email)
             .then(async (response) => {
+                dispatch(setLoading(false));
                 if (response.status == 200) {
-                    setLoading(false);
                     setVisible(true);
                     setResend(false);
                     setCode(response.result[0].reset_code);
                 } else {
-                    setLoading(false);
                     setVisible(true);
                     setResend(false);
                     setCode(123456);
                 }
             })
             .catch((error) => {
-                setLoading(false);
+                dispatch(setLoading(false));
                 setErrorMsg(error.message);
             });
     }
@@ -58,7 +56,6 @@ export default Forgot = (props) => {
         if (code == value) {
             props.navigation.navigate('Reset', { email, code })
         } else {
-            setLoading(false);
             setErrorMsg('Incorrect Code');
             setTimeout(() => setErrorMsg(''), 1500);
         };
@@ -67,7 +64,6 @@ export default Forgot = (props) => {
     return (
         <Container style={common.container}>
             <StatusBar />
-            <Loading loading={loading} />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
                     <TouchableOpacity onPress={() => props.navigation.goBack()}>

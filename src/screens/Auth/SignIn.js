@@ -6,8 +6,7 @@ import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setUser } from '@modules/reducers/auth/actions';
-import { Loading } from '@components';
+import { setLoading, setUser } from '@modules/reducers/auth/actions';
 import { AuthService } from '@modules/services';
 import { isEmpty, validateEmail, validatePassword } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -18,7 +17,6 @@ export default SignIn = (props) => {
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
 
-    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [visitEmail, setVisitEmail] = useState(false);
     const [errorEmail, setErrorEmail] = useState('');
@@ -26,47 +24,50 @@ export default SignIn = (props) => {
     const [visitPassword, setVisitPassword] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
     const [secureTextEntry, setSecureTextEntry] = useState(true);
-    // const [rememberMe, setRememberMe] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         setErrorMsg('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-        // (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('Incorrect password')) : setErrorPassword('');
     }, [email, visitEmail, password, visitPassword]);
 
     const onLogin = async () => {
-        setLoading(true);
+        dispatch(setLoading(true));
         await AuthService.login(email, password)
             .then((response) => {
+                dispatch(setLoading(false));
                 if (response.status == 200) {
-                    setLoading(false);
                     var userEmail = user.email;
                     var userCity = user.city;
-                    if (isEmpty(userCity) || email !== userEmail) {
+                    if (userCity.id === 0 || email !== userEmail) {
                         dispatch(setUser({
                             token: response.result[0].token,
                             email,
-                            city: userCity,
-                            cityStatus: true
+                            city: {
+                                id: userCity.id,
+                                name: userCity.name,
+                                status: true
+                            }
                         }));
-                        props.navigation.navigate('Cities')
+                        props.navigation.navigate('Cities');
                     } else {
                         dispatch(setUser({
                             token: response.result[0].token,
                             email,
-                            city: userCity,
-                            cityStatus: false
+                            city: {
+                                id: userCity.id,
+                                name: userCity.name,
+                                status: false
+                            }
                         }));
                         props.navigation.navigate('App');
                     }
                 } else {
-                    setLoading(false);
                     setErrorMsg(i18n.translate(response.msg));
                 }
             })
             .catch((error) => {
-                setLoading(false);
+                dispatch(setLoading(false));
                 setErrorMsg(error.message);
             });
     }
@@ -74,7 +75,6 @@ export default SignIn = (props) => {
     return (
         <Container style={common.container}>
             <StatusBar />
-            <Loading loading={loading} />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
                     <TouchableOpacity onPress={() => props.navigation.goBack()}>
@@ -104,7 +104,6 @@ export default SignIn = (props) => {
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
                         value={email}
-                        // error={errorEmail}
                         containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         onChangeText={(value) => {
@@ -127,9 +126,7 @@ export default SignIn = (props) => {
                         fontSize={16}
                         autoCorrect={false}
                         enablesReturnKeyAutomatically={true}
-                        // clearTextOnFocus={true}
                         value={password}
-                        // error={errorPassword}
                         secureTextEntry={secureTextEntry}
                         containerStyle={[styles.textContainer, !isEmpty(errorPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}

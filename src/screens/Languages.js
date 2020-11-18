@@ -1,12 +1,11 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Platform, BackHandler, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header } from 'native-base';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setCountry } from '@modules/reducers/auth/actions';
-import { Loading } from '@components';
+import { setLoading, setCountry, setCity, setUser } from '@modules/reducers/auth/actions';
 import { AuthService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -15,9 +14,8 @@ import i18n from '@utils/i18n';
 
 export default Languages = (props) => {
     const dispatch = useDispatch();
-    const { country, user } = useSelector(state => state.auth);
+    const { country, logged, city, user } = useSelector(state => state.auth);
 
-    const [loading, setLoading] = useState(false);
     const [active, setActive] = useState(false);
     const [language, setLanguage] = useState(country === 'en' ? 0 : country === 'hu' ? 1 : 2);
     const [languages, setLanguages] = useState([
@@ -25,12 +23,46 @@ export default Languages = (props) => {
         { value: 1, label: 'Hungarian', code: 'hu' },
         { value: 2, label: 'Romanian', code: 'ro' }
     ]);
-    const [visible, setVisible] = useState(false);
+
+    const checkCity = (cityObj) => {
+        return cityObj.id == city.id;
+    };
+    const checkUserCity = (cityObj) => {
+        return cityObj.id == user.city.id;
+    };
+    const onLanguage = async () => {
+        dispatch(setLoading(true));
+        await AuthService.cities(languages[language].code)
+            .then(async (response) => {
+                dispatch(setLoading(false));
+                if (response.status == 200) {
+                    var cityOne = await response.locations.filter(logged ? checkUserCity : checkCity);
+                    dispatch(setCountry(languages[language].code));
+                    i18n.setLocale(languages[language].code);
+                    logged ? dispatch(setUser({
+                        token: user.token,
+                        email: user.email,
+                        city: {
+                            id: cityOne[0].id,
+                            name: cityOne[0].cities,
+                            status: user.city.status
+                        }
+                    })) : dispatch(setCity({
+                        id: cityOne[0].id,
+                        name: cityOne[0].cities,
+                        status: city.status
+                    }))
+                    props.navigation.pop();
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+            });
+    }
 
     return (
         <Container style={common.container}>
             <StatusBar />
-            <Loading loading={loading} />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
                     <TouchableOpacity onPress={() => props.navigation.pop()}>
@@ -41,12 +73,7 @@ export default Languages = (props) => {
                     <Text style={common.headerTitleText}>{i18n.translate('Languages selector')}</Text>
                 </View>
                 <View style={common.headerRight}>
-                    <TouchableOpacity onPress={() => {
-                        setVisible(false);
-                        dispatch(setCountry(languages[language].code));
-                        i18n.setLocale(languages[language].code);
-                        props.navigation.pop();
-                    }}>
+                    <TouchableOpacity onPress={() => onLanguage()}>
                         <Text style={common.headerRightText}>{i18n.translate('Set')}</Text>
                     </TouchableOpacity>
                 </View>
@@ -61,12 +88,12 @@ export default Languages = (props) => {
                 </View>
                 {active ? (
                     <View style={styles.listView}>
-                        {languages.map((one, key) => (
+                        {languages.map((languageOne, key) => (
                             <TouchableOpacity key={key} style={[styles.itemView, key == languages.length - 1 && styles.noborder]} onPress={() => {
                                 setActive(false);
-                                setLanguage(one.value);
+                                setLanguage(languageOne.value);
                             }}>
-                                <Text style={styles.itemText} numberOfLines={1}>{i18n.translate(one.label)}</Text>
+                                <Text style={styles.itemText} numberOfLines={1}>{i18n.translate(languageOne.label)}</Text>
                             </TouchableOpacity>
                         ))}
                     </View>

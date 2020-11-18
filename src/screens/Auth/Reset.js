@@ -6,19 +6,17 @@ import { TextField } from 'react-native-material-textfield';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setUser } from '@modules/reducers/auth/actions';
-import { Loading } from '@components';
+import { setLoading, setUser } from '@modules/reducers/auth/actions';
 import { AuthService } from '@modules/services';
 import { isEmpty, validatePassword } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { BackIcon, ErrorIcon } from '@constants/svgs';
+import { ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default SignIn = (props) => {
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
 
-    const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState('');
     const [visitPassword, setVisitPassword] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
@@ -36,37 +34,43 @@ export default SignIn = (props) => {
     }, [password, visitPassword, confirm, visitConfirm]);
 
     const onReset = async () => {
-        setLoading(true);
+        dispatch(setLoading(true));
         await AuthService.reset(props.route.params.email, password, props.route.params.code)
             .then((response) => {
+                dispatch(setLoading(false));
                 if (response.status == 200) {
-                    setLoading(false);
                     var userEmail = user.email;
                     var userCity = user.city;
-                    if(isEmpty(userCity) || props.route.params.email !== userEmail) {
+                    if (userCity.id === 0 || props.route.params.email !== userEmail) {
                         dispatch(setUser({
                             token: response.result[0].token,
                             email: props.route.params.email,
-                            city: userCity,
-                            cityStatus: true
+                            city: {
+                                id: userCity.id,
+                                name: userCity.name,
+                                status: true
+                            }
                         }));
-                        props.navigation.navigate('Cities') 
+                        props.navigation.navigate('Cities');
                     } else {
                         dispatch(setUser({
                             token: response.result[0].token,
                             email: props.route.params.email,
-                            city: userCity,
-                            cityStatus: false
+                            city: {
+                                id: userCity.id,
+                                name: userCity.name,
+                                status: false
+                            }
                         }));
-                         props.navigation.navigate('App');
+                        props.navigation.navigate('App');
                     }
                 } else {
-                    setLoading(false);
+                    dispatch(setLoading(false));
                     setErrorMsg(response.msg);
                 }
             })
             .catch((error) => {
-                setLoading(false);
+                dispatch(setLoading(false));
                 setErrorMsg(error.message);
             });
     }
@@ -74,13 +78,8 @@ export default SignIn = (props) => {
     return (
         <Container style={common.container}>
             <StatusBar />
-            <Loading loading={loading} />
             <Header style={common.header}>
-                <View style={common.headerLeft}>
-                    {/* <TouchableOpacity onPress={() => props.navigation.replace('Auth', { screen: 'SignIn' })}>
-                        <BackIcon style={common.headerLeftIcon} />
-                    </TouchableOpacity> */}
-                </View>
+                <View style={common.headerLeft} />
                 <View style={common.headerTitle}>
                     <Text style={common.headerTitleText}>{i18n.translate('Set a new password')}</Text>
                 </View>

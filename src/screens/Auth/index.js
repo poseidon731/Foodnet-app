@@ -17,15 +17,9 @@ const titles = [
     "Foodnet coupon code shopping",
 ];
 
-const languages = [
-    { value: 0, label: 'English', code: 'en', icon: icons.en },
-    { value: 1, label: 'Hungarian', code: 'hu', icon: icons.hu },
-    { value: 2, label: 'Romanian', code: 'ro', icon: icons.ro },
-];
-
-export default Splash = (props) => {
+export default Start = (props) => {
     const dispatch = useDispatch();
-    const { country, city } = useSelector(state => state.auth);
+    const { country, city, user } = useSelector(state => state.auth);
 
     useEffect(() => {
         const onLanguage = () => {
@@ -37,7 +31,7 @@ export default Splash = (props) => {
             i18n.setLocale(deviceCode);
             dispatch(setCountry(deviceCode));
         }
-        onLanguage();
+        user.city.id === 0 && onLanguage();
         return () => {
             console.log(country);
         }
@@ -69,7 +63,7 @@ export default Splash = (props) => {
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={() => {
-                    isEmpty(city) ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
+                    city.id === 0 ? props.navigation.navigate('Cities') : props.navigation.navigate('App');
                 }}>
                     <Text style={styles.continueText}>{i18n.translate('Continue without registration')}</Text>
                 </TouchableOpacity>

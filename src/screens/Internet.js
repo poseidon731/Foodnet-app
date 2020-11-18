@@ -4,7 +4,6 @@ import { Container, Header } from 'native-base';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { Loading } from '@components';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { InternetIcon } from '@constants/svgs';

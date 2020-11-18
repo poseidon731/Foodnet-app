@@ -1,5 +1,10 @@
 import types from './types';
 
+export const setLoading = (data) => ({
+    type: types.SET_LOADING,
+    payload: data,
+});
+
 export const setCountry = (data) => ({
     type: types.SET_COUNTRY,
     payload: data,

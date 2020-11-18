@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, ActivityIndicator, View, Modal } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
