@@ -16,16 +16,16 @@ import i18n from '@utils/i18n';
 export default SignUp = (props) => {
     const dispatch = useDispatch();
 
-    const [name, setName] = useState('');
+    const [name, setName] = useState('Edla');
     const [visitName, setVisitName] = useState(false);
     const [errorName, setErrorName] = useState('');
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState('edla@gmail.com');
     const [visitEmail, setVisitEmail] = useState(false);
     const [errorEmail, setErrorEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState('123456');
     const [visitPassword, setVisitPassword] = useState(false);
     const [errorPassword, setErrorPassword] = useState('');
-    const [confirm, setConfirm] = useState('');
+    const [confirm, setConfirm] = useState('123456');
     const [visitConfirm, setVisitConfirm] = useState(false);
     const [errorConfirm, setErrorConfirm] = useState('');
     const [secureTextEntry1, setSecureTextEntry1] = useState(true);
@@ -42,12 +42,12 @@ export default SignUp = (props) => {
         (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validatePassword(confirm)) ? setErrorConfirm(i18n.translate('The password must be at least 3 characters long')) : (confirm.length >= 5 && password !== confirm) ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
     }, [name, visitName, email, visitEmail, password, visitPassword, confirm, visitConfirm]);
 
-    const onSignup = async () => {
+    const onSignup = () => {
         dispatch(setLoading(true));
-        await AuthService.register(name, email, password, newsLetter ? 1 : 0)
+        AuthService.register(name, email, password, newsLetter ? 1 : 0)
             .then((response) => {
-                dispatch(setLoading(false));
                 if (response.status == 201) {
+                    dispatch(setLoading(false));
                     dispatch(setUser({
                         token: response.result[0].token,
                         email,

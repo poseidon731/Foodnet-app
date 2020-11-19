@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import NetInfo from '@react-native-community/netinfo';
@@ -9,7 +9,7 @@ import { Internet, Start, Cities, Languages } from '@screens';
 import { Loading } from '@components';
 import DrawerNavigator from '@navigations/DrawerNavigator';
 import AuthStack from '@navigations/StackNavigators/AuthStackNavigator';
-import { navOptionHandler, isEmpty } from '@utils/functions';
+import { navOptionHandler } from '@utils/functions';
 
 const StackApp = createStackNavigator();
 export default AppContainer = () => {

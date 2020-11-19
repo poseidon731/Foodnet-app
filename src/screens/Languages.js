@@ -30,9 +30,9 @@ export default Languages = (props) => {
     const checkUserCity = (cityObj) => {
         return cityObj.id == user.city.id;
     };
-    const onLanguage = async () => {
+    const onLanguage = () => {
         dispatch(setLoading(true));
-        await AuthService.cities(languages[language].code)
+        AuthService.cities(languages[language].code)
             .then(async (response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {

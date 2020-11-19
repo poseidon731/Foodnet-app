@@ -28,23 +28,23 @@ export default Cities = (props) => {
         }
         BackHandler.addEventListener('hardwareBackPress', handleBackButton);
 
-        const getCities = async () => {
+        const getCities = () => {
             dispatch(setLoading(true));
-            await AuthService.cities(country)
+            AuthService.cities(country)
                 .then((response) => {
-                    setTimeout(()=> dispatch(setLoading(false)), 100);
+                    dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
                     }
                 })
                 .catch((error) => {
-                    setTimeout(()=> dispatch(setLoading(false)), 100);
+                    dispatch(setLoading(false));
                 });
         }
         getCities();
 
         return () => {
-            console.log('cities will be unmount');
+            console.log('Unmounted');
         }
     }, []);
 
@@ -64,7 +64,6 @@ export default Cities = (props) => {
             }
         }));
         props.navigation.navigate('App');
-
     };
 
     return (

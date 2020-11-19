@@ -33,9 +33,9 @@ export default SignIn = (props) => {
         (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validatePassword(confirm)) ? setErrorConfirm(i18n.translate('The password must be at least 3 characters long')) : (confirm.length >= 5 && password !== confirm) ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
     }, [password, visitPassword, confirm, visitConfirm]);
 
-    const onReset = async () => {
+    const onReset = () => {
         dispatch(setLoading(true));
-        await AuthService.reset(props.route.params.email, password, props.route.params.code)
+        AuthService.reset(props.route.params.email, password, props.route.params.code)
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {

@@ -31,9 +31,9 @@ export default SignIn = (props) => {
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
     }, [email, visitEmail, password, visitPassword]);
 
-    const onLogin = async () => {
+    const onLogin = () => {
         dispatch(setLoading(true));
-        await AuthService.login(email, password)
+        AuthService.login(email, password)
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {

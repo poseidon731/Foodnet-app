@@ -31,9 +31,9 @@ export default Forgot = (props) => {
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
     }, [email, visitEmail]);
 
-    const onVerification = async () => {
+    const onVerification = () => {
         dispatch(setLoading(true));
-        await AuthService.verification(email)
+        AuthService.verification(email)
             .then(async (response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {
