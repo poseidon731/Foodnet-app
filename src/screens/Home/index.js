@@ -83,10 +83,10 @@ export default Home = (props) => {
             .catch((error) => {
                 console.log(error.message);
             });
-        FoodService.filter(country, logged ? user.city.name : city.name)
+        FoodService.result(country, logged ? user.city.name : city.name)
             .then((response) => {
                 if (response.status == 200) {
-                    setFilter(response.selectedLocation);
+                    setResult(response.selectedLocation);
                 }
             })
             .catch((error) => {
