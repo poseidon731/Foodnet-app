@@ -1,5 +1,5 @@
 {
-    "Loading Application" : "Loading Application..",
+    "Loading Application": "Loading Application..",
     "No internet": "No internet",
     "No internet connection": "No internet connection",
     "Please connect to the internet and refresh": "Please connect to the internet and refresh",
@@ -60,5 +60,31 @@
     "Language of application": "Language of application",
     "English": "English",
     "Hungarian": "Hungarian",
-    "Romanian": "Romanian"
+    "Romanian": "Romanian",
+
+    "Dashboard": "Dashboard",
+    "Extra discounts": "Extra discounts!",
+    "Know more": "Know more!",
+    "What do you eat": "What do you eat?",
+    "Featured restaurants": "Featured restaurants",
+    "Trendy restaurants": "Trendy restaurants",
+    "All restaurants": "All restaurants",
+    "NEW RESTAURANT": "NEW RESTAURANT",
+    "SPECIAL PRICE": "SPECIAL PRICE",
+    "CLOSED": "CLOSED",
+
+    "Foods": "Foods",
+    "Hamburger": "Hamburger",
+    "Pizza": "Pizza",
+    "Soup": "Soup",
+    "Daily menu": "Daily menu",
+    "Salat": "Salat",
+    "Useful": "Useful",
+    "No shipping costs": "No shipping costs",
+    "News": "News",
+    "Card": "Card",
+    "Within 1 hour": "Within 1 hour",
+    "Payment options": "Payment options",
+    "Cash": "Cash",
+    "Search": "Search"
 }

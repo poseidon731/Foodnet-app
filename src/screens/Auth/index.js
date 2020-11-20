@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, NativeModules, StatusBar, StyleSheet, ImageBackground, View, Text, TouchableOpacity } from 'react-native';
-import Swiper from 'react-native-swiper';
-
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Icon } from 'react-native-elements';
 import { setCountry } from '@modules/reducers/auth/actions';
-import { isEmpty } from '@utils/functions';
 import { colors, common } from '@constants/themes';
-import { images, icons } from '@constants/assets';
+import { images } from '@constants/assets';
 import { LogoIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
+
+import Swiper from 'react-native-swiper';
 
 const titles = [
     "Foodnet coupon code shopping",

@@ -60,5 +60,31 @@
     "Language of application": "Alkalmazás nyelve",
     "English": "Angol",
     "Hungarian": "Magyar",
-    "Romanian": "Román"
+    "Romanian": "Román",
+    
+    "Dashboard": "Dashboard",
+    "Extra discounts": "Extra kedvezmények!",
+    "Know more": "Tudj meg többet!",
+    "What do you eat": "Mit ennél?",
+    "Featured restaurants": "Kiemelt éttermek",
+    "Trendy restaurants": "Felkapottak",
+    "All restaurants": "Minden étterem",
+    "NEW RESTAURANT": "ÚJ VENDÉGLŐ",
+    "SPECIAL PRICE": "AKCIÓS ÁR",
+    "CLOSED": "ZÁRVA",
+
+    "Foods": "Ételek",
+    "Hamburger": "Hamburger",
+    "Pizza": "Pizza",
+    "Soup": "Leves",
+    "Daily menu": "Napi menü",
+    "Salat": "Saláta",
+    "Useful": "Hasznos",
+    "No shipping costs": "Nincs szállítási költség",
+    "News": "Újdonságok",
+    "Card": "Bankkártya",
+    "Within 1 hour": "1 órán belül",
+    "Payment options": "Fizetési lehetőségek",
+    "Cash": "Készpénz",
+    "Search": "Keresés"
 }

@@ -8,7 +8,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Icon } from 'react-native-elements';
 import { setLoading, setUser } from '@modules/reducers/auth/actions';
 import { AuthService } from '@modules/services';
-import { isEmpty, validateEmail, validatePassword } from '@utils/functions';
+import { isEmpty, validateEmail } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { BackIcon, GoogleIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';

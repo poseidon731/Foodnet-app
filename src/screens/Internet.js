@@ -1,7 +1,6 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
 import { Container, Header } from 'native-base';
-
+import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { isEmpty } from '@utils/functions';

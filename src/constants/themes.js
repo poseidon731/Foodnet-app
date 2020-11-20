@@ -174,6 +174,9 @@ export const common = StyleSheet.create({
     borderColorRed: {
         borderColor: colors.RED.PRIMARY
     },
+    borderColorYellow: {
+        borderColor: colors.YELLOW.PRIMARY
+    },
 
     button: {
         justifyContent: 'center',

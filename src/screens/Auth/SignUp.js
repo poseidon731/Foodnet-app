@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Content } from 'native-base';
-import { TextField } from 'react-native-material-textfield';
-
+import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading, setUser } from '@modules/reducers/auth/actions';
@@ -12,6 +10,8 @@ import { isEmpty, validateName, validateEmail, validatePassword } from '@utils/f
 import { common, colors } from '@constants/themes';
 import { BackIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
+
+import { TextField } from 'react-native-material-textfield';
 
 export default SignUp = (props) => {
     const dispatch = useDispatch();

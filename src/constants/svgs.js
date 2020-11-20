@@ -164,6 +164,31 @@ const InternetIcon = ({ style }) => (
     </View>
 );
 
+const SearchIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/Svg">
+            <Path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M21 21L16.65 16.65" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const FilterIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/Svg">
+            <Path d="M4 21V14" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M4 10V3" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 21V12" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M12 8V3" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M20 21V16" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M20 12V3" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M1 14H7" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M9 8H15" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <Path d="M17 16H23" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
 export {
     SplashIcon,
     LogoIcon,
@@ -178,5 +203,7 @@ export {
     ServiceIcon,
     MapPinIcon,
     ErrorIcon,
-    InternetIcon
+    InternetIcon,
+    SearchIcon,
+    FilterIcon
 }

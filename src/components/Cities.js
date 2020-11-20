@@ -1,8 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Container } from 'native-base';
-
+import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setCity, setUser } from '@modules/reducers/auth/actions';
@@ -44,8 +43,7 @@ export default Cities = (props) => {
     }, []);
 
     return (
-        <Container style={common.container}>
-            <StatusBar />
+        <View style={styles.container}>
             <View style={styles.content}>
                 <View style={styles.inputView}>
                     <Text style={styles.labelText}>{i18n.translate('Where are you looking for a restaurant')}</Text>
@@ -145,7 +143,7 @@ export default Cities = (props) => {
                         props.onSave();
                     }}
                     onCancel={() => setVisible(false)} /> : null}
-        </Container >
+        </View >
     );
 }
 
@@ -170,6 +168,10 @@ const SaveModal = (props) => {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20
+    },
     content: {
         padding: 0
     },
@@ -247,8 +249,7 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         position: 'absolute',
-        top: -128,
-        left: -20,
+        top: -108,
         width: wp('100%'),
         height: hp('100%'),
         justifyContent: 'center',
