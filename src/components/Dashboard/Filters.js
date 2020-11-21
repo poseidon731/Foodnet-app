@@ -11,7 +11,6 @@ import { images, icons } from '@constants/assets';
 import { RES_URL } from '@constants/configs';
 import i18n from '@utils/i18n';
 import moment from 'moment';
-import { color } from 'react-native-reanimated';
 
 export default Filters = (props) => {
   const [nowTime, setNowTime] = useState(moment().format('HH:mm').replace(':', ''));
