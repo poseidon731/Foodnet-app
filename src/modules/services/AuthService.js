@@ -1,7 +1,7 @@
 import axios from '@utils/axios';
 
 const AuthService = {
-    login: async function (email, password) {
+    login: function (email, password) {
         return axios.post(`/auth/login`, {
             email,
             password
@@ -9,7 +9,7 @@ const AuthService = {
             return response.data;
         });
     },
-    register: async function (name, email, password, newsletter) {
+    register: function (name, email, password, newsletter) {
         return axios.post(`/auth/register`, {
             email,
             name,
@@ -19,14 +19,14 @@ const AuthService = {
             return response.data;
         });
     },
-    verification: async function (email) {
+    verification: function (email) {
         return axios.post(`/auth/verification`, {
             email
         }).then((response) => {
             return response.data;
         });
     },
-    reset: async function (email, password, code) {
+    reset: function (email, password, code) {
         return axios.post(`/auth/reset-password-app`, {
             email,
             newPassword: password,
@@ -35,7 +35,7 @@ const AuthService = {
             return response.data;
         });
     },
-    cities: async function (country) {
+    cities: function (country) {
         return axios.get(`/location-app/${country}`).then((response) => {
             return response.data;
         });

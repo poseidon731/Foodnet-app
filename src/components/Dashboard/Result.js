@@ -60,12 +60,18 @@ export default Result = (props) => {
   return (
     <Card key='result' style={styles.card}>
       <Text style={styles.cardTitle}>{i18n.translate('All restaurants')}</Text>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        data={props.data}
-        keyExtractor={(result, index) => index.toString()}
-        renderItem={renderItem}
-      />
+      {!isEmpty(props.data) ? (
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          data={props.data}
+          keyExtractor={(result, index) => index.toString()}
+          renderItem={renderItem}
+        />
+      ) : (
+          <View style={styles.emptyView}>
+            <Text style={styles.cardTitle}>{i18n.translate('No restaurant found')}</Text>
+          </View>
+        )}
     </Card>
   );
 }
@@ -165,5 +171,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: colors.RED.PRIMARY
+  },
+  emptyView: {
+    width: '100%',
+    paddingVertical: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

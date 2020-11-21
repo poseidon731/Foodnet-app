@@ -8,6 +8,7 @@ import Card from '../Athena/Card';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { images, icons } from '@constants/assets';
+import { RemoveIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default Filters = (props) => {
@@ -22,8 +23,26 @@ export default Filters = (props) => {
   const [card, setCard] = useState(props.filters.card);
   const [withinOneHour, setWithinOneHour] = useState(props.filters.withinOneHour);
 
+  const onReset = () => {
+    setFreeDelivery(0);
+    setNewest(0);
+    setPizza(0);
+    setHamburger(0);
+    setDailyMenu(0);
+    setSoup(0);
+    setSalad(0);
+    setMoney(0);
+    setCard(0);
+    setWithinOneHour(0);
+  }
+
   return (
     <Content style={styles.content}>
+      <View style={styles.resetView}>
+        <TouchableOpacity onPress={() => onReset()}>
+          <RemoveIcon />
+        </TouchableOpacity>
+      </View>
       <Card key='result1' style={styles.card}>
         <Text style={styles.cardTitle}>{i18n.translate('Foods')}</Text>
         <View key='filter1' style={styles.itemView}>
@@ -103,6 +122,11 @@ const styles = StyleSheet.create({
   content: {
     width: wp('100%'),
     padding: 20
+  },
+  resetView: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
   },
   card: {
     width: '100%',

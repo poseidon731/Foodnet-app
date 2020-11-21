@@ -34,7 +34,7 @@ export default Forgot = (props) => {
     const onVerification = () => {
         dispatch(setLoading(true));
         AuthService.verification(email)
-            .then(async (response) => {
+            .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {
                     setVisible(true);

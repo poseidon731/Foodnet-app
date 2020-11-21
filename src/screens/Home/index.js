@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header } from 'native-base';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
@@ -66,7 +66,7 @@ export default Home = (props) => {
                 .then((response) => {
                     if (response.status == 200) {
                         dispatch(setLoading(false));
-                        setResult(response.finalResult);
+                        setResult(response.result);
                     }
                 })
                 .catch((error) => {
@@ -76,9 +76,7 @@ export default Home = (props) => {
         }
         getResult();
 
-        return () => {
-            console.log('Unmounted');
-        }
+        return () => console.log('Unmounted');
     }, []);
 
     useEffect(() => {
@@ -112,7 +110,7 @@ export default Home = (props) => {
                 setRefresh(false);
                 dispatch(setLoading(false));
                 if (response.status == 200) {
-                    setResult(response.finalResult);
+                    setResult(response.result);
                 }
             })
             .catch((error) => {
@@ -126,7 +124,7 @@ export default Home = (props) => {
         FoodService.result(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
                 if (response.status == 200) {
-                    setResult(response.finalResult);
+                    setResult(response.result);
                 }
             })
             .catch((error) => {
@@ -140,7 +138,7 @@ export default Home = (props) => {
             .then((response) => {
                 if (response.status == 200) {
                     dispatch(setLoading(false));
-                    setResult(response.finalResult);
+                    setResult(response.result);
                 }
             })
             .catch((error) => {
@@ -173,10 +171,11 @@ export default Home = (props) => {
                         featured={featured}
                         trendy={trendy}
                         result={result}
-                        onFilter={() => setFilterStatus(!filterStatus)}
                         refresh={refresh}
-                        onRefresh={() => setRefresh(true)}
                         search={search}
+                        filters={filters}
+                        onFilter={() => setFilterStatus(!filterStatus)}
+                        onRefresh={() => setRefresh(true)}
                         onSearch={(value) => setSearch(value)}
                     /> :
                     <Filters
@@ -187,7 +186,10 @@ export default Home = (props) => {
                         }}
                         onCancel={() => setFilterStatus(false)}
                     /> :
-                    <Cities onSave={() => setCityStatus(false)} onLoading={(load) => dispatch(setLoading(load))} />
+                    <Cities
+                        onSave={() => setCityStatus(false)}
+                        onLoading={(load) => dispatch(setLoading(load))}
+                    />
             }
         </Container>
     );

@@ -22,9 +22,7 @@ export default Cities = (props) => {
     const [cityStatus, setCityStatus] = useState(false);
 
     useEffect(() => {
-        const handleBackButton = () => {
-            return true;
-        }
+        const handleBackButton = () => { return true; }
         BackHandler.addEventListener('hardwareBackPress', handleBackButton);
 
         const getCities = () => {
@@ -40,11 +38,9 @@ export default Cities = (props) => {
                     dispatch(setLoading(false));
                 });
         }
-        setTimeout(()=> getCities(), 500);
+        setTimeout(() => getCities(), 500);
 
-        return () => {
-            console.log('Unmounted');
-        }
+        return () => console.log('Unmounted');
     }, []);
 
     const onSave = () => {

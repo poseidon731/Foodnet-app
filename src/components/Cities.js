@@ -23,8 +23,8 @@ export default Cities = (props) => {
 
     useEffect(() => {
         props.onLoading(true);
-        const getCities = async () => {
-            await AuthService.cities(country)
+        const getCities = () => {
+            AuthService.cities(country)
                 .then((response) => {
                     props.onLoading(false);
                     if (response.status == 200) {

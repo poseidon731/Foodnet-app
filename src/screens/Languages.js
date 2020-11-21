@@ -22,6 +22,7 @@ export default Languages = (props) => {
         { value: 1, label: 'Hungarian', code: 'hu' },
         { value: 2, label: 'Romanian', code: 'ro' }
     ]);
+    const [disabled, setDisabled] = useState(false);
 
     const checkCity = (cityObj) => {
         return cityObj.id == city.id;
@@ -30,10 +31,11 @@ export default Languages = (props) => {
         return cityObj.id == user.city.id;
     };
     const onLanguage = () => {
-        dispatch(setLoading(true));
+        // dispatch(setLoading(true));
+        setDisabled(true);
         AuthService.cities(languages[language].code)
             .then(async (response) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
                 if (response.status == 200) {
                     var cityOne = await response.locations.filter(logged ? checkUserCity : checkCity);
                     dispatch(setCountry(languages[language].code));
@@ -55,7 +57,8 @@ export default Languages = (props) => {
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
+                setDisabled(false);
+                // dispatch(setLoading(false));
             });
     }
 
@@ -72,7 +75,7 @@ export default Languages = (props) => {
                     <Text style={common.headerTitleText}>{i18n.translate('Languages selector')}</Text>
                 </View>
                 <View style={common.headerRight}>
-                    <TouchableOpacity onPress={() => onLanguage()}>
+                    <TouchableOpacity onPress={() => onLanguage()} disabled={disabled}>
                         <Text style={common.headerRightText}>{i18n.translate('Set')}</Text>
                     </TouchableOpacity>
                 </View>
