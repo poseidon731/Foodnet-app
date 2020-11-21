@@ -8,22 +8,19 @@ import Card from '../Athena/Card';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { images, icons } from '@constants/assets';
-import { RES_URL } from '@constants/configs';
 import i18n from '@utils/i18n';
-import moment from 'moment';
 
 export default Filters = (props) => {
-  const [nowTime, setNowTime] = useState(moment().format('HH:mm').replace(':', ''));
-  const [freeDelivery, setFreeDelivery] = useState(0);
-  const [newest, setNewest] = useState(0);
-  const [pizza, setPizza] = useState(0);
-  const [hamburger, setHamburger] = useState(0);
-  const [dailyMenu, setDailyMenu] = useState(0);
-  const [soup, setSoup] = useState(0);
-  const [salad, setSalad] = useState(0);
-  const [money, setMoney] = useState(0);
-  const [card, setCard] = useState(0);
-  const [withinOneHour, setWithinOneHour] = useState(0);
+  const [freeDelivery, setFreeDelivery] = useState(props.filters.freeDelivery);
+  const [newest, setNewest] = useState(props.filters.newest);
+  const [pizza, setPizza] = useState(props.filters.pizza);
+  const [hamburger, setHamburger] = useState(props.filters.hamburger);
+  const [dailyMenu, setDailyMenu] = useState(props.filters.dailyMenu);
+  const [soup, setSoup] = useState(props.filters.soup);
+  const [salad, setSalad] = useState(props.filters.salad);
+  const [money, setMoney] = useState(props.filters.money);
+  const [card, setCard] = useState(props.filters.card);
+  const [withinOneHour, setWithinOneHour] = useState(props.filters.withinOneHour);
 
   return (
     <Content style={styles.content}>
@@ -78,7 +75,7 @@ export default Filters = (props) => {
         <View key='filter6' style={styles.itemBorder} />
       </Card>
       <View style={styles.bottomView}>
-        <TouchableOpacity style={[styles.button, common.backColorYellow]} onPress={() => alert(JSON.stringify({
+        <TouchableOpacity style={[styles.button, common.backColorYellow]} onPress={() => props.onFilters({
           freeDelivery: freeDelivery ? 1 : 0,
           newest: newest ? 1 : 0,
           pizza: pizza ? 1 : 0,
@@ -90,7 +87,7 @@ export default Filters = (props) => {
           card: card ? 1 : 0,
           withinOneHour: withinOneHour ? 1 : 0
 
-        }))}>
+        })}>
           <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Search')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginTop: 16 }} onPress={() => props.onCancel()}>

@@ -18,8 +18,6 @@ import { TextField } from 'react-native-material-textfield';
 import Grid from 'react-native-infinite-scroll-grid';
 
 export default Dashboard = (props) => {
-    const [search, setSearch] = useState('');
-
     return (
         <Grid
             data={[1]}
@@ -47,7 +45,7 @@ export default Dashboard = (props) => {
                                 fontSize={16}
                                 autoCorrect={false}
                                 enablesReturnKeyAutomatically={true}
-                                value={search}
+                                value={props.search}
                                 containerStyle={styles.textContainer}
                                 inputContainerStyle={styles.inputContainer}
                                 renderLeftAccessory={() => {
@@ -62,9 +60,7 @@ export default Dashboard = (props) => {
                                         </TouchableOpacity>
                                     )
                                 }}
-                                onChangeText={(value) => {
-                                    console.log('ese')
-                                }}
+                                onChangeText={(value) => props.onSearch(value)}
                             />
                         </View>
                         {!isEmpty(props.featured) && (<Featured key='featured' data={props.featured} />)}
