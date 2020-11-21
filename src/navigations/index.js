@@ -19,7 +19,7 @@ export default AppContainer = () => {
     i18n.setLocale(country);
 
     useEffect(() => {
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
         const handleEventListener = state => {
             if (!state.isConnected && navigator && global.internet) {
                 global.internet = false;

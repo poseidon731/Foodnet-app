@@ -24,6 +24,7 @@ export default Home = (props) => {
 
     useEffect(() => {
         const getFeatured = () => {
+            dispatch(setLoading(true));
             FoodService.featured(country, logged ? user.city.name : city.name)
                 .then((response) => {
                     if (response.status == 200) {
@@ -51,10 +52,12 @@ export default Home = (props) => {
             FoodService.result(country, logged ? user.city.name : city.name)
                 .then((response) => {
                     if (response.status == 200) {
+                        dispatch(setLoading(false));
                         setResult(response.selectedLocation);
                     }
                 })
                 .catch((error) => {
+                    dispatch(setLoading(false));
                     console.log(error.message);
                 });
         }

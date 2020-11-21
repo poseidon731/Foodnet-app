@@ -37,20 +37,23 @@ export default Result = (props) => {
             )}
           </View>
         )}
-        {(parseInt(moment().format('HH:mm').replace(':', '')) < parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) > parseInt(result.item.restaurant_close.replace(':', ''))) && (
+        {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && (
           <View style={styles.overlay}>
             <Text style={styles.closeText}>{i18n.translate('CLOSED')}</Text>
           </View>
         )}
         <View style={styles.titleView}>
-          <Text style={[styles.title, (parseInt(moment().format('HH:mm').replace(':', '')) < parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) > parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={1}>{result.item.restaurant_name}</Text>
+          <Text style={[styles.title, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={1}>{result.item.restaurant_name}</Text>
           {/* <Text>{moment().format('HH:mm')}</Text> */}
           <View style={styles.rating}>
             <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
             <Text style={styles.rate}>{result.item.restaurant_rating}/5</Text>
           </View>
         </View>
-        <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) < parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) > parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{result.item.restaurant_description}</Text>
+        <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{result.item.restaurant_description}</Text>
+        <View style={{ flexDirection: 'row', marginTop: 5 }}>
+          <Text style={styles.time}>{result.item.restaurant_open}/{moment().format('HH:mm')}/{result.item.restaurant_close}</Text>
+        </View>
       </TouchableOpacity>
     )
   }
@@ -157,5 +160,10 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.5
+  },
+  time: {
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: colors.RED.PRIMARY
   }
 });

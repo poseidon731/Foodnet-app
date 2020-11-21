@@ -10,6 +10,7 @@ import { images, icons } from '@constants/assets';
 import { RES_URL } from '@constants/configs';
 import i18n from '@utils/i18n';
 
+import moment from 'moment';
 import FastImage from 'react-native-fast-image';
 
 export default Trendy = (props) => {
@@ -18,12 +19,20 @@ export default Trendy = (props) => {
     return (
       <TouchableOpacity key={index} style={styles.trendy}>
         <FastImage style={styles.image} source={{ uri: RES_URL + trendy.item.restaurant_profileImage }} />
-        <Text style={styles.title} numberOfLines={1}>{trendy.item.restaurant_name}</Text>
+        {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(trendy.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(trendy.item.restaurant_close.replace(':', ''))) && (
+          <View style={styles.overlay}>
+            <Text style={styles.closeText}>{i18n.translate('CLOSED')}</Text>
+          </View>
+        )}
+        <Text style={[styles.title, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(trendy.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(trendy.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={1}>{trendy.item.restaurant_name}</Text>
         <View style={styles.rating}>
           <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
           <Text style={styles.rate}>{trendy.item.restaurant_rating}/5</Text>
         </View>
-        <Text style={styles.description} numberOfLines={2}>{trendy.item.restaurant_description}</Text>
+        <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(trendy.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(trendy.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{trendy.item.restaurant_description}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.time}>{trendy.item.restaurant_open}/{moment().format('HH:mm')}/{trendy.item.restaurant_close}</Text>
+        </View>
       </TouchableOpacity>
     )
   }
@@ -62,6 +71,22 @@ const styles = StyleSheet.create({
     height: 125,
     borderRadius: 8
   },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: 125,
+    backgroundColor: '#000000D0',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  closeText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: colors.WHITE
+  },
   title: {
     width: '100%',
     marginVertical: 12,
@@ -89,5 +114,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '400',
     lineHeight: 21
+  },
+  disabled: {
+    opacity: 0.5
+  },
+  time: {
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: colors.RED.PRIMARY
   }
 });

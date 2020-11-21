@@ -40,7 +40,7 @@ export default Cities = (props) => {
                     dispatch(setLoading(false));
                 });
         }
-        getCities();
+        setTimeout(()=> getCities(), 500);
 
         return () => {
             console.log('Unmounted');
