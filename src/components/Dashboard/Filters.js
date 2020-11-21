@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Content, Body } from 'native-base';
+import { Content } from 'native-base';
 import { Platform, StatusBar, StyleSheet, LogBox, FlatList, View, Image, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
@@ -27,7 +27,7 @@ export default Filters = (props) => {
   const [withinOneHour, setWithinOneHour] = useState(0);
 
   return (
-    <Body style={styles.body}>
+    <Content style={styles.content}>
       <Card key='result1' style={styles.card}>
         <Text style={styles.cardTitle}>{i18n.translate('Foods')}</Text>
         <View key='filter1' style={styles.itemView}>
@@ -94,16 +94,17 @@ export default Filters = (props) => {
         }))}>
           <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Search')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: 16 }} onPress={()=>props.onCancel()}>
+        <TouchableOpacity style={{ marginTop: 16 }} onPress={() => props.onCancel()}>
           <Text style={styles.cancelText}>{i18n.translate('Cancel')}</Text>
         </TouchableOpacity>
       </View>
-    </Body>
+      <View style={common.height50} />
+    </Content>
   );
 }
 
 const styles = StyleSheet.create({
-  body: {
+  content: {
     width: wp('100%'),
     padding: 20
   },

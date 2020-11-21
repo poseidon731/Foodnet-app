@@ -6,6 +6,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
 import { FoodService } from '@modules/services';
+import { isEmpty } from '@utils/functions';
 import { Cities, Dashboard, Filters } from '@components';
 import { common, colors } from '@constants/themes';
 import i18n from '@utils/i18n';
@@ -13,12 +14,13 @@ import i18n from '@utils/i18n';
 export default Home = (props) => {
     const dispatch = useDispatch();
     const { logged, country, city, user } = useSelector(state => state.auth);
-
+    
     const [cityStatus, setCityStatus] = useState(false);
     const [filterStatus, setFilterStatus] = useState(false);
     const [featured, setFeatured] = useState([]);
     const [trendy, setTrendy] = useState([]);
     const [result, setResult] = useState([]);
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         const getFeatured = () => {
@@ -63,36 +65,42 @@ export default Home = (props) => {
         }
     }, []);
 
-    const setCity = () => {
+    useEffect(() => {
         setCityStatus(false);
         FoodService.featured(country, logged ? user.city.name : city.name)
             .then((response) => {
+                setRefresh(false);
                 if (response.status == 200) {
                     setFeatured(response.selectedLocation);
                 }
             })
             .catch((error) => {
+                setRefresh(false);
                 console.log(error.message);
             });
         FoodService.trendy(country, logged ? user.city.name : city.name)
             .then((response) => {
+                setRefresh(false);
                 if (response.status == 200) {
                     setTrendy(response.selectedLocation);
                 }
             })
             .catch((error) => {
+                setRefresh(false);
                 console.log(error.message);
             });
         FoodService.result(country, logged ? user.city.name : city.name)
             .then((response) => {
+                setRefresh(false);
                 if (response.status == 200) {
                     setResult(response.selectedLocation);
                 }
             })
             .catch((error) => {
+                setRefresh(false);
                 console.log(error.message);
             });
-    }
+    },[country, city, user, refresh]);
 
     return (
         <Container style={common.container}>
@@ -119,11 +127,13 @@ export default Home = (props) => {
                         trendy={trendy}
                         result={result}
                         onFilter={() => setFilterStatus(!filterStatus)}
+                        refresh={refresh}
+                        onRefresh={()=>setRefresh(true)}
                     /> : 
                     <Filters 
                         onCancel={()=>setFilterStatus(false)}
                     /> :
-                    <Cities onSave={() => setCity()} onLoading={(load) => dispatch(setLoading(load))} />
+                    <Cities onSave={() => setCityStatus(false)} onLoading={(load) => dispatch(setLoading(load))} />
             }
         </Container>
     );

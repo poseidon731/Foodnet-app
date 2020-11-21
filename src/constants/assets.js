@@ -1,6 +1,7 @@
 export const images = {
     bgImage: require('@assets/images/background.jpg'),
     pizzaImage: require('@assets/images/pizza.png'),
+    loadImage: require('@assets/images/loaderimg.gif'),
 }
 
 export const icons = {

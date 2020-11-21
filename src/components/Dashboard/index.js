@@ -15,60 +15,68 @@ import { SearchIcon, FilterIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 import { TextField } from 'react-native-material-textfield';
+import Grid from 'react-native-infinite-scroll-grid';
 
 export default Dashboard = (props) => {
     const [search, setSearch] = useState('');
 
     return (
-        <Body style={common.container}>
-            <View style={styles.topView}>
-                <Image source={images.pizzaImage} />
-                <View style={styles.topRight}>
-                    <Text style={styles.topTitle}>{i18n.translate('Extra discounts')}</Text>
-                    <View style={styles.topSpace} />
-                    <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity style={styles.topButton}>
-                            <Text style={styles.topText}>{i18n.translate('Know more')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-            <Content style={styles.content}>
-                <View key='search' style={styles.inputView}>
-                    <TextField
-                        placeholder={i18n.translate('What do you eat')}
-                        placeholderTextColor='#666'
-                        autoCapitalize='none'
-                        returnKeyType='done'
-                        fontSize={16}
-                        autoCorrect={false}
-                        enablesReturnKeyAutomatically={true}
-                        value={search}
-                        containerStyle={styles.textContainer}
-                        inputContainerStyle={styles.inputContainer}
-                        renderLeftAccessory={() => {
-                            return (
-                                <SearchIcon style={{ marginRight: 10 }} />
-                            )
-                        }}
-                        renderRightAccessory={() => {
-                            return (
-                                <TouchableOpacity onPress={() => props.onFilter()} >
-                                    <FilterIcon style={{ marginLeft: 10 }} />
+        <Grid
+            data={[1]}
+            renderItem={(item) => (
+                <View style={common.container}>
+                    <View style={styles.topView}>
+                        <Image source={images.pizzaImage} />
+                        <View style={styles.topRight}>
+                            <Text style={styles.topTitle}>{i18n.translate('Extra discounts')}</Text>
+                            <View style={styles.topSpace} />
+                            <View style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity style={styles.topButton}>
+                                    <Text style={styles.topText}>{i18n.translate('Know more')}</Text>
                                 </TouchableOpacity>
-                            )
-                        }}
-                        onChangeText={(value) => {
-                            console.log('ese')
-                        }}
-                    />
+                            </View>
+                        </View>
+                    </View>
+                    <Body style={styles.content}>
+                        <View key='search' style={styles.inputView}>
+                            <TextField
+                                placeholder={i18n.translate('What do you eat')}
+                                placeholderTextColor='#666'
+                                autoCapitalize='none'
+                                returnKeyType='done'
+                                fontSize={16}
+                                autoCorrect={false}
+                                enablesReturnKeyAutomatically={true}
+                                value={search}
+                                containerStyle={styles.textContainer}
+                                inputContainerStyle={styles.inputContainer}
+                                renderLeftAccessory={() => {
+                                    return (
+                                        <SearchIcon style={{ marginRight: 10 }} />
+                                    )
+                                }}
+                                renderRightAccessory={() => {
+                                    return (
+                                        <TouchableOpacity onPress={() => props.onFilter()} >
+                                            <FilterIcon style={{ marginLeft: 10 }} />
+                                        </TouchableOpacity>
+                                    )
+                                }}
+                                onChangeText={(value) => {
+                                    console.log('ese')
+                                }}
+                            />
+                        </View>
+                        {!isEmpty(props.featured) && (<Featured key='featured' data={props.featured} />)}
+                        {!isEmpty(props.trendy) && (<Trendy key='trendy' data={props.trendy} />)}
+                        {!isEmpty(props.result) && (<Result key='result' data={props.result} />)}
+                        <View style={common.height50} />
+                    </Body>
                 </View>
-                {!isEmpty(props.featured) && (<Featured key='featured' data={props.featured} />)}
-                {!isEmpty(props.trendy) && (<Trendy key='trendy' data={props.trendy} />)}
-                {!isEmpty(props.result) && (<Result key='result' data={props.result} />)}
-                <View style={common.height50} />
-            </Content>
-        </Body>
+            )}
+            refreshing={props.refresh}
+            onRefresh={() => props.onRefresh()}
+        />
     );
 }
 

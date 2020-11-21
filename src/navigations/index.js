@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import NetInfo from '@react-native-community/netinfo';
@@ -10,13 +10,16 @@ import { Loading } from '@components';
 import DrawerNavigator from '@navigations/DrawerNavigator';
 import AuthStack from '@navigations/StackNavigators/AuthStackNavigator';
 import { navOptionHandler } from '@utils/functions';
+import { setLoading } from '@modules/reducers/auth/actions';
 
 const StackApp = createStackNavigator();
 export default AppContainer = () => {
+    const dispatch = useDispatch();
     const { logged, country, city, user, loading } = useSelector(state => state.auth);
     i18n.setLocale(country);
 
     useEffect(() => {
+        dispatch(setLoading(false));
         const handleEventListener = state => {
             if (!state.isConnected && navigator && global.internet) {
                 global.internet = false;
