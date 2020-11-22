@@ -5,6 +5,7 @@ import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'r
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
+import { setFilters } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { Cities, Dashboard, Filters } from '@components';
@@ -14,6 +15,8 @@ import i18n from '@utils/i18n';
 export default Home = (props) => {
     const dispatch = useDispatch();
     const { logged, country, city, user } = useSelector(state => state.auth);
+    const { filters } = useSelector(state => state.food);
+    const ref = useRef(null);
 
     const [cityStatus, setCityStatus] = useState(false);
     const [filterStatus, setFilterStatus] = useState(false);
@@ -22,62 +25,6 @@ export default Home = (props) => {
     const [result, setResult] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [search, setSearch] = useState('');
-    const [filters, setFilters] = useState({
-        freeDelivery: 0,
-        newest: 0,
-        pizza: 0,
-        hamburger: 0,
-        dailyMenu: 0,
-        soup: 0,
-        salad: 0,
-        money: 0,
-        card: 0,
-        withinOneHour: 0
-    })
-
-    useEffect(() => {
-        const getFeatured = () => {
-            dispatch(setLoading(true));
-            FoodService.featured(country, logged ? user.city.name : city.name)
-                .then((response) => {
-                    if (response.status == 200) {
-                        setFeatured(response.selectedLocation);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error.message);
-                });
-        }
-        getFeatured();
-        const getTrendy = () => {
-            FoodService.trendy(country, logged ? user.city.name : city.name)
-                .then((response) => {
-                    if (response.status == 200) {
-                        setTrendy(response.selectedLocation);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error.message);
-                });
-        }
-        getTrendy();
-        const getResult = () => {
-            FoodService.result(country, logged ? user.city.name : city.name, search, filters)
-                .then((response) => {
-                    if (response.status == 200) {
-                        dispatch(setLoading(false));
-                        setResult(response.result);
-                    }
-                })
-                .catch((error) => {
-                    dispatch(setLoading(false));
-                    console.log(error.message);
-                });
-        }
-        getResult();
-
-        return () => console.log('Unmounted');
-    }, []);
 
     useEffect(() => {
         setCityStatus(false);
@@ -118,34 +65,23 @@ export default Home = (props) => {
                 dispatch(setLoading(false));
                 console.log(error.message);
             });
-    }, [country, city, user, refresh]);
+    }, [country, city, user, refresh, filters]);
 
     useEffect(() => {
         FoodService.result(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
+                setRefresh(false);
+                dispatch(setLoading(false));
                 if (response.status == 200) {
                     setResult(response.result);
                 }
             })
             .catch((error) => {
-                console.log(error.message);
-            });
-    }, [search]);
-
-    useEffect(() => {
-        dispatch(setLoading(true));
-        FoodService.result(country, logged ? user.city.name : city.name, search, filters)
-            .then((response) => {
-                if (response.status == 200) {
-                    dispatch(setLoading(false));
-                    setResult(response.result);
-                }
-            })
-            .catch((error) => {
+                setRefresh(false);
                 dispatch(setLoading(false));
                 console.log(error.message);
             });
-    }, [filters]);
+    }, [search]);
 
     return (
         <Container style={common.container}>
@@ -168,6 +104,7 @@ export default Home = (props) => {
             {
                 !cityStatus ? !filterStatus ?
                     <Dashboard
+                        ref={ref}
                         featured={featured}
                         trendy={trendy}
                         result={result}
@@ -181,7 +118,7 @@ export default Home = (props) => {
                     <Filters
                         filters={filters}
                         onFilters={(value) => {
-                            setFilters(value);
+                            dispatch(setFilters(value));
                             setFilterStatus(false);
                         }}
                         onCancel={() => setFilterStatus(false)}

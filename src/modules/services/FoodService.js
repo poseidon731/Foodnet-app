@@ -12,6 +12,12 @@ const FoodService = {
         });
     },
     result: function (country, cityName, search, filters) {
+        console.log(JSON.stringify({
+            lang: country,
+            location: cityName,
+            searchString: search,
+            filters
+        }))
         return axios.post(`/location-app/search`, {
             lang: country,
             location: cityName,

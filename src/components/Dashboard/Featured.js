@@ -40,7 +40,10 @@ export default Featured = (props) => {
 
   return (
     <Card key='featured' style={styles.card}>
-      <Text style={styles.cardTitle}>{i18n.translate('Featured restaurants')}</Text>
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>{i18n.translate('Featured restaurants')}</Text>
+        {props.shown && (<Text style={styles.cardCount}>{i18n.translate('All results')}: {props.count}</Text>)}
+      </View>
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -57,11 +60,23 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20
   },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
   cardTitle: {
     marginVertical: 12,
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#111'
+    color: '#111',
+    width: '60%'
+  },
+  cardCount: {
+    textAlign: 'right',
+    color: '#666',
+    width: '40%'
   },
   featured: {
     marginRight: 16,
