@@ -64,21 +64,26 @@ export default Dashboard = (props) => {
                                 onChangeText={(value) => props.onSearch(value)}
                             />
                         </View>
-                        {!isEmpty(props.featured) && (<Featured key='featured' data={props.featured} count={props.result.length}
-                            shown={(props.search == '' &&
-                                props.filters.freeDelivery == 0 &&
-                                props.filters.newest == 0 &&
-                                props.filters.pizza == 0 &&
-                                props.filters.hamburger == 0 &&
-                                props.filters.dailyMenu == 0 &&
-                                props.filters.soup == 0 &&
-                                props.filters.salad == 0 &&
-                                props.filters.money == 0 &&
-                                props.filters.card == 0 &&
-                                props.filters.withinOneHour == 0) ? false : true}
-                        />)}
-                        {!isEmpty(props.trendy) && (<Trendy key='trendy' data={props.trendy} />)}
-                        {!isEmpty(props.result) && (<Result key='result' data={props.result} />)}
+                        {!isEmpty(props.featured) && (
+                            <Featured
+                                key='featured'
+                                data={props.featured}
+                                onDetail={(item) => props.onDetail(item)}
+                                count={props.result.length}
+                                shown={(props.search == '' &&
+                                    props.filters.freeDelivery == 0 &&
+                                    props.filters.newest == 0 &&
+                                    props.filters.pizza == 0 &&
+                                    props.filters.hamburger == 0 &&
+                                    props.filters.dailyMenu == 0 &&
+                                    props.filters.soup == 0 &&
+                                    props.filters.salad == 0 &&
+                                    props.filters.money == 0 &&
+                                    props.filters.card == 0 &&
+                                    props.filters.withinOneHour == 0) ? false : true}
+                            />)}
+                        {!isEmpty(props.trendy) && (<Trendy key='trendy' data={props.trendy} onDetail={(item) => props.onDetail(item)} />)}
+                        {!isEmpty(props.result) && (<Result key='result' data={props.result} onDetail={(item) => props.onDetail(item)} />)}
                         <View style={common.height50} />
                     </Body>
                 </View>

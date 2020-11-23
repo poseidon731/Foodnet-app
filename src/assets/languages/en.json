@@ -71,6 +71,7 @@
     "All restaurants": "All restaurants",
     "NEW RESTAURANT": "NEW RESTAURANT",
     "SPECIAL PRICE": "SPECIAL PRICE",
+    "OPEN": "OPEN",
     "CLOSED": "CLOSED",
 
     "Foods": "Foods",
@@ -88,5 +89,20 @@
     "Cash": "Cash",
     "Search": "Search",
     "No restaurant found": "No restaurant found",
-    "All results": "All results"
+    "All results": "All results",
+
+    "MENU": "MENU",
+    "INFORMATION & PROMOTIONS": "INFORMATION & PROMOTIONS",
+    "EVALUATION": "EVALUATION",
+    "Menu": "Menu",
+    "All": "All",
+    "Find food": "Find food",
+    "Name of food": "Name of food...",
+    "Average delivery time": "Average delivery time",
+    "Aproximativ {restaurang_avgTransport} minute": "Aproximativ {restaurang_avgTransport} minute",
+    "Aproximativ": "Aproximativ",
+    "minute": "minute",
+    "Discount": "Discount",
+    "Address & Contact": "Address & Contact",
+    "Description": "Description"
 }

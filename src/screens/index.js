@@ -9,6 +9,7 @@ import Reset from '@screens/Auth/Reset';
 import Cities from '@screens/Auth/Cities';
 
 import Home from '@screens/Home';
+import Detail from '@screens/Home/Detail';
 
 export {
     Internet,
@@ -21,4 +22,5 @@ export {
     Cities,
 
     Home,
+    Detail
 }

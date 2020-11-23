@@ -71,6 +71,7 @@
     "All restaurants": "Minden étterem",
     "NEW RESTAURANT": "ÚJ VENDÉGLŐ",
     "SPECIAL PRICE": "AKCIÓS ÁR",
+    "OPEN": "NYITVA",
     "CLOSED": "ZÁRVA",
 
     "Foods": "Ételek",
@@ -88,5 +89,20 @@
     "Cash": "Készpénz",
     "Search": "Keresés",
     "No restaurant found": "Nem található étterem",
-    "All results": "Összes találat"
+    "All results": "Összes találat",
+
+    "MENU": "ÉTLAP",
+    "INFORMATION & PROMOTIONS": "INFÓK & AKCIÓK",
+    "EVALUATION": "EVALUARE",
+    "Menu": "Étlap",
+    "All": "Összes",
+    "Find food": "Étel keresése",
+    "Name of food": "Numele mâncării...",
+    "Average delivery time": "Átlag szállítási idő",
+    "Aproximativ {restaurang_avgTransport} minute": "Kb. {restaurang_avgTransport} perc",
+    "Aproximativ": "Kb.",
+    "minute": "perc",
+    "Discount": "Kedvezmény",
+    "Address & Contact": "Cím & Elérhetőség",
+    "Description": "Leírás"
 }

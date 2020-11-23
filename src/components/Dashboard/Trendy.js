@@ -17,7 +17,7 @@ export default Trendy = (props) => {
   useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
   const renderItem = (trendy, index) => {
     return (
-      <TouchableOpacity key={index} style={styles.trendy}>
+      <TouchableOpacity key={index} style={styles.trendy} onPress={() => props.onDetail(trendy.item)}>
         <FastImage style={styles.image} source={{ uri: RES_URL + trendy.item.restaurant_profileImage }} />
         {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(trendy.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(trendy.item.restaurant_close.replace(':', ''))) && (
           <View style={styles.overlay}>

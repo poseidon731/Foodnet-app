@@ -17,7 +17,7 @@ export default Result = (props) => {
   useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
   const renderItem = (result, index) => {
     return (
-      <TouchableOpacity key={index} style={styles.result}>
+      <TouchableOpacity key={index} style={styles.result} onPress={() => props.onDetail(result.item)}>
         <FastImage style={styles.image} source={{ uri: RES_URL + result.item.restaurant_profileImage }} />
         {(result.item.restaurant_new > 0 || result.item.restaurant_discount > 0) && (
           <View style={styles.tagView}>

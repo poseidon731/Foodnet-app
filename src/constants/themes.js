@@ -119,7 +119,6 @@ export const common = StyleSheet.create({
         width: '60%'
     },
     headerTitleText: {
-        // width: '100%',
         fontSize: 16,
         fontWeight: 'bold',
         color: colors.BLACK,
@@ -129,6 +128,10 @@ export const common = StyleSheet.create({
         alignItems: 'flex-end',
         paddingRight: 10,
         width: '20%'
+    },
+    headerRightIcon: {
+        width: 25,
+        height: 25
     },
     headerRightText: {
         fontSize: 16,

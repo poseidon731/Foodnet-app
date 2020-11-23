@@ -71,6 +71,7 @@
     "All restaurants": "Toate restaurantele",
     "NEW RESTAURANT": "RESTAURANT NOU",
     "SPECIAL PRICE": "PREȚ SPECIAL",
+    "OPEN": "DESCHIS",
     "CLOSED": "ÎNCHIS",
 
     "Foods": "Alimente",
@@ -88,5 +89,20 @@
     "Cash": "Bani lichizi",
     "Search": "Căutare",
     "No restaurant found": "Nu a fost găsit niciun restaurant",
-    "All results": "Toate rezultatele"
+    "All results": "Toate rezultatele",
+
+    "MENU": "MENIUL",
+    "INFORMATION & PROMOTIONS": "INFO & PROMOȚII",
+    "EVALUATION": "EVALUARE",
+    "Menu": "Meniul",
+    "All": "Toate",
+    "Find food": "Găsește mâncare",
+    "Name of food": "Numele mâncării...",
+    "Average delivery time": "Timpul mediu de livrare",
+    "Aproximativ {restaurang_avgTransport} minute": "About {restaurang_avgTransport} minutes",
+    "Aproximativ": "About",
+    "minute": "minutes",
+    "Discount": "Reducere",
+    "Address & Contact": "Adresă & Informațiile de contact",
+    "Description": "Descriere"
 }

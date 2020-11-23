@@ -12,18 +12,28 @@ const FoodService = {
         });
     },
     result: function (country, cityName, search, filters) {
-        console.log(JSON.stringify({
-            lang: country,
-            location: cityName,
-            searchString: search,
-            filters
-        }))
         return axios.post(`/location-app/search`, {
             lang: country,
             location: cityName,
             searchString: search,
             filters
         }).then((response) => {
+            return response.data;
+        });
+    },
+    categories: function (country, categoryId, restaurantName, searchedProduct) {
+        return axios.post(`/products/category`, {
+            lang: country,
+            categoryId,
+            restaurantName,
+            searchedProduct
+        }).then((response) => {
+            return response.data;
+        });
+    },
+    information: function (country, restaurantName) {
+        console.log(country, restaurantName)
+        return axios.get(`/restaurant/info/${country}/${restaurantName}`).then((response) => {
             return response.data;
         });
     },

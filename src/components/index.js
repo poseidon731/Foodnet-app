@@ -10,6 +10,9 @@ import Trendy from './Dashboard/Trendy';
 import Result from './Dashboard/Result';
 import Filters from './Dashboard/Filters';
 
+import Menu from './Restaurant/Menu';
+import Information from './Restaurant/Information';
+
 
 export {
     Loading,
@@ -21,5 +24,8 @@ export {
     Featured,
     Trendy,
     Result,
-    Filters
+    Filters,
+    
+    Menu,
+    Information
 };

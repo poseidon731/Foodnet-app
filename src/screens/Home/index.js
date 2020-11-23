@@ -34,7 +34,7 @@ export default Home = (props) => {
             .then((response) => {
                 setRefresh(false);
                 if (response.status == 200) {
-                    setFeatured(response.selectedLocation);
+                    setFeatured(response.result);
                 }
             })
             .catch((error) => {
@@ -45,7 +45,7 @@ export default Home = (props) => {
             .then((response) => {
                 setRefresh(false);
                 if (response.status == 200) {
-                    setTrendy(response.selectedLocation);
+                    setTrendy(response.result);
                 }
             })
             .catch((error) => {
@@ -114,6 +114,7 @@ export default Home = (props) => {
                         onFilter={() => setFilterStatus(!filterStatus)}
                         onRefresh={() => setRefresh(true)}
                         onSearch={(value) => setSearch(value)}
+                        onDetail={(item) => props.navigation.push('Detail', { restaurant: item })}
                     /> :
                     <Filters
                         filters={filters}

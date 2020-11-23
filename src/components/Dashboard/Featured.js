@@ -18,7 +18,7 @@ export default Featured = (props) => {
 
   const renderItem = (featured, index) => {
     return (
-      <TouchableOpacity key={index} style={styles.featured}>
+      <TouchableOpacity key={index} style={styles.featured} onPress={() => props.onDetail(featured.item)}>
         <FastImage style={styles.image} source={{ uri: RES_URL + featured.item.restaurant_profileImage }} />
         {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && (
           <View style={styles.overlay}>
