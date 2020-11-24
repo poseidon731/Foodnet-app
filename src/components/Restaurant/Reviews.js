@@ -37,7 +37,7 @@ export default Reviews = (props) => {
                 <View style={styles.average}>
                     <StarYellowIcon />
                     <Text style={styles.averageTitle}>{i18n.translate('The average rating')}</Text>
-                    <Text style={styles.averageRating}>{props.average}/5</Text>
+                    <Text style={styles.averageRating}>{isEmpty(props.average) ? 0 : props.average}/5</Text>
                 </View>
             </Card>
             <Card key='stars' style={styles.card}>
@@ -65,13 +65,19 @@ export default Reviews = (props) => {
                     </TouchableOpacity>
                 </View>
             </Card>
-            <FlatList
-                contentContainerStyle={{ paddingVertical: 20 }}
-                showsHorizontalScrollIndicator={false}
-                data={props.reviews}
-                keyExtractor={(review, index) => index.toString()}
-                renderItem={renderItem}
-            />
+            {isEmpty(props.reviews) ? (
+                <View style={{ marginTop: 20, width: '100%', alignItems: 'center' }}>
+                    <Text style={styles.cardTitle}>{i18n.translate('No reviews')}</Text>
+                </View>
+            ) : (
+                    <FlatList
+                        contentContainerStyle={{ paddingVertical: 20 }}
+                        showsHorizontalScrollIndicator={false}
+                        data={props.reviews}
+                        keyExtractor={(review, index) => index.toString()}
+                        renderItem={renderItem}
+                    />
+                )}
         </View>
     );
 }

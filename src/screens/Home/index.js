@@ -16,7 +16,6 @@ export default Home = (props) => {
     const dispatch = useDispatch();
     const { logged, country, city, user } = useSelector(state => state.auth);
     const { filters } = useSelector(state => state.food);
-    const ref = useRef(null);
 
     const [cityStatus, setCityStatus] = useState(false);
     const [filterStatus, setFilterStatus] = useState(false);
@@ -104,7 +103,6 @@ export default Home = (props) => {
             {
                 !cityStatus ? !filterStatus ?
                     <Dashboard
-                        ref={ref}
                         featured={featured}
                         trendy={trendy}
                         result={result}

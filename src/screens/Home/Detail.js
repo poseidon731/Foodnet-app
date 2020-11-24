@@ -140,8 +140,8 @@ export default Detail = (props) => {
         FoodService.reviews(restaurant.restaurant_name, rating)
             .then((response) => {
                 if (response.status == 200) {
-                    setReviews(isEmpty(response.result) ? [] : response.result[0].ratings);
-                    setAverage(isEmpty(response.result) ? 0 : response.result[0].AVGrating);
+                    setReviews(response.result[0].ratings);
+                    setAverage(response.result[0].AVGrating);
                 }
             })
             .catch((error) => {
@@ -219,7 +219,7 @@ export default Detail = (props) => {
                         <Animated.View style={[styles.headerMiddle, { opacity: titleOpacity }]}>
                             <View style={styles.headerRating}>
                                 <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
-                                <Text style={styles.headerRate}>{average}/5</Text>
+                                <Text style={styles.headerRate}>{isEmpty(average) ? 0 : average}/5</Text>
                             </View>
                         </Animated.View>
                     </Animated.View>
@@ -392,6 +392,7 @@ const styles = StyleSheet.create({
         elevation: 0
     },
     tabIndicator: {
+        // width: 'auto',
         marginLeft: 10,
         backgroundColor: colors.YELLOW.PRIMARY,
         height: 3,

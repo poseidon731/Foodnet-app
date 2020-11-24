@@ -20,7 +20,6 @@ import Grid from 'react-native-infinite-scroll-grid';
 export default Dashboard = (props) => {
     return (
         <Grid
-            ref={props.ref}
             data={[1]}
             renderItem={(item) => (
                 <View style={common.container}>

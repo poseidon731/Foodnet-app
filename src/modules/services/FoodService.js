@@ -41,8 +41,9 @@ const FoodService = {
         });
     },
     reviews: function (restaurantName, rating) {
-        restaurantName = 'Mama Mia Pizza';
+        // restaurantName = 'Mama Mia Pizza';
         // rating = 0;
+        console.log(restaurantName, rating)
         return axios.post(`/restaurant/review`, {
             restaurantName,
             rating
