@@ -392,7 +392,6 @@ const styles = StyleSheet.create({
         elevation: 0
     },
     tabIndicator: {
-        // width: 'auto',
         marginLeft: 10,
         backgroundColor: colors.YELLOW.PRIMARY,
         height: 3,
