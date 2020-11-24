@@ -149,6 +149,13 @@ export const common = StyleSheet.create({
         backgroundColor: colors.GREY.PRIMARY
     },
 
+    fontWeightBold: {
+        fontWeight: 'bold'
+    },
+    fontWeightNormal: {
+        fontWeight: 'normal'
+    },
+
     fontColorWhite: {
         color: colors.WHITE
     },

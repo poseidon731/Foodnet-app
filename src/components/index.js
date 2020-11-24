@@ -12,6 +12,7 @@ import Filters from './Dashboard/Filters';
 
 import Menu from './Restaurant/Menu';
 import Information from './Restaurant/Information';
+import Reviews from './Restaurant/Reviews';
 
 
 export {
@@ -27,5 +28,6 @@ export {
     Filters,
     
     Menu,
-    Information
+    Information,
+    Reviews
 };

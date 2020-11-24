@@ -20,8 +20,8 @@ export default Menu = (props) => {
 
     const renderItem = (item, index) => {
         return (
-            <TouchableOpacity key={index} style={[styles.category, category == item.item.category_id ? common.borderColorYellow : common.borderColorGrey]}
-                onPress={() => setCategory(item.item.category_id)}>
+            <TouchableOpacity key={index} style={[styles.category, props.category == item.item.category_id ? common.borderColorYellow : common.borderColorGrey]}
+                onPress={() => props.onCategory(item.item.category_id)}>
                 <Text style={styles.name}>{item.item.category_name}</Text>
             </TouchableOpacity>
         )
@@ -48,10 +48,10 @@ export default Menu = (props) => {
                     fontSize={16}
                     autoCorrect={false}
                     enablesReturnKeyAutomatically={true}
-                    value={restaurantName}
+                    value={props.search}
                     containerStyle={styles.textContainer}
                     inputContainerStyle={styles.inputContainer}
-                    onChangeText={(value) => setRestaurantName(value)}
+                    onChangeText={(value) => props.onSearch(value)}
                 />
             </Card>
         </View>

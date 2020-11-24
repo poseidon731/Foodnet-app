@@ -10,8 +10,6 @@ import { images, icons } from '@constants/assets';
 import { RES_URL } from '@constants/configs';
 import i18n from '@utils/i18n';
 
-import { TextField } from 'react-native-material-textfield';
-
 export default Information = (props) => {
     useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
 

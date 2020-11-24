@@ -104,5 +104,8 @@
     "minute": "minute",
     "Discount": "Discount",
     "Address & Contact": "Address & Contact",
-    "Description": "Description"
+    "Description": "Description",
+    "Evaluation": "Evaluation",
+    "The average rating": "The average rating:",
+    "FILTRATION": "FILTRATION"
 }

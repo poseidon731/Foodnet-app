@@ -219,6 +219,22 @@ const CartWhiteIcon = ({ style }) => (
     </View>
 );
 
+const StarYellowIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/Svg">
+            <Path d="M9.00049 1.49982L11.318 6.19482L16.5005 6.95232L12.7505 10.6048L13.6355 15.7648L9.00049 13.3273L4.36549 15.7648L5.25049 10.6048L1.50049 6.95232L6.68299 6.19482L9.00049 1.49982Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
+const StarGreyIcon = ({ style }) => (
+    <View style={style}>
+        <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/Svg">
+            <Path d="M7.99992 1.33331L10.0599 5.50665L14.6666 6.17998L11.3333 9.42665L12.1199 14.0133L7.99992 11.8466L3.87992 14.0133L4.66659 9.42665L1.33325 6.17998L5.93992 5.50665L7.99992 1.33331Z" stroke="#666666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+    </View>
+);
+
 export {
     SplashIcon,
     LogoIcon,
@@ -238,5 +254,7 @@ export {
     FilterIcon,
     RemoveIcon,
     BackWhiteIcon,
-    CartWhiteIcon
+    CartWhiteIcon,
+    StarYellowIcon,
+    StarGreyIcon
 }

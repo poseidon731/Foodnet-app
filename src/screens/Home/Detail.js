@@ -7,7 +7,7 @@ import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
-import { Menu, Information } from '@components';
+import { Menu, Information, Reviews } from '@components';
 import { common, colors } from '@constants/themes';
 import { RES_URL } from '@constants/configs';
 import { BackWhiteIcon, CartWhiteIcon } from '@constants/svgs';
@@ -25,9 +25,17 @@ export default Detail = (props) => {
     const { logged, country, city, user } = useSelector(state => state.auth);
     const { filters } = useSelector(state => state.food);
 
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        { key: 'menu', title: i18n.translate('MENU') },
+        { key: 'info', title: i18n.translate('INFORMATION & PROMOTIONS') },
+        { key: 'third', title: i18n.translate('EVALUATION') },
+    ]);
+
     const [restaurant, setRestaurant] = useState(props.route.params.restaurant);
     const [filterList, setFilterList] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [category, setCategory] = useState(0);
     const [information, setInformation] = useState({
         restaurant_id: 0,
         restaurant_avgTransport: 0,
@@ -36,13 +44,11 @@ export default Detail = (props) => {
         restaurant_address: '',
         restaurant_description: ''
     });
+    const [search, setSearch] = useState('');
+    const [rating, setRating] = useState(0);
+    const [reviews, setReviews] = useState([]);
+    const [average, setAverage] = useState(0);
 
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'menu', title: i18n.translate('MENU') },
-        { key: 'info', title: i18n.translate('INFORMATION & PROMOTIONS') },
-        { key: 'third', title: i18n.translate('EVALUATION') },
-    ]);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -78,9 +84,25 @@ export default Detail = (props) => {
     });
 
     useEffect(() => {
+        const getFilterList = () => {
+            var tempFilters = [];
+            if (filters.freeDelivery == 1) tempFilters = [...tempFilters, { filter: i18n.translate('No shipping costs') }];
+            if (filters.newest == 1) tempFilters = [...tempFilters, { filter: i18n.translate('News') }];
+            if (filters.pizza == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Pizza') }];
+            if (filters.hamburger == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Hamburger') }];
+            if (filters.dailyMenu == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Daily menu') }];
+            if (filters.soup == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Soup') }];
+            if (filters.salad == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Salat') }];
+            if (filters.money == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Cash') }];
+            if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
+            if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
+            setFilterList(tempFilters);
+        }
+        getFilterList();
+
         const getCategories = () => {
             dispatch(setLoading(true));
-            FoodService.categories('ro', '', 'Mama Mia Pizza', '')
+            FoodService.categories(country, category, restaurant.restaurant_name, search)
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
@@ -98,37 +120,34 @@ export default Detail = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setInformation(response.result[0]);
-                        console.log(information)
                     }
                 })
                 .catch((error) => {
                     dispatch(setLoading(false));
                 });
         }
+
         setTimeout(() => {
             getCategories();
             getInformation();
         }, 500);
 
-        const getFilterList = () => {
-            var tempFilters = [];
-            if (filters.freeDelivery == 1) tempFilters = [...tempFilters, { filter: i18n.translate('No shipping costs') }];
-            if (filters.newest == 1) tempFilters = [...tempFilters, { filter: i18n.translate('News') }];
-            if (filters.pizza == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Pizza') }];
-            if (filters.hamburger == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Hamburger') }];
-            if (filters.dailyMenu == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Daily menu') }];
-            if (filters.soup == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Soup') }];
-            if (filters.salad == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Salat') }];
-            if (filters.money == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Cash') }];
-            if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
-            if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
-            setFilterList(tempFilters);
-        }
-        getFilterList();
-
         return () => console.log('Unmounted');
     }, []);
 
+
+    useEffect(() => {
+        FoodService.reviews(restaurant.restaurant_name, rating)
+            .then((response) => {
+                if (response.status == 200) {
+                    setReviews(isEmpty(response.result) ? [] : response.result[0].ratings);
+                    setAverage(isEmpty(response.result) ? 0 : response.result[0].AVGrating);
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+            });
+    }, [category, search, rating]);
 
     return (
         <SafeAreaView style={styles.saveArea}>
@@ -137,6 +156,7 @@ export default Detail = (props) => {
                 <TabView navigationState={{ index, routes }}
                     renderTabBar={(props) => (
                         <TabBar {...props}
+                            scrollEnabled={true}
                             style={styles.tabBar}
                             tabStyle={{ width: 'auto' }}
                             indicatorStyle={styles.tabIndicator}
@@ -147,23 +167,23 @@ export default Detail = (props) => {
                     renderScene={({ route, jumpTo }) => {
                         switch (route.key) {
                             case 'menu':
-                                return <Menu categories={categories} jumpTo={jumpTo} />;
+                                return <Menu categories={categories} category={category} search={search} onCategory={(value) => setCategory(value)} onSearch={(value) => setSearch(value)} jumpTo={jumpTo} />;
                             case 'info':
                                 return <Information information={information} jumpTo={jumpTo} />;
                             case 'third':
-                                return <Menu categories={categories} jumpTo={jumpTo} />;
+                                return <Reviews reviews={reviews} average={average} rating={rating} onRating={(value) => setRating(value)} jumpTo={jumpTo} />;
                         }
                     }}
                     onIndexChange={setIndex}
                 />
-                <View style={{ height: hp('100') - 300 }} />
+                <View style={{ height: 50 }} />
             </Animated.ScrollView>
 
             <Animated.View style={[styles.header, { transform: [{ translateY: headerTranslateY }] }]}>
                 <Animated.Image style={[styles.headerBackground, { transform: [{ translateY: imageTranslateY }] }]} source={{ uri: RES_URL + restaurant.restaurant_coverImage }} />
                 <Animated.View style={[styles.headerBottom, { transform: [{ translateY: headerBottomTranslateY }] }]}>
-                    <View style={styles.avatarView}>
-                        <Image style={styles.avatar} source={{ uri: RES_URL + restaurant.restaurant_profileImage }} />
+                    <View style={styles.avatar}>
+                        <Image style={styles.avatarView} source={{ uri: RES_URL + restaurant.restaurant_profileImage }} resizeMode="contain" />
                     </View>
                     <View>
                         <View style={styles.statusView}>
@@ -199,7 +219,7 @@ export default Detail = (props) => {
                         <Animated.View style={[styles.headerMiddle, { opacity: titleOpacity }]}>
                             <View style={styles.headerRating}>
                                 <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
-                                <Text style={styles.headerRate}>{restaurant.restaurant_rating}/5</Text>
+                                <Text style={styles.headerRate}>{average}/5</Text>
                             </View>
                         </Animated.View>
                     </Animated.View>
@@ -224,7 +244,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#62d1bc',
+        backgroundColor: '#00000080',
         overflow: 'hidden',
         height: HEADER_MAX_HEIGHT,
         marginTop: 0
@@ -294,21 +314,22 @@ const styles = StyleSheet.create({
         width: wp('100%'),
         backgroundColor: colors.WHITE
     },
-    avatarView: {
+    avatar: {
         marginTop: -55,
         marginLeft: 16,
-        height: 105,
-        width: 105,
-        borderRadius: 105 / 2,
-        borderWidth: 5,
-        borderColor: colors.WHITE,
-        backgroundColor: '#C4C4C4'
-    },
-    avatar: {
         height: 100,
         width: 100,
-        resizeMode: 'contain',
-        borderRadius: 100 / 2
+        borderRadius: 100 / 2,
+        borderWidth: 5,
+        borderColor: colors.WHITE,
+        backgroundColor: '#C4C4C4',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    avatarView: {
+        height: 90,
+        width: 90,
     },
     statusView: {
         flexDirection: 'row',
@@ -371,8 +392,9 @@ const styles = StyleSheet.create({
         elevation: 0
     },
     tabIndicator: {
+        marginLeft: 10,
         backgroundColor: colors.YELLOW.PRIMARY,
-        height: 3
+        height: 3,
     },
     tabLabel: {
         fontSize: 14,

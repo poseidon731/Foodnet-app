@@ -104,5 +104,8 @@
     "minute": "perc",
     "Discount": "Kedvezmény",
     "Address & Contact": "Cím & Elérhetőség",
-    "Description": "Leírás"
+    "Description": "Leírás",
+    "Evaluation": "Értékelés",
+    "The average rating": "Az átlag értékelés:",
+    "FILTRATION": "SZŰRÉS"
 }

@@ -22,6 +22,10 @@ const FoodService = {
         });
     },
     categories: function (country, categoryId, restaurantName, searchedProduct) {
+        country = 'ro';
+        categoryId = '';
+        restaurantName = 'Mama Mia Pizza';
+        searchedProduct = '';
         return axios.post(`/products/category`, {
             lang: country,
             categoryId,
@@ -32,8 +36,17 @@ const FoodService = {
         });
     },
     information: function (country, restaurantName) {
-        console.log(country, restaurantName)
         return axios.get(`/restaurant/info/${country}/${restaurantName}`).then((response) => {
+            return response.data;
+        });
+    },
+    reviews: function (restaurantName, rating) {
+        restaurantName = 'Mama Mia Pizza';
+        // rating = 0;
+        return axios.post(`/restaurant/review`, {
+            restaurantName,
+            rating
+        }).then((response) => {
             return response.data;
         });
     },
