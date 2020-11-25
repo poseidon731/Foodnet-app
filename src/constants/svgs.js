@@ -256,5 +256,5 @@ export {
     BackWhiteIcon,
     CartWhiteIcon,
     StarYellowIcon,
-    StarGreyIcon
+    StarGreyIcon,
 }
