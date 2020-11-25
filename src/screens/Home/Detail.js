@@ -178,7 +178,7 @@ export default Detail = (props) => {
                     setAverage(response.result[0].AVGrating);
                 }
             });
-    }, [category, rating]);
+    }, [category, rating, country]);
 
     useEffect(() => {
         if (category === 0) {

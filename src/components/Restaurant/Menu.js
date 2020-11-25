@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     },
     card: {
         marginHorizontal: 20,
-        width: '100%'
+        width: wp('100%') - 40
     },
     cardTitle: {
         marginVertical: 12,
