@@ -226,6 +226,7 @@ export default Detail = (props) => {
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
                 <TabView navigationState={{ index, routes }}
+                    swipeEnabled={Platform.OS === 'ios' ? true : false}
                     renderTabBar={(props) => (
                         <TabBar {...props}
                             scrollEnabled={true}
