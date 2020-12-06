@@ -18,7 +18,7 @@ export default Result = (props) => {
   const renderItem = (result, index) => {
     return (
       <TouchableOpacity key={index} style={styles.result} onPress={() => props.onDetail(result.item)}>
-        <FastImage style={styles.image} source={{ uri: RES_URL + result.item.restaurant_profileImage }} />
+        <FastImage style={styles.image} source={{ uri: RES_URL + result.item.restaurant_coverImage }} />
         {(result.item.restaurant_new > 0 || result.item.restaurant_discount > 0) && (
           <View style={styles.tagView}>
             {result.item.restaurant_new > 0 && (
@@ -51,9 +51,9 @@ export default Result = (props) => {
           </View>
         </View>
         <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{result.item.restaurant_description}</Text>
-        <View style={{ flexDirection: 'row', marginTop: 5 }}>
+        {/* <View style={{ flexDirection: 'row', marginTop: 5 }}>
           <Text style={styles.time}>{result.item.restaurant_open}/{moment().format('HH:mm')}/{result.item.restaurant_close}</Text>
-        </View>
+        </View> */}
       </TouchableOpacity>
     )
   }
@@ -62,7 +62,7 @@ export default Result = (props) => {
       <Text style={styles.cardTitle}>{i18n.translate('All restaurants')}</Text>
       {!isEmpty(props.data) ? (
         <FlatList
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           data={props.data}
           keyExtractor={(result, index) => index.toString()}
           renderItem={renderItem}

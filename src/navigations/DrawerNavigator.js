@@ -5,6 +5,7 @@ import { Container, Header, Content, Footer } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import HomeStack from '@navigations/StackNavigators/HomeStackNavigator';
+import ProfileStack from '@navigations/StackNavigators/ProfileStackNavigator';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
@@ -19,6 +20,7 @@ export default DrawerNavigator = () => {
     return (
         <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} drawerStyle={{ width: wp('100%') }}>
             <Drawer.Screen name="Home" component={HomeStack} options={navOptionHandler} />
+            <Drawer.Screen name="Profile" component={ProfileStack} options={navOptionHandler} />
         </Drawer.Navigator>
     )
 }
@@ -31,8 +33,11 @@ const DrawerContent = (props) => {
         dispatch(deleteUser({
             token: null,
             email: user.email,
-            city: user.city,
-            cityStatus: false
+            city: {
+                id: user.city.id,
+                name: user.city.name,
+                status: false
+            }
         }));
         props.navigation.reset({ index: 1, routes: [{ name: 'Start' }] })
     }
@@ -59,7 +64,10 @@ const DrawerContent = (props) => {
                     <OrderIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('My orders')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity style={styles.menuItem} onPress={()=> {
+                    console.log(user.token);
+                    props.navigation.navigate('Profile');
+                }}>
                     <ProfileIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Profile')}</Text>
                 </TouchableOpacity>

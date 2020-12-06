@@ -6,18 +6,20 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import authReducer from './reducers/auth';
 import foodReducer from './reducers/food';
+import profileReducer from './reducers/profile';
 
 const peresistConfig = {
   key: 'root',
   storage: AsyncStorage,
   timeout: null,
-  whitelist: ['auth', 'food'],
+  whitelist: ['auth', 'food', 'profile'],
   blacklist: [],
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  food: foodReducer
+  food: foodReducer,
+  profile: profileReducer
 });
 
 const persistedReducer = persistReducer(peresistConfig, rootReducer);

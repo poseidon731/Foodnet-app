@@ -19,7 +19,7 @@ export default Featured = (props) => {
   const renderItem = (featured, index) => {
     return (
       <TouchableOpacity key={index} style={styles.featured} onPress={() => props.onDetail(featured.item)}>
-        <FastImage style={styles.image} source={{ uri: RES_URL + featured.item.restaurant_profileImage }} />
+        <FastImage style={styles.image} source={{ uri: RES_URL + featured.item.restaurant_coverImage }} />
         {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && (
           <View style={styles.overlay}>
             <Text style={styles.closeText}>{i18n.translate('CLOSED')}</Text>
@@ -31,9 +31,9 @@ export default Featured = (props) => {
           <Text style={styles.rate}>{featured.item.restaurant_rating}/5</Text>
         </View>
         <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{featured.item.restaurant_description}</Text>
-        <View style={{ flexDirection: 'row' }}>
+        {/* <View style={{ flexDirection: 'row' }}>
           <Text style={styles.time}>{featured.item.restaurant_open}/{moment().format('HH:mm')}/{featured.item.restaurant_close}</Text>
-        </View>
+        </View> */}
       </TouchableOpacity>
     )
   }

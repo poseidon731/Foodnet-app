@@ -24,13 +24,19 @@ export default Home = (props) => {
     const [result, setResult] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [search, setSearch] = useState('');
+    const [count, setCount] = useState(0);
 
     useEffect(() => {
         setCityStatus(false);
         setFilterStatus(false);
+        setCount(0);
         dispatch(setLoading(true));
         FoodService.featured(country, logged ? user.city.name : city.name)
             .then((response) => {
+                setCount(count + 1);
+                if(count > 3) {
+                    dispatch(setLoading(false));
+                }
                 setRefresh(false);
                 if (response.status == 200) {
                     setFeatured(response.result);
@@ -42,6 +48,10 @@ export default Home = (props) => {
             });
         FoodService.trendy(country, logged ? user.city.name : city.name)
             .then((response) => {
+                setCount(count + 1);
+                if(count > 2) {
+                    dispatch(setLoading(false));
+                }
                 setRefresh(false);
                 if (response.status == 200) {
                     setTrendy(response.result);
@@ -53,8 +63,12 @@ export default Home = (props) => {
             });
         FoodService.result(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
-                setRefresh(false);
+                setCount(count + 1);
+                if(count > 2) {
+                    dispatch(setLoading(false));
+                }
                 dispatch(setLoading(false));
+                setRefresh(false);
                 if (response.status == 200) {
                     setResult(response.result);
                 }

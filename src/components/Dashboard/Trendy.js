@@ -18,7 +18,7 @@ export default Trendy = (props) => {
   const renderItem = (trendy, index) => {
     return (
       <TouchableOpacity key={index} style={styles.trendy} onPress={() => props.onDetail(trendy.item)}>
-        <FastImage style={styles.image} source={{ uri: RES_URL + trendy.item.restaurant_profileImage }} />
+        <FastImage style={styles.image} source={{ uri: RES_URL + trendy.item.restaurant_coverImage }} />
         {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(trendy.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(trendy.item.restaurant_close.replace(':', ''))) && (
           <View style={styles.overlay}>
             <Text style={styles.closeText}>{i18n.translate('CLOSED')}</Text>
@@ -30,9 +30,9 @@ export default Trendy = (props) => {
           <Text style={styles.rate}>{trendy.item.restaurant_rating}/5</Text>
         </View>
         <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(trendy.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(trendy.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{trendy.item.restaurant_description}</Text>
-        <View style={{ flexDirection: 'row' }}>
+        {/* <View style={{ flexDirection: 'row' }}>
           <Text style={styles.time}>{trendy.item.restaurant_open}/{moment().format('HH:mm')}/{trendy.item.restaurant_close}</Text>
-        </View>
+        </View> */}
       </TouchableOpacity>
     )
   }

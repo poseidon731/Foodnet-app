@@ -11,6 +11,19 @@ import Cities from '@screens/Auth/Cities';
 import Home from '@screens/Home';
 import Detail from '@screens/Home/Detail';
 
+import Profile from '@screens/Profile';
+import DeliveryList from '@screens/Profile/DeliveryList';
+import DeliveryAdd from '@screens/Profile/DeliveryAdd';
+import DeliverySuccess from '@screens/Profile/DeliverySuccess';
+import DeliveryError from '@screens/Profile/DeliveryError';
+import ProfileEdit from '@screens/Profile/ProfileEdit';
+import ProfileDelete from '@screens/Profile/ProfileDelete';
+import PasswordChange from '@screens/Profile/PasswordChange';
+import ReviewList from '@screens/Profile/ReviewList';
+import ReviewAdd from '@screens/Profile/ReviewAdd';
+import ReviewDelete from '@screens/Profile/ReviewDelete';
+import CouponCodes from '@screens/Profile/CouponCodes';
+
 export {
     Internet,
     Languages,
@@ -22,5 +35,18 @@ export {
     Cities,
 
     Home,
-    Detail
+    Detail,
+
+    Profile,
+    DeliveryList,
+    DeliveryAdd,
+    DeliverySuccess,
+    DeliveryError,
+    ProfileEdit,
+    ProfileDelete,
+    PasswordChange,
+    ReviewList,
+    ReviewAdd,
+    ReviewDelete,
+    CouponCodes
 }
