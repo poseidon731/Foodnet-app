@@ -20,14 +20,14 @@ const AuthService = {
         });
     },
     verification: function (email) {
-        return axios.post(`/auth/verification`, {
+        return axios.post(`/auth/reset-password`, {
             email
         }).then((response) => {
             return response.data;
         });
     },
     reset: function (email, password, code) {
-        return axios.post(`/auth/reset-password-app`, {
+        return axios.post(`/auth/change-password`, {
             email,
             newPassword: password,
             code
@@ -36,7 +36,7 @@ const AuthService = {
         });
     },
     cities: function (country) {
-        return axios.get(`/location-app/${country}`).then((response) => {
+        return axios.get(`/location/${country}`).then((response) => {
             return response.data;
         });
     },

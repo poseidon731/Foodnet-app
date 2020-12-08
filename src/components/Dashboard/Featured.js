@@ -12,6 +12,7 @@ import i18n from '@utils/i18n';
 
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
+import ContentLoader, { FacebookLoader, InstagramLoader, Bullets } from 'react-native-easy-content-loader';
 
 export default Featured = (props) => {
   useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);

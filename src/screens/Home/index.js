@@ -19,54 +19,44 @@ export default Home = (props) => {
 
     const [cityStatus, setCityStatus] = useState(false);
     const [filterStatus, setFilterStatus] = useState(false);
-    const [featured, setFeatured] = useState([]);
-    const [trendy, setTrendy] = useState([]);
+    const [promotion, setPromotion] = useState([]);
+    const [popular, setPopular] = useState([]);
     const [result, setResult] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [search, setSearch] = useState('');
-    const [count, setCount] = useState(0);
+    // const [count, setCount] = useState(0);
 
     useEffect(() => {
         setCityStatus(false);
         setFilterStatus(false);
-        setCount(0);
+        // setCount(0);
         dispatch(setLoading(true));
-        FoodService.featured(country, logged ? user.city.name : city.name)
+        FoodService.promotion(country, logged ? user.city.name : city.name)
             .then((response) => {
-                setCount(count + 1);
-                if(count > 3) {
-                    dispatch(setLoading(false));
-                }
+                // setCount(count + 1);
+                // if (count > 2) {
+                //     dispatch(setLoading(false));
+                // }
                 setRefresh(false);
                 if (response.status == 200) {
-                    setFeatured(response.result);
+                    setPromotion(response.result);
                 }
             })
             .catch((error) => {
                 setRefresh(false);
-                console.log(error.message);
             });
-        FoodService.trendy(country, logged ? user.city.name : city.name)
+        FoodService.popular(country, logged ? user.city.name : city.name)
             .then((response) => {
-                setCount(count + 1);
-                if(count > 2) {
-                    dispatch(setLoading(false));
-                }
                 setRefresh(false);
                 if (response.status == 200) {
-                    setTrendy(response.result);
+                    setPopular(response.result);
                 }
             })
             .catch((error) => {
                 setRefresh(false);
-                console.log(error.message);
             });
         FoodService.result(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
-                setCount(count + 1);
-                if(count > 2) {
-                    dispatch(setLoading(false));
-                }
                 dispatch(setLoading(false));
                 setRefresh(false);
                 if (response.status == 200) {
@@ -74,25 +64,24 @@ export default Home = (props) => {
                 }
             })
             .catch((error) => {
-                setRefresh(false);
                 dispatch(setLoading(false));
-                console.log(error.message);
+                setRefresh(false);
             });
     }, [country, city, user, refresh, filters]);
 
     useEffect(() => {
         FoodService.result(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
+                setResultLoader(true);
                 setRefresh(false);
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
                 if (response.status == 200) {
                     setResult(response.result);
                 }
             })
             .catch((error) => {
                 setRefresh(false);
-                dispatch(setLoading(false));
-                console.log(error.message);
+                // dispatch(setLoading(false));
             });
     }, [search]);
 
@@ -117,8 +106,8 @@ export default Home = (props) => {
             {
                 !cityStatus ? !filterStatus ?
                     <Dashboard
-                        featured={featured}
-                        trendy={trendy}
+                        featured={promotion}
+                        trendy={popular}
                         result={result}
                         refresh={refresh}
                         search={search}

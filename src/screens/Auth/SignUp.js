@@ -47,7 +47,7 @@ export default SignUp = (props) => {
         AuthService.register(name, email, password, newsLetter ? 1 : 0)
             .then((response) => {
                 dispatch(setLoading(false));
-                if (response.status == 201) {
+                if (response.status == 200 || response.status == 201) {
                     dispatch(setUser({
                         token: response.result[0].token,
                         email,

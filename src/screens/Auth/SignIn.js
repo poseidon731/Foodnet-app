@@ -36,7 +36,7 @@ export default SignIn = (props) => {
         AuthService.login(email, password)
             .then((response) => {
                 dispatch(setLoading(false));
-                if (response.status == 200) {
+                if (response.status == 200 || response.status == 201) {
                     var userEmail = user.email;
                     var userCity = user.city;
                     if (userCity.id === 0 || email !== userEmail) {

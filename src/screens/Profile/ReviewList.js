@@ -8,6 +8,7 @@ import { setLoading } from '@modules/reducers/auth/actions';
 import { ProfileService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
+import { TrustIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default ReviewList = (props) => {
@@ -75,7 +76,10 @@ export default ReviewList = (props) => {
                                 <TouchableOpacity onPress={() => goReview(2, 0, review.item.review_Id)}>
                                     <Text style={styles.reviewAdd}>{i18n.translate('View')}</Text>
                                 </TouchableOpacity>
-                                <Icon type='ant-design' name='delete' size={20} color='#999' onPress={() => props.navigation.push('ReviewDelete', { review: review.item })} />
+                                <TouchableOpacity style={{ marginLeft: 20 }} onPress={() => props.navigation.push('ReviewDelete', { review: review.item })}>
+                                    <TrustIcon />
+                                </TouchableOpacity>
+                                {/* <Icon type='ant-design' name='delete' size={20} color='#999' onPress={() => props.navigation.push('ReviewDelete', { review: review.item })} /> */}
                             </View>
                         )}
                 </View>
@@ -164,12 +168,11 @@ const styles = StyleSheet.create({
     },
     reviewOption: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        width: 70
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        width: 100
     },
     reviewAdd: {
-        marginRight: 10,
         fontSize: 14,
         fontWeight: 'bold',
         color: colors.YELLOW.PRIMARY

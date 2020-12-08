@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Container, Header, Content, Footer } from 'native-base';
@@ -12,7 +12,7 @@ import { Icon } from 'react-native-elements';
 import { deleteUser } from '@modules/reducers/auth/actions';
 import { isEmpty, navOptionHandler } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { InboxIcon, OrderIcon, ProfileIcon, CouponIcon, LocationIcon, LanguageIcon, ServiceIcon } from '@constants/svgs';
+import { InboxIcon, OrderIcon, ProfileIcon, CouponIcon, LocationIcon, LanguageIcon, ServiceIcon, GoBackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 const Drawer = createDrawerNavigator();
@@ -60,25 +60,29 @@ const DrawerContent = (props) => {
                 </View>
             </Header>
             <Content style={styles.content}>
-                <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
-                    <OrderIcon />
-                    <Text style={styles.menuTitle}>{i18n.translate('My orders')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem} onPress={()=> {
-                    console.log(user.token);
-                    props.navigation.navigate('Profile');
-                }}>
-                    <ProfileIcon />
-                    <Text style={styles.menuTitle}>{i18n.translate('Profile')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
-                    <CouponIcon />
-                    <Text style={styles.menuTitle}>{i18n.translate('Coupon codes')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
-                    <LocationIcon />
-                    <Text style={styles.menuTitle}>{i18n.translate('My addresses')}</Text>
-                </TouchableOpacity>
+                {logged && (
+                    <Fragment>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
+                            <OrderIcon />
+                            <Text style={styles.menuTitle}>{i18n.translate('My orders')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => {
+                            console.log(user.token);
+                            props.navigation.navigate('Profile');
+                        }}>
+                            <ProfileIcon />
+                            <Text style={styles.menuTitle}>{i18n.translate('Profile')}</Text>
+                        </TouchableOpacity>
+                        {/* <TouchableOpacity style={styles.menuItem}>
+                            <CouponIcon />
+                            <Text style={styles.menuTitle}>{i18n.translate('Coupon codes')}</Text>
+                        </TouchableOpacity> */}
+                        <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Profile', { screen: 'DeliveryList' })}>
+                            <LocationIcon />
+                            <Text style={styles.menuTitle}>{i18n.translate('My addresses')}</Text>
+                        </TouchableOpacity>
+                    </Fragment>
+                )}
                 <TouchableOpacity style={styles.menuItem} onPress={() => {
                     props.navigation.closeDrawer();
                     props.navigation.push('Languages');
@@ -101,8 +105,8 @@ const DrawerContent = (props) => {
             ) : (
                     <Footer style={styles.header}>
                         <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
-                            <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
-                            <Text style={styles.menuTitle}>{i18n.translate('Log in or Registeration')}</Text>
+                            <GoBackIcon />
+                            <Text style={styles.menuTitle}>{i18n.translate('Back to the login')}</Text>
                         </TouchableOpacity>
                     </Footer>
                 )}

@@ -26,7 +26,7 @@ export default DeliverySuccess = (props) => {
             <View style={styles.content}>
                 <SuccessIcon />
                 <Text style={styles.mainText}>{type == 1 ? i18n.translate('Successful data creation') : i18n.translate('Successful data modification')}</Text>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={()=>props.navigation.goBack()}>
                     <Text style={styles.buttonText}>{i18n.translate('Operations')}</Text>
                 </TouchableOpacity>
                 <View style={common.height50} />

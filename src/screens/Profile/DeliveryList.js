@@ -8,6 +8,7 @@ import { setLoading } from '@modules/reducers/auth/actions';
 import { setDeliveryStatus } from '@modules/reducers/profile/actions';
 import { ProfileService } from '@modules/services';
 import { common, colors } from '@constants/themes';
+import { TrustIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default DeliveryList = (props) => {
@@ -53,11 +54,20 @@ export default DeliveryList = (props) => {
             <View key={index} style={styles.address}>
                 <Text style={styles.addressText} numberOfLines={2}>{address.item.doorNumber}, {address.item.floor}, {address.item.houseNumber}, {address.item.street}, {address.item.city}</Text>
                 <View style={styles.addressOption}>
-                    <Icon type='material' name='edit' size={20} color={colors.YELLOW.PRIMARY} onPress={() => props.navigation.push('DeliveryAdd', { type: 2, item: address.item })} />
-                    <Icon type='ant-design' name='delete' size={20} color='#999' onPress={() => {
+                    <TouchableOpacity onPress={() => props.navigation.push('DeliveryAdd', { type: 2, item: address.item })}>
+                        <Text style={styles.addressEdit}>{i18n.translate('Edit')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
                         setDeleteId(address.item.id);
                         setVisible(true);
-                    }} />
+                    }}>
+                        <TrustIcon />
+                    </TouchableOpacity>
+                    {/* <Icon type='material' name='edit' size={20} color={colors.YELLOW.PRIMARY} onPress={() => props.navigation.push('DeliveryAdd', { type: 2, item: address.item })} /> */}
+                    {/* <Icon type='ant-design' name='delete' size={20} color='#999' onPress={() => {
+                        setDeleteId(address.item.id);
+                        setVisible(true);
+                    }} /> */}
                 </View>
             </View>
         )
@@ -152,9 +162,16 @@ const styles = StyleSheet.create({
     },
     addressOption: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        width: 50
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        width: 150
+    },
+    addressEdit: {
+        marginRight: 20,
+        fontSize: 16,
+        fontWeight: 'bold',
+        lineHeight: 24,
+        color: colors.YELLOW.PRIMARY
     },
     modalContainer: {
         position: 'absolute',

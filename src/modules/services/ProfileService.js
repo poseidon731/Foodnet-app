@@ -17,7 +17,7 @@ const ProfileService = {
     },
     setDeliveryAddress: function (token, id, city, street, houseNumber, floor, doorNumber) {
         setClientToken(token);
-        return axios.post(`/delivery-address/app/del-ad`, {
+        return axios.post(`/delivery-address`, {
             houseNumber,
             street,
             city,
@@ -57,7 +57,7 @@ const ProfileService = {
     },
     modifyPassword: function (token, oldPassword, newPassword, newPasswordAgain) {
         setClientToken(token);
-        return axios.post(`/profile/reset-password`, {
+        return axios.post(`/profile/change-password`, {
             oldPassword,
             newPassword,
             newPasswordAgain
@@ -68,33 +68,28 @@ const ProfileService = {
     },
     addReviews: function (token) {
         setClientToken(token);
-        return axios.get(`/restaurant-reviews/add`).then((response) => {
+        return axios.get(`/restaurant-review/addition-list`).then((response) => {
             removeClientToken();
             return response.data;
         });
     },
     viewReviews: function (token) {
         setClientToken(token);
-        return axios.get(`/restaurant-reviews`).then((response) => {
+        return axios.get(`/restaurant-review/added-list`).then((response) => {
             removeClientToken();
             return response.data;
         });
     },
     getReview: function (token, reviewId) {
         setClientToken(token);
-        return axios.get(`/restaurant-reviews/${reviewId}`).then((response) => {
+        return axios.get(`/restaurant-review/${reviewId}`).then((response) => {
             removeClientToken();
             return response.data;
         });
     },
     setReview: function (token, genLink, rating, message) {
         setClientToken(token);
-        console.log({
-            genLink,
-            rating,
-            message
-        })
-        return axios.post(`/restaurant-reviews`, {
+        return axios.post(`/restaurant-review`, {
             genLink,
             rating,
             message
@@ -105,7 +100,7 @@ const ProfileService = {
     },
     deleteReview: function (token, reviewId) {
         setClientToken(token);
-        return axios.delete(`/restaurant-reviews/${reviewId}`).then((response) => {
+        return axios.delete(`/restaurant-review/${reviewId}`).then((response) => {
             removeClientToken();
             return response.data;
         });

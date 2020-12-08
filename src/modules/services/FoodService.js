@@ -1,18 +1,18 @@
 import axios from '@utils/axios';
 
 const FoodService = {
-    featured: function (country, cityName) {
-        return axios.get(`/location-app/promotion/${country}/${cityName}`).then((response) => {
+    promotion: function (country, cityName) {
+        return axios.get(`/location/promotion/${country}/${cityName}`).then((response) => {
             return response.data;
         });
     },
-    trendy: function (country, cityName) {
-        return axios.get(`/location-app/popular/${country}/${cityName}`).then((response) => {
+    popular: function (country, cityName) {
+        return axios.get(`/location/popular/${country}/${cityName}`).then((response) => {
             return response.data;
         });
     },
     result: function (country, cityName, search, filters) {
-        return axios.post(`/location-app/search`, {
+        return axios.post(`/location/home/search`, {
             lang: country,
             location: cityName,
             searchString: search,
@@ -22,7 +22,7 @@ const FoodService = {
         });
     },
     categories: function (country, restaurantName, searchedProduct) {
-        return axios.post(`/products`, {
+        return axios.post(`/product`, {
             lang: country,
             restaurantName,
             searchedProduct
@@ -31,7 +31,7 @@ const FoodService = {
         });
     },
     products: function (country, categoryId, restaurantName, searchedProduct) {
-        return axios.post(`/products/category`, {
+        return axios.post(`/product/category`, {
             lang: country,
             categoryId,
             restaurantName,
@@ -41,7 +41,7 @@ const FoodService = {
         });
     },
     allergen: function (country, productId, restaurantName) {
-        return axios.post(`/products/allergen`, {
+        return axios.post(`/product/allergen`, {
             lang: country,
             productId,
             restaurantName
@@ -55,7 +55,7 @@ const FoodService = {
         });
     },
     reviews: function (restaurantName, rating) {
-        return axios.post(`/restaurant/review`, {
+        return axios.post(`/restaurant/review-list`, {
             restaurantName,
             rating
         }).then((response) => {
