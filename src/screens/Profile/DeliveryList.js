@@ -63,11 +63,6 @@ export default DeliveryList = (props) => {
                     }}>
                         <TrustIcon />
                     </TouchableOpacity>
-                    {/* <Icon type='material' name='edit' size={20} color={colors.YELLOW.PRIMARY} onPress={() => props.navigation.push('DeliveryAdd', { type: 2, item: address.item })} /> */}
-                    {/* <Icon type='ant-design' name='delete' size={20} color='#999' onPress={() => {
-                        setDeleteId(address.item.id);
-                        setVisible(true);
-                    }} /> */}
                 </View>
             </View>
         )

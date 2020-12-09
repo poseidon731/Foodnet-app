@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, LogBox, FlatList, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -12,51 +12,66 @@ import i18n from '@utils/i18n';
 
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
+import ContentLoader from 'react-native-easy-content-loader';
+
+const RenderItem = ({ result, index, onDetail }) => {
+  const [loader, setLoader] = useState(true);
+  return (
+    <Fragment>
+      <ContentLoader
+        active
+        title={false}
+        pRows={3}
+        pWidth={['100%', '90%', 50]}
+        pHeight={[125, 10, 20]}
+        loading={loader}
+        containerStyles={styles.loader}
+      />
+      <TouchableOpacity key={index} style={loader ? styles.default : styles.result} onPress={() => onDetail(result.item)}>
+        <FastImage style={styles.image} source={{ uri: RES_URL + result.item.restaurant_coverImage }} onLoadEnd={e => setLoader(false)} />
+        {!loader && (
+          <Fragment>
+            {(result.item.restaurant_new > 0 || result.item.restaurant_discount > 0) && (
+              <View style={styles.tagView}>
+                {result.item.restaurant_new > 0 && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.tag}>
+                      <Text style={styles.tagText}>{i18n.translate('NEW RESTAURANT')}</Text>
+                    </View>
+                  </View>
+                )}
+                {result.item.restaurant_discount > 0 && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.tag}>
+                      <Text style={styles.tagText}>{i18n.translate('SPECIAL PRICE')}</Text>
+                    </View>
+                  </View>
+                )}
+              </View>
+            )}
+            {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && (
+              <View style={styles.overlay}>
+                <Text style={styles.closeText}>{i18n.translate('CLOSED')}</Text>
+              </View>
+            )}
+            <View style={styles.titleView}>
+              <Text style={[styles.title, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={1}>{result.item.restaurant_name}</Text>
+              <View style={styles.rating}>
+                <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
+                <Text style={styles.rate}>{result.item.restaurant_rating}/5</Text>
+              </View>
+            </View>
+            <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{result.item.restaurant_description}</Text>
+          </Fragment>
+        )}
+      </TouchableOpacity>
+    </Fragment>
+  )
+}
 
 export default Result = (props) => {
   useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
-  const renderItem = (result, index) => {
-    return (
-      <TouchableOpacity key={index} style={styles.result} onPress={() => props.onDetail(result.item)}>
-        <FastImage style={styles.image} source={{ uri: RES_URL + result.item.restaurant_coverImage }} />
-        {(result.item.restaurant_new > 0 || result.item.restaurant_discount > 0) && (
-          <View style={styles.tagView}>
-            {result.item.restaurant_new > 0 && (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{i18n.translate('NEW RESTAURANT')}</Text>
-                </View>
-              </View>
-            )}
-            {result.item.restaurant_discount > 0 && (
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{i18n.translate('SPECIAL PRICE')}</Text>
-                </View>
-              </View>
-            )}
-          </View>
-        )}
-        {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && (
-          <View style={styles.overlay}>
-            <Text style={styles.closeText}>{i18n.translate('CLOSED')}</Text>
-          </View>
-        )}
-        <View style={styles.titleView}>
-          <Text style={[styles.title, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={1}>{result.item.restaurant_name}</Text>
-          {/* <Text>{moment().format('HH:mm')}</Text> */}
-          <View style={styles.rating}>
-            <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
-            <Text style={styles.rate}>{result.item.restaurant_rating}/5</Text>
-          </View>
-        </View>
-        <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(result.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(result.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{result.item.restaurant_description}</Text>
-        {/* <View style={{ flexDirection: 'row', marginTop: 5 }}>
-          <Text style={styles.time}>{result.item.restaurant_open}/{moment().format('HH:mm')}/{result.item.restaurant_close}</Text>
-        </View> */}
-      </TouchableOpacity>
-    )
-  }
+
   return (
     <Card key='result' style={styles.card}>
       <Text style={styles.cardTitle}>{i18n.translate('All restaurants')}</Text>
@@ -65,7 +80,7 @@ export default Result = (props) => {
           showsVerticalScrollIndicator={false}
           data={props.data}
           keyExtractor={(result, index) => index.toString()}
-          renderItem={renderItem}
+          renderItem={(result, index) => (<RenderItem result={result} index={index} onDetail={props.onDetail} />)}
         />
       ) : (
           <View style={styles.emptyView}>
@@ -87,6 +102,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#111'
+  },
+  loader: {
+    marginBottom: 20,
+    width: '100%',
+  },
+  default: {
+    height: 0
   },
   result: {
     marginBottom: 30,

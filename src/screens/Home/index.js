@@ -55,7 +55,7 @@ export default Home = (props) => {
             .catch((error) => {
                 setRefresh(false);
             });
-        FoodService.result(country, logged ? user.city.name : city.name, search, filters)
+        FoodService.all(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
                 dispatch(setLoading(false));
                 setRefresh(false);
@@ -70,18 +70,19 @@ export default Home = (props) => {
     }, [country, city, user, refresh, filters]);
 
     useEffect(() => {
+        dispatch(setLoading(true));
         FoodService.result(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
                 setResultLoader(true);
                 setRefresh(false);
-                // dispatch(setLoading(false));
+                dispatch(setLoading(false));
                 if (response.status == 200) {
                     setResult(response.result);
                 }
             })
             .catch((error) => {
                 setRefresh(false);
-                // dispatch(setLoading(false));
+                dispatch(setLoading(false));
             });
     }, [search]);
 

@@ -23,7 +23,7 @@ export default ProfileEdit = (props) => {
     const [email, setEmail] = useState(props.route.params.userInfo.email);
     const [visitEmail, setVisitEmail] = useState(false);
     const [errorEmail, setErrorEmail] = useState('');
-    const [mobile, setMobile] = useState(props.route.params.userInfo.phoneNumber);
+    const [mobile, setMobile] = useState(isEmpty(props.route.params.userInfo.phoneNumber) ? '' : props.route.params.userInfo.phoneNumber);
     const [visitMobile, setVisitMobile] = useState(false);
     const [errorMobile, setErrorMobile] = useState('');
     const [errorMsg, setErrorMsg] = useState('');

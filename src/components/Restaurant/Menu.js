@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, LogBox, FlatList, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -13,6 +13,52 @@ import i18n from '@utils/i18n';
 
 import { TextField } from 'react-native-material-textfield';
 import FastImage from 'react-native-fast-image';
+import ContentLoader from 'react-native-easy-content-loader';
+
+const RenderOne = ({ one, index, onMinus, onPlus }) => {
+    const [loader, setLoader] = useState(true);
+    return (
+        <Fragment>
+            <ContentLoader
+                active
+                title={false}
+                pRows={3}
+                pWidth={['100%', '90%', '50%', 50]}
+                pHeight={[125, 10, 8, 20]}
+                loading={loader}
+                containerStyles={styles.loader}
+            />
+            <View key={index} style={loader ? styles.loader : styles.product}>
+                <FastImage style={styles.productImage} source={{ uri: RES_URL + one.item.productImageUrl }} resizeMode='cover' onLoadEnd={e => setLoader(false)} />
+                <Text style={styles.productTitle} numberOfLines={1}>{one.item.productTitle}</Text>
+                <Text style={styles.productDescription}>{one.item.productDescription}</Text>
+                {!isEmpty(one.item.allergens) ? (
+                    <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {one.item.allergens.map((allergen, key) => (
+                        <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != one.item.allergens.length - 1 ? ', ' : ''}</Text>
+                    ))})</Text>
+                ) : null}
+                <View style={styles.productCart}>
+                    <Text style={styles.price}>{one.item.productPrice} Ft</Text>
+                    <View style={styles.cart}>
+                        <TouchableOpacity style={styles.countButton1} onPress={() => onMinus(one.item)}>
+                            <Icon type='material-community' name='minus' color='#333' size={25} />
+                        </TouchableOpacity>
+                        <View style={styles.count}>
+                            <Text style={{ color: '#333' }}>{one.item.cart_count} db</Text>
+                        </View>
+                        <TouchableOpacity style={styles.countButton2} onPress={() => onPlus(one.item)}>
+                            <Icon type='material-community' name='plus' color='#333' size={25} />
+                        </TouchableOpacity>
+                        <View style={{ width: 10 }} />
+                        <TouchableOpacity style={styles.check}>
+                            {one.item.cart_count > 0 ? (<Icon type='material' name='check' color={colors.WHITE} size={25} />) : (<CartWhiteIcon />)}
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </Fragment>
+    )
+}
 
 export default Menu = (props) => {
     useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
@@ -34,41 +80,9 @@ export default Menu = (props) => {
                     showsHorizontalScrollIndicator={false}
                     data={product.item.product_list}
                     keyExtractor={(one, index) => index.toString()}
-                    renderItem={renderOne}
+                    renderItem={(one, index) => (<RenderOne one={one} index={index} onMinus={props.onMinus} onPlus={props.onPlus} />)}
                 />
             </Card>
-        )
-    }
-    const renderOne = (one, index) => {
-        return (
-            <View key={index} style={styles.product}>
-                <FastImage style={styles.productImage} source={{ uri: RES_URL + one.item.productImageUrl }} resizeMode='cover' />
-                <Text style={styles.productTitle} numberOfLines={1}>{one.item.productTitle}</Text>
-                <Text style={styles.productDescription}>{one.item.productDescription}</Text>
-                {!isEmpty(one.item.allergens) ? (
-                    <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {one.item.allergens.map((allergen, key) => (
-                        <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != one.item.allergens.length - 1 ? ', ' : ''}</Text>
-                    ))})</Text>
-                ) : null}
-                <View style={styles.productCart}>
-                    <Text style={styles.price}>{one.item.productPrice} Ft</Text>
-                    <View style={styles.cart}>
-                        <TouchableOpacity style={styles.countButton1} onPress={() => props.onMinus(one.item)}>
-                            <Icon type='material-community' name='minus' color='#333' size={25} />
-                        </TouchableOpacity>
-                        <View style={styles.count}>
-                            <Text style={{ color: '#333' }}>{one.item.cart_count} db</Text>
-                        </View>
-                        <TouchableOpacity style={styles.countButton2} onPress={() => props.onPlus(one.item)}>
-                            <Icon type='material-community' name='plus' color='#333' size={25} />
-                        </TouchableOpacity>
-                        <View style={{ width: 10 }} />
-                        <TouchableOpacity style={styles.check}>
-                            {one.item.cart_count > 0 ? (<Icon type='material' name='check' color={colors.WHITE} size={25} />) : (<CartWhiteIcon />)}
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
         )
     }
 
@@ -102,7 +116,7 @@ export default Menu = (props) => {
             </Card>
             {isEmpty(props.products) ? (
                 <View style={{ marginTop: 20, width: '100%', alignItems: 'center' }}>
-                    <Text style={[styles.cardTitle, { textAlign: 'center' }]}>{i18n.translate('No reviews')}</Text>
+                    <Text style={[styles.cardTitle, { textAlign: 'center' }]}>{i18n.translate('No Menu')}</Text>
                 </View>
             ) : (
                     <FlatList
@@ -156,6 +170,23 @@ const styles = StyleSheet.create({
     inputContainer: {
         marginTop: -20,
         borderWidth: 0
+    },
+    loader: {
+        marginBottom: 24,
+        width: wp('100%') - 40,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.15)',
+        backgroundColor: colors.WHITE,
+        shadowColor: 'rgba(0, 0, 0, 0.15)',
+        shadowOffset: { width: Platform.OS === 'ios' ? 10 : 0, height: Platform.OS === 'ios' ? 12 : 12 },
+        shadowOpacity: 0.5,
+        shadowRadius: 16,
+        elevation: Platform.OS === 'ios' ? 24 : 5,
+        borderRadius: 6,
+    },
+    default: {
+      height: 0
     },
     product: {
         marginBottom: 24,

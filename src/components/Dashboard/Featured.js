@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, LogBox, FlatList, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -12,32 +12,43 @@ import i18n from '@utils/i18n';
 
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
-import ContentLoader, { FacebookLoader, InstagramLoader, Bullets } from 'react-native-easy-content-loader';
+import ContentLoader from 'react-native-easy-content-loader';
+
+const RenderItem = ({ featured, index, onDetail }) => {
+  const [loader, setLoader] = useState(true);
+  return (
+    <Fragment>
+      <ContentLoader
+        active
+        title={false}
+        pRows={3}
+        pWidth={[200, 150, 50]}
+        pHeight={[125, 10, 20]}
+        loading={loader}
+        containerStyles={styles.loader}
+      />
+      <TouchableOpacity key={index} style={loader ? styles.default : styles.featured} onPress={() => onDetail(featured.item)}>
+        <FastImage style={styles.image} source={{ uri: RES_URL + featured.item.restaurant_coverImage }} onLoadEnd={(e) => setLoader(false)} />
+        {!loader && (
+          <Fragment>
+            {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && (
+              <View style={styles.overlay}><Text style={styles.closeText}>{i18n.translate('CLOSED')}</Text></View>
+            )}
+            <Text style={[styles.title, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={1}>{featured.item.restaurant_name}</Text>
+            <View style={styles.rating}>
+              <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
+              <Text style={styles.rate}>{featured.item.restaurant_rating}/5</Text>
+            </View>
+            <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{featured.item.restaurant_description}</Text>
+          </Fragment>
+        )}
+      </TouchableOpacity>
+    </Fragment>
+  )
+}
 
 export default Featured = (props) => {
   useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
-
-  const renderItem = (featured, index) => {
-    return (
-      <TouchableOpacity key={index} style={styles.featured} onPress={() => props.onDetail(featured.item)}>
-        <FastImage style={styles.image} source={{ uri: RES_URL + featured.item.restaurant_coverImage }} />
-        {(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && (
-          <View style={styles.overlay}>
-            <Text style={styles.closeText}>{i18n.translate('CLOSED')}</Text>
-          </View>
-        )}
-        <Text style={[styles.title, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={1}>{featured.item.restaurant_name}</Text>
-        <View style={styles.rating}>
-          <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
-          <Text style={styles.rate}>{featured.item.restaurant_rating}/5</Text>
-        </View>
-        <Text style={[styles.description, (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(featured.item.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(featured.item.restaurant_close.replace(':', ''))) && styles.disabled]} numberOfLines={2}>{featured.item.restaurant_description}</Text>
-        {/* <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.time}>{featured.item.restaurant_open}/{moment().format('HH:mm')}/{featured.item.restaurant_close}</Text>
-        </View> */}
-      </TouchableOpacity>
-    )
-  }
 
   return (
     <Card key='featured' style={styles.card}>
@@ -50,7 +61,7 @@ export default Featured = (props) => {
         showsHorizontalScrollIndicator={false}
         data={props.data}
         keyExtractor={(featured, index) => index.toString()}
-        renderItem={renderItem}
+        renderItem={(featured, index) => (<RenderItem featured={featured} index={index} onDetail={props.onDetail} />)}
       />
     </Card>
   );
@@ -78,6 +89,14 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: '#666',
     width: '40%'
+  },
+  loader: {
+    marginTop: -10,
+    marginRight: 16,
+    width: 200,
+  },
+  default: {
+    width: 0
   },
   featured: {
     marginRight: 16,
