@@ -216,7 +216,7 @@ export default Extra = (props) => {
             });
 
             cartProducts.push({
-                cartId: new Date(),
+                cartId: Date.now(),
                 variantId: product.variant_id,
                 productId: product.product_id,
                 productName: product.product_name,

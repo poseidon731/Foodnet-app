@@ -5,7 +5,7 @@ import { Platform, StatusBar, StyleSheet, SafeAreaView, FlatList, View, Text, An
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
-import { setCartRestaurant, setCartProducts } from '@modules/reducers/food/actions';
+import { setCartRestaurant, setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { ProfileService, FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -88,7 +88,7 @@ export default CartDetail = (props) => {
     const [itemTemp, setItemTemp] = useState(null);
     const [countTemp, setCountTemp] = useState(0);
     const [total, setTotal] = useState(0);
-    const [subscription, setSubscription] = useState(0);
+    // const [subscription, setSubscription] = useState(0);
 
     const [deliveryList, setDeliveryList] = useState([]);
     const [deliveryAddress, setDeliveryAddress] = useState({ value: 0, label: '' });
@@ -155,15 +155,15 @@ export default CartDetail = (props) => {
 
     useEffect(() => {
         var totalAmount = 0;
-        var subAmount = 0;
+        // var subAmount = 0;
         cartProducts.map((cartProduct, key) => {
             totalAmount += cartProduct.quantity * cartProduct.productPrice;
-            cartProduct.extras.map((extra, key) => {
-                subAmount += extra.quantity * extra.extraPrice;
-            });
+            // cartProduct.extras.map((extra, key) => {
+            //     subAmount += extra.quantity * extra.extraPrice;
+            // });
         });
         setTotal(totalAmount);
-        setSubscription(subAmount);
+        // setSubscription(subAmount);
     });
 
     const onDelete = (check, item, count) => {
@@ -193,13 +193,14 @@ export default CartDetail = (props) => {
     const onOrder = () => {
         setVisible(false);
         dispatch(setLoading(true));
-        FoodService.order(deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
+        FoodService.order(user.token, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
             .then(async (response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {
                     setSuccess(true);
                     dispatch(setCartRestaurant(null));
                     dispatch(setCartProducts([]));
+                    dispatch(setCartBadge(0));
                 }
             })
             .catch((error) => {
@@ -228,8 +229,8 @@ export default CartDetail = (props) => {
                             )}
                         />
                         <View style={styles.amount}>
-                            <Text style={styles.price}>{i18n.translate('Total')}: {total} Ft</Text>
-                            <Text style={styles.subscription}>{i18n.translate('Subscription')}: {subscription} Ft</Text>
+                            <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} Ft</Text>
+                            {/* <Text style={styles.subscription}>{i18n.translate('Subscription')}: {subscription} Ft</Text> */}
                         </View>
                         <Text style={[styles.cartText, { marginTop: 20 }]} numberOfLines={1}>{i18n.translate('Take over')}</Text>
                         {logged ? (
@@ -284,13 +285,13 @@ export default CartDetail = (props) => {
                             <Icon type='material' name={'radio-button-on'} color={colors.YELLOW.PRIMARY} size={20} />
                             <Text style={styles.radioText} numberOfLines={1}>{i18n.translate('Cash')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.radioButton} disabled={true}>
+                        {/* <TouchableOpacity style={styles.radioButton} disabled={true}>
                             <Icon type='material' name={'radio-button-off'} color={colors.BLACK} size={20} />
                             <Text style={styles.radioText} numberOfLines={1}>{i18n.translate('Credit card')}</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <View style={{ marginTop: 30, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                            <TouchableOpacity style={styles.button} onPress={() => setVisible(true)}>
+                            <TouchableOpacity style={styles.button} onPress={() => onOrder()}>
                                 <Text style={styles.buttonText}>{i18n.translate('Order Now')}</Text>
                             </TouchableOpacity>
                         </View>

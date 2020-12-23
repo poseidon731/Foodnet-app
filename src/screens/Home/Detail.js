@@ -5,7 +5,7 @@ import { Platform, StatusBar, StyleSheet, SafeAreaView, FlatList, View, Text, An
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
-import { setCartRestaurant, setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
+import { setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { Menu, Information, Reviews } from '@components';
@@ -266,7 +266,6 @@ export default Detail = (props) => {
                     </Animated.View>
                     <View style={common.headerRight}>
                         <TouchableOpacity onPress={() => {
-                            dispatch(setCartBadge(0));
                             props.navigation.navigate('Order');
                         }}>
                             {cartBadge > 0 ? (
@@ -307,6 +306,7 @@ export default Detail = (props) => {
                             setModal(false);
                             // dispatch(setCartRestaurant(null));
                             dispatch(setCartProducts([]));
+                            dispatch(setCartBadge(0));
                         }}>
                             <Text style={styles.cancelText}>{i18n.translate('Empty cart add new product to the cart')}</Text>
                         </TouchableOpacity>
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        bottom: 0,
+        top: 200,
         paddingLeft: 50,
         width: wp('100%'),
         height: 60,

@@ -45,12 +45,40 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
             <View key={index} style={loader ? styles.default : styles.product}>
                 <FastImage style={styles.productImage} source={{ uri: RES_URL + product.product_imageUrl }} resizeMode='cover' onLoadEnd={e => setLoader(false)} />
                 <Text style={styles.productTitle} numberOfLines={1}>{product.product_name}</Text>
-                <Text style={styles.productDescription}>{product.product_description}</Text>
-                {!isEmpty(product.allergens_name) ? (
+                {isEmpty(product.soldOut) && (
+                    <Text style={styles.productDescription}>{product.product_description}</Text>
+                )}
+                {isEmpty(product.soldOut) && !isEmpty(product.allergens_name) ? (
                     <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
                         <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
                     ))})</Text>
                 ) : null}
+                {!isEmpty(product.soldOut) && (
+                    <View style={styles.dailyWrapper}>
+                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Soup')}: </Text>{'Product name'}</Text>
+                        {!isEmpty(product.allergens_name) ? (
+                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
+                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
+                            ))})</Text>
+                        ) : null}
+                        <View style={{ height: 20 }} />
+                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Main course')}: </Text>{'Product name'}</Text>
+                        {!isEmpty(product.allergens_name) ? (
+                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
+                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
+                            ))})</Text>
+                        ) : null}
+                        <View style={{ height: 20 }} />
+                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Dessert')}: </Text>{'Product name'}</Text>
+                        {!isEmpty(product.allergens_name) ? (
+                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
+                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
+                            ))})</Text>
+                        ) : null}
+                        <View style={{ height: 20 }} />
+                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Available')}: </Text>{product.startTime.split(', ')[1]}-{product.endTime.split(', ')[1]}</Text>
+                    </View>
+                )}
                 <View style={styles.productCart}>
                     <Text style={styles.price}>{product.product_price} Ft</Text>
                     <View style={styles.cart}>
@@ -339,5 +367,14 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 4,
         borderWidth: 1,
         borderColor: '#C4C4C4'
-    }
+    },
+    dailyWrapper: {
+        marginTop: 10,
+        width: '100%'
+    },
+    extrasText: {
+        width: '100%',
+        fontSize: 16,
+        color: '#333'
+    },
 });

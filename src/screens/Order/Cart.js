@@ -5,10 +5,10 @@ import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, FlatList
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
-import { setCartProducts } from '@modules/reducers/food/actions';
+import { setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { TrustIcon } from '@constants/svgs';
+import { TrustIcon, CartYellowIcon, CartWhiteIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) => {
@@ -16,19 +16,19 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
     return (
         <View key={index} style={styles.cart}>
             <View style={styles.cartMain}>
-                <Text style={styles.cartText} numberOfLines={1}>{1}*{cartProduct.productName} - {cartProduct.quantity} {i18n.translate('people')}</Text>
+                <Text style={styles.cartText} numberOfLines={1}>{cartProduct.quantity}*{cartProduct.productName}</Text>
                 <TouchableOpacity style={{ marginLeft: 20 }} onPress={() => onDelete(false, cartProduct, count)}>
                     <TrustIcon />
                 </TouchableOpacity>
             </View>
-            <Text style={styles.allergen}>{i18n.translate('Allergens')}</Text>
+            <Text style={styles.allergen}>{i18n.translate('Ingredients')}</Text>
             {!isEmpty(cartProduct.allergens) ? (
-                <Text style={styles.allergenList}>({cartProduct.allergens.map((allergen, key) => (
+                <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {cartProduct.allergens.map((allergen, key) => (
                     <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != cartProduct.allergens.length - 1 ? ', ' : ''}</Text>
                 ))})</Text>
             ) : null}
             {!isEmpty(cartProduct.extras) ? (
-                <Text style={styles.extraList}>+{cartProduct.extras.map((extra, key) => (
+                <Text style={styles.extraList}>+ {cartProduct.extras.map((extra, key) => (
                     <Text key={key} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
                 ))}</Text>
             ) : null}
@@ -70,7 +70,7 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
 export default Cart = (props) => {
     const dispatch = useDispatch();
     const { logged, country, city, user } = useSelector(state => state.auth);
-    const { cartRestaurant, cartProducts } = useSelector(state => state.food);
+    const { cartRestaurant, cartProducts, cartBadge } = useSelector(state => state.food);
 
     const [visible, setVisible] = useState(false);
     const [type, setType] = useState(false);
@@ -78,20 +78,20 @@ export default Cart = (props) => {
     const [itemTemp, setItemTemp] = useState(null);
     const [countTemp, setCountTemp] = useState(0);
     const [total, setTotal] = useState(0);
-    const [subscription, setSubscription] = useState(0);
+    // const [subscription, setSubscription] = useState(0);
 
 
     useEffect(() => {
         var totalAmount = 0;
-        var subAmount = 0;
+        // var subAmount = 0;
         cartProducts.map((cartProduct, key) => {
             totalAmount += cartProduct.quantity * cartProduct.productPrice;
-            cartProduct.extras.map((extra, key) => {
-                subAmount += extra.quantity * extra.extraPrice;
-            });
+            // cartProduct.extras.map((extra, key) => {
+            //     subAmount += extra.quantity * extra.extraPrice;
+            // });
         });
         setTotal(totalAmount);
-        setSubscription(subAmount);
+        // setSubscription(subAmount);
     });
 
     const onDelete = (check, item, count) => {
@@ -114,12 +114,14 @@ export default Cart = (props) => {
                 return cartProduct.cartId != item.cartId
             });
             dispatch(setCartProducts(result));
+            dispatch(setCartBadge(cartBadge - 1));
         }
         setVisible(false);
     }
 
     const onEmpty = () => {
         dispatch(setCartProducts([]));
+        dispatch(setCartBadge(0));
         setVisible(false);
     }
 
@@ -135,7 +137,23 @@ export default Cart = (props) => {
                 <TouchableOpacity style={common.headerTitle}>
                     <Text style={common.headerTitleText} numberOfLines={1}>{i18n.translate('Basket')}</Text>
                 </TouchableOpacity>
-                <View style={common.headerRight} />
+                <View style={common.headerRight}>
+                    <TouchableOpacity>
+                        {cartBadge > 0 ? (
+                            <Fragment>
+                                <CartYellowIcon />
+                                <View style={styles.badge}>
+                                    <Text style={styles.badgeText}>{cartBadge}</Text>
+                                </View>
+                            </Fragment>
+                        ) : (
+                                <Fragment>
+                                    <CartWhiteIcon />
+                                    <View style={styles.badgeEmpty} />
+                                </Fragment>
+                            )}
+                    </TouchableOpacity>
+                </View>
             </Header>
             <Content style={{ flex: 1, padding: 20 }}>
                 {!isEmpty(cartProducts) ? (
@@ -154,8 +172,8 @@ export default Cart = (props) => {
                             )}
                         />
                         <View style={styles.amount}>
-                            <Text style={styles.price}>{i18n.translate('Total')}: {total} Ft</Text>
-                            <Text style={styles.subscription}>{i18n.translate('Subscription')}: {subscription} Ft</Text>
+                            <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} Ft</Text>
+                            {/* <Text style={styles.subscription}>{i18n.translate('Subscription')}: {subscription} Ft</Text> */}
                         </View>
                         <View style={{ marginTop: 20, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity style={styles.button} onPress={() => props.navigation.push('CartDetail')}>
@@ -244,7 +262,7 @@ const styles = StyleSheet.create({
         color: '#999'
     },
     extraList: {
-        marginTop: 10,
+        marginTop: 15,
         width: '100%',
         fontSize: 16,
         color: colors.BLACK
@@ -254,6 +272,7 @@ const styles = StyleSheet.create({
         color: colors.BLACK
     },
     cartBottom: {
+        marginTop: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -414,5 +433,30 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: 'bold',
         color: '#F05050'
+    },
+    badge: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#FEEBD6',
+        backgroundColor: colors.YELLOW.PRIMARY,
+        marginTop: -30,
+        marginLeft: 15
+    },
+    badgeEmpty: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 16,
+        height: 16,
+        marginTop: -30,
+        marginLeft: 15
+    },
+    badgeText: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: colors.WHITE
     },
 });
