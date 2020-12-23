@@ -21,7 +21,7 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
                     <TrustIcon />
                 </TouchableOpacity>
             </View>
-            <Text style={styles.allergen}>{i18n.translate('Ingredients')}</Text>
+            <Text style={styles.allergen} numberOfLines={1}>{cartProduct.productDescription}</Text>
             {!isEmpty(cartProduct.allergens) ? (
                 <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {cartProduct.allergens.map((allergen, key) => (
                     <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != cartProduct.allergens.length - 1 ? ', ' : ''}</Text>
@@ -78,20 +78,18 @@ export default Cart = (props) => {
     const [itemTemp, setItemTemp] = useState(null);
     const [countTemp, setCountTemp] = useState(0);
     const [total, setTotal] = useState(0);
-    // const [subscription, setSubscription] = useState(0);
 
 
     useEffect(() => {
         var totalAmount = 0;
-        // var subAmount = 0;
         cartProducts.map((cartProduct, key) => {
             totalAmount += cartProduct.quantity * cartProduct.productPrice;
-            // cartProduct.extras.map((extra, key) => {
-            //     subAmount += extra.quantity * extra.extraPrice;
-            // });
+            if (cartProduct.boxPrice) totalAmount += cartProduct.quantity * cartProduct.boxPrice;
+            cartProduct.extras.map((extra, key) => {
+                totalAmount += extra.quantity * extra.extraPrice;
+            });
         });
         setTotal(totalAmount);
-        // setSubscription(subAmount);
     });
 
     const onDelete = (check, item, count) => {
@@ -173,7 +171,6 @@ export default Cart = (props) => {
                         />
                         <View style={styles.amount}>
                             <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} Ft</Text>
-                            {/* <Text style={styles.subscription}>{i18n.translate('Subscription')}: {subscription} Ft</Text> */}
                         </View>
                         <View style={{ marginTop: 20, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity style={styles.button} onPress={() => props.navigation.push('CartDetail')}>
@@ -191,7 +188,7 @@ export default Cart = (props) => {
                         <View style={styles.emptyView}>
                             <Text style={styles.emptyText1}>{i18n.translate('Your cart is currently empty')}</Text>
                             <Text style={styles.emptyText2}>{i18n.translate('But tomorrow versatile and mass I hate football and a valuable asset to free macro as an integer')}</Text>
-                            <TouchableOpacity style={[common.button, common.backColorYellow, common.marginTop35]} >
+                            <TouchableOpacity style={[common.button, common.backColorYellow, common.marginTop35]} onPress={()=> props.navigation.goBack()}>
                                 <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Look around')}</Text>
                             </TouchableOpacity>
                         </View>

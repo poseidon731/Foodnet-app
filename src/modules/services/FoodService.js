@@ -52,7 +52,6 @@ const FoodService = {
             propertyValTransId,
             categoryId
         }).then((response) => {
-            console.log(JSON.stringify(response.data))
             return response.data;
         });
     },
@@ -92,6 +91,7 @@ const FoodService = {
 
     order: function (token, deliveryAddressId, restaurantId, take, cutlery, products) {
         setClientToken(token);
+        console.log('9999999999')
         return axios.post(`/order`, {
             deliveryAddressId,
             restaurantId,
@@ -100,6 +100,7 @@ const FoodService = {
             products
         }).then((response) => {
             removeClientToken();
+            console.log(response.data)
             return response.data;
         });
     },

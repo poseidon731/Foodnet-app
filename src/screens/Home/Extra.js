@@ -12,6 +12,7 @@ import { common, colors } from '@constants/themes';
 import i18n from '@utils/i18n';
 
 import { TextField } from 'react-native-material-textfield';
+import { Fragment } from 'react';
 
 const Required = ({ required, index, onSelect }) => {
     const [check, setCheck] = useState(false);
@@ -220,6 +221,7 @@ export default Extra = (props) => {
                 variantId: product.variant_id,
                 productId: product.product_id,
                 productName: product.product_name,
+                productDescription: product.product_description,
                 allergens: product.allergens_name,
                 productPrice: product.product_price,
                 boxPrice: isEmpty(product.box_price) ? null : product.box_price,
@@ -255,7 +257,9 @@ export default Extra = (props) => {
                         <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
                     ))})</Text>
                 ) : null}
-                <Text style={{ marginTop: 30, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional soft drinks (')}{requireds.length}{i18n.translate('db Required)')}</Text>
+                {!isEmpty(requireds) && (
+                    <Text style={{ marginTop: 30, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional soft drinks (')}{requireds.length}{i18n.translate('db Required)')}</Text>
+                )}
                 <FlatList
                     showsVerticalScrollIndicator={false}
                     data={requireds}
@@ -270,24 +274,35 @@ export default Extra = (props) => {
                     )}
                 />
                 {/* <View style={{ width: wp('100%'), marginLeft: -10, height: 1, backgroundColor: '#C4C4C4' }} /> */}
-                <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional Things(optional)')}</Text>
+                {!isEmpty(optionals) && (
+                    <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional Things(optional)')}</Text>
+                )}
                 <FlatList
                     showsVerticalScrollIndicator={false}
                     data={optionals}
                     keyExtractor={(optional, index) => index.toString()}
                     renderItem={(optional, index) => (
-                        <Optional optional={optional.item} index={index} optionalList={optionalList} onSelect={(check, optional, count) => onSelect(2, check, optional, count)} />
+                        <Optional
+                            optional={optional.item}
+                            index={index}
+                            optionalList={optionalList}
+                            onSelect={(check, optional, count) => onSelect(2, check, optional, count)}
+                        />
                     )}
                 />
-                <View style={{ width: wp('100%'), marginLeft: -10, height: 1, backgroundColor: '#C4C4C4' }} />
-                <View style={{ width: '100%', height: 80, justifyContent: 'center', alignItems: 'center' }}>
-                    <TouchableOpacity>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#F78F1E' }}>{i18n.translate('Show me the rest')}</Text>
-                    </TouchableOpacity>
-                </View>
+                {(!isEmpty(requireds) || !isEmpty(optionals)) && (
+                    <Fragment>
+                        <View style={{ width: wp('100%'), marginLeft: -10, height: 1, backgroundColor: '#C4C4C4' }} />
+                        <View style={{ width: '100%', height: 80, justifyContent: 'center', alignItems: 'center' }}>
+                            <TouchableOpacity>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#F78F1E' }}>{i18n.translate('Show me the rest')}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Fragment>
+                )}
 
                 <Card key='review' style={styles.card}>
-                    <View style={common.flexRow}>
+                    <View style={[common.flexRow, { marginTop: 10 }]}>
                         <Text style={styles.labelText}>{i18n.translate('Comment')}</Text>
                     </View>
                     <TextField

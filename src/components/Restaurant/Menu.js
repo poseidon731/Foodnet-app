@@ -12,6 +12,7 @@ import { RES_URL } from '@constants/configs';
 import { CartWhiteIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
+import moment from 'moment';
 import { TextField } from 'react-native-material-textfield';
 import FastImage from 'react-native-fast-image';
 import ContentLoader from 'react-native-easy-content-loader';
@@ -43,6 +44,10 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                 containerStyles={styles.loader}
             />
             <View key={index} style={loader ? styles.default : styles.product}>
+                {(!isEmpty(product.startTime) && !isEmpty(product.endTime)) && (moment().format('MM/DD/YYYY, h:mm:ss A') < moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A') || moment().format('MM/DD/YYYY, h:mm:ss A') > moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A') || product.soldOut == 1) && (
+                    <View style={styles.overlay} />
+                )
+                }
                 <FastImage style={styles.productImage} source={{ uri: RES_URL + product.product_imageUrl }} resizeMode='cover' onLoadEnd={e => setLoader(false)} />
                 <Text style={styles.productTitle} numberOfLines={1}>{product.product_name}</Text>
                 {isEmpty(product.soldOut) && (
@@ -377,4 +382,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333'
     },
+    overlay: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 16,
+        left: 16,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        zIndex: 2000
+    }
 });
