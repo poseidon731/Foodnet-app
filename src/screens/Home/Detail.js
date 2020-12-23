@@ -24,7 +24,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default Detail = (props) => {
     const dispatch = useDispatch();
     const { country } = useSelector(state => state.auth);
-    const { filters, cartBadge, cartToast } = useSelector(state => state.food);
+    const { filters, cartRestaurant, cartBadge, cartToast } = useSelector(state => state.food);
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
@@ -33,7 +33,7 @@ export default Detail = (props) => {
         { key: 'third', title: i18n.translate('EVALUATION') },
     ]);
 
-    const [restaurant] = useState(props.route.params.restaurant);
+    const [restaurant, setRestaurant] = useState(props.route.params.restaurant);
     const [filterList, setFilterList] = useState([]);
     const [categories, setCategories] = useState([]);
     const [category, setCategory] = useState({
@@ -95,54 +95,90 @@ export default Detail = (props) => {
         extrapolate: 'clamp',
     });
 
+    // useEffect(() => {
+    //     const getFilterList = () => {
+    //         var tempFilters = [];
+    //         if (filters.freeDelivery == 1) tempFilters = [...tempFilters, { filter: i18n.translate('No shipping costs') }];
+    //         if (filters.newest == 1) tempFilters = [...tempFilters, { filter: i18n.translate('News') }];
+    //         if (filters.pizza == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Pizza') }];
+    //         if (filters.hamburger == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Hamburger') }];
+    //         if (filters.dailyMenu == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Daily menu') }];
+    //         if (filters.soup == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Soup') }];
+    //         if (filters.salad == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Salat') }];
+    //         if (filters.money == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Cash') }];
+    //         if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
+    //         if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
+    //         setFilterList(tempFilters);
+    //     }
+    //     getFilterList();
+
+    //     const getCategories = () => {
+    //         dispatch(setLoading(true));
+    //         FoodService.categories(country, restaurant.restaurant_id)
+    //             .then(async (response) => {
+    //                 dispatch(setLoading(false));
+    //                 if (response.status == 200) {
+    //                     setCategories(response.result);
+    //                     if (!isEmpty(response.result)) {
+    //                         setCategory(response.result[0]);
+    //                     }
+    //                 }
+    //             })
+    //             .catch((error) => {
+    //                 dispatch(setLoading(false));
+    //             });
+    //     }
+    //     getCategories();
+
+    //     const getInformation = () => {
+    //         FoodService.information(country, restaurant.restaurant_name)
+    //             .then((response) => {
+    //                 if (response.status == 200) {
+    //                     setInformation(response.result[0]);
+    //                 }
+    //             })
+    //     }
+
+    //     getInformation();
+
+    //     return () => console.log('Unmounted');
+    // }, []);
+
+
     useEffect(() => {
-        const getFilterList = () => {
-            var tempFilters = [];
-            if (filters.freeDelivery == 1) tempFilters = [...tempFilters, { filter: i18n.translate('No shipping costs') }];
-            if (filters.newest == 1) tempFilters = [...tempFilters, { filter: i18n.translate('News') }];
-            if (filters.pizza == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Pizza') }];
-            if (filters.hamburger == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Hamburger') }];
-            if (filters.dailyMenu == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Daily menu') }];
-            if (filters.soup == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Soup') }];
-            if (filters.salad == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Salat') }];
-            if (filters.money == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Cash') }];
-            if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
-            if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
-            setFilterList(tempFilters);
-        }
-        getFilterList();
-
-        const getCategories = () => {
-            dispatch(setLoading(true));
-            FoodService.categories(country, restaurant.restaurant_id)
-                .then(async (response) => {
-                    dispatch(setLoading(false));
-                    if (response.status == 200) {
-                        setCategories(response.result);
-                        if (!isEmpty(response.result)) {
-                            setCategory(response.result[0]);
-                        }
+        dispatch(setLoading(true));
+        var tempFilters = [];
+        if (filters.freeDelivery == 1) tempFilters = [...tempFilters, { filter: i18n.translate('No shipping costs') }];
+        if (filters.newest == 1) tempFilters = [...tempFilters, { filter: i18n.translate('News') }];
+        if (filters.pizza == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Pizza') }];
+        if (filters.hamburger == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Hamburger') }];
+        if (filters.dailyMenu == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Daily menu') }];
+        if (filters.soup == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Soup') }];
+        if (filters.salad == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Salat') }];
+        if (filters.money == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Cash') }];
+        if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
+        if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
+        setFilterList(tempFilters);
+        FoodService.categories(country, restaurant.restaurant_id)
+            .then(async (response) => {
+                dispatch(setLoading(false));
+                if (response.status == 200) {
+                    setCategories(response.result);
+                    if (!isEmpty(response.result)) {
+                        setCategory(response.result[0]);
                     }
-                })
-                .catch((error) => {
-                    dispatch(setLoading(false));
-                });
-        }
-        getCategories();
-
-        const getInformation = () => {
-            FoodService.information(country, restaurant.restaurant_name)
-                .then((response) => {
-                    if (response.status == 200) {
-                        setInformation(response.result[0]);
-                    }
-                })
-        }
-
-        getInformation();
-
-        return () => console.log('Unmounted');
-    }, []);
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+            });
+        FoodService.information(country, restaurant.restaurant_name)
+            .then((response) => {
+                if (response.status == 200) {
+                    setInformation(response.result[0]);
+                }
+            })
+    }, [restaurant]);
 
     useEffect(() => {
         dispatch(setLoading(true));
@@ -299,8 +335,11 @@ export default Detail = (props) => {
                             <Text style={styles.modalTitle}>{i18n.translate('You havent placed your order from the')} {restaurant.restaurant_name} {i18n.translate('yet')}</Text>
                             <Text style={styles.modalDescription}>{i18n.translate('An order can only be from one restaurant')}</Text>
                         </View>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => setModal(false)}>
-                            <Text style={styles.saveText}>{i18n.translate('Back to the')} {restaurant.restaurant_name} {i18n.translate('restaurant')}</Text>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => {
+                            setModal(false);
+                            setRestaurant(cartRestaurant);
+                        }}>
+                            <Text style={styles.saveText}>{i18n.translate('Back to the')} {cartRestaurant.restaurant_name} {i18n.translate('restaurant')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.modalButton} onPress={() => {
                             setModal(false);
