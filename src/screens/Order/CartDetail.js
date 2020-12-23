@@ -21,14 +21,14 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
     return (
         <View key={index} style={styles.cart}>
             <View style={styles.cartMain}>
-                <Text style={styles.cartText} numberOfLines={1}>{1}*{cartProduct.productName} - {cartProduct.quantity} {i18n.translate('people')}</Text>
+                <Text style={styles.cartText} numberOfLines={1}>{cartProduct.quantity}*{cartProduct.productName}</Text>
                 {/* <TouchableOpacity style={{ marginLeft: 20 }} onPress={() => onDelete(false, cartProduct, count)}>
                     <TrustIcon />
                 </TouchableOpacity> */}
             </View>
-            <Text style={styles.allergen}>{i18n.translate('Allergens')}</Text>
+            <Text style={styles.allergen}>{i18n.translate('Ingredients')}</Text>
             {!isEmpty(cartProduct.allergens) ? (
-                <Text style={styles.allergenList}>({cartProduct.allergens.map((allergen, key) => (
+                <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {cartProduct.allergens.map((allergen, key) => (
                     <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != cartProduct.allergens.length - 1 ? ', ' : ''}</Text>
                 ))})</Text>
             ) : null}
@@ -39,7 +39,7 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
             ) : null}
             <View style={styles.cartBottom}>
                 <View style={styles.cartLeft}>
-                    <Text style={styles.price}>{cartProduct.productPrice} Ft</Text>
+                    <Text style={styles.price}>{cartProduct.productPrice.toFixed(2)} Ft</Text>
                     {!isEmpty(cartProduct.boxPrice) && (
                         <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice}Ft</Text>
                     )}

@@ -36,7 +36,7 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
                 <View style={styles.cartLeft}>
                     <Text style={styles.price}>{cartProduct.productPrice} Ft</Text>
                     {!isEmpty(cartProduct.boxPrice) && (
-                        <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice}Ft</Text>
+                        <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice.toFixed(2)}Ft</Text>
                     )}
                 </View>
                 <View style={styles.cartButton}>
