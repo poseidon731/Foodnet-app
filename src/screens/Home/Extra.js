@@ -38,7 +38,7 @@ const Required = ({ required, index, onSelect }) => {
                     ))})</Text>
                 ) : null}
                 <View style={styles.productCart}>
-                    <Text style={styles.price}>{required.extra_price} Ft</Text>
+                    <Text style={styles.price}>{required.extra_price.toFixed(2) * count} Ft</Text>
                     <View style={styles.cart}>
                         <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
                             count > required.extra_minQuantity && setCount(count - 1);
@@ -86,7 +86,7 @@ const Optional = ({ optional, index, onSelect }) => {
                     ))})</Text>
                 ) : null}
                 <View style={styles.productCart}>
-                    <Text style={styles.price}>{optional.extra_price} Ft</Text>
+                    <Text style={styles.price}>{optional.extra_price.toFixed(2) * count} Ft</Text>
                     <View style={styles.cart}>
                         <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
                             count > optional.extra_minQuantity && setCount(count - 1);

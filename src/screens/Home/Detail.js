@@ -344,8 +344,8 @@ export default Detail = (props) => {
                         <TouchableOpacity style={styles.modalButton} onPress={() => {
                             setModal(false);
                             // dispatch(setCartRestaurant(null));
-                            dispatch(setCartProducts([]));
                             dispatch(setCartBadge(0));
+                            dispatch(setCartProducts([]));
                         }}>
                             <Text style={styles.cancelText}>{i18n.translate('Empty cart add new product to the cart')}</Text>
                         </TouchableOpacity>

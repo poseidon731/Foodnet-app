@@ -237,9 +237,9 @@ export default CartDetail = (props) => {
                                     dispatch(setLoading(false));
                                     if (resp.status == 200) {
                                         setSuccess(true);
-                                        dispatch(setCartRestaurant(null));
-                                        dispatch(setCartProducts([]));
+                                        // dispatch(setCartRestaurant(null));
                                         dispatch(setCartBadge(0));
+                                        dispatch(setCartProducts([]));
                                     }
                                 })
                                 .catch((error) => {
@@ -257,9 +257,9 @@ export default CartDetail = (props) => {
                     dispatch(setLoading(false));
                     if (resp.status == 200) {
                         setSuccess(true);
-                        dispatch(setCartRestaurant(null));
-                        dispatch(setCartProducts([]));
+                        // dispatch(setCartRestaurant(null));
                         dispatch(setCartBadge(0));
+                        dispatch(setCartProducts([]));
                     }
                 })
                 .catch((error) => {

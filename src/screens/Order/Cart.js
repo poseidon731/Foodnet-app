@@ -118,8 +118,8 @@ export default Cart = (props) => {
     }
 
     const onEmpty = () => {
-        dispatch(setCartProducts([]));
         dispatch(setCartBadge(0));
+        dispatch(setCartProducts([]));
         setVisible(false);
     }
 
