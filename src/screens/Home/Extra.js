@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Content, Header } from 'native-base';
 import { Platform, StatusBar, StyleSheet, FlatList, View, Text, TouchableOpacity } from 'react-native';
@@ -12,53 +12,54 @@ import { common, colors } from '@constants/themes';
 import i18n from '@utils/i18n';
 
 import { TextField } from 'react-native-material-textfield';
-import { Fragment } from 'react';
 
 const Required = ({ required, index, onSelect }) => {
     const [check, setCheck] = useState(false);
     const [count, setCount] = useState(required.extra_minQuantity);
     return (
-        <View key={index} style={styles.items}>
-            <TouchableOpacity style={styles.check} onPress={() => {
+        <Fragment>
+            <TouchableOpacity key={index} style={styles.items} onPress={() => {
                 setCheck(!check);
                 onSelect(!check, required, count);
             }}>
-                <Icon
-                    type='material-community'
-                    name={check ? 'check-box-outline' : 'checkbox-blank-outline'}
-                    size={25}
-                    color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
-                />
+                <View style={styles.check}>
+                    <Icon type='material-community' name={check ? 'check-box-outline' : 'checkbox-blank-outline'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
+                </View>
+                <View style={styles.item}>
+                    <Text style={{ fontSize: 16 }} numberOfLines={1}>{required.extra_name}</Text>
+                    {!isEmpty(required.allergens_name) ? (
+                        <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {required.allergens_name.map((allergen, key) => (
+                            <Text key={`allergen${key}`} style={styles.allergen}>{allergen.allergen}{key != required.allergens_name.length - 1 ? ', ' : ''}</Text>
+                        ))})</Text>
+                    ) : null}
+                </View>
             </TouchableOpacity>
-            <View style={styles.item}>
-                <Text style={{ fontSize: 16 }} numberOfLines={1}>{required.extra_name}</Text>
-                {!isEmpty(required.allergens_name) ? (
-                    <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {required.allergens_name.map((allergen, key) => (
-                        <Text key={key} style={styles.allergen}>{allergen.allergen}{key != required.allergens_name.length - 1 ? ', ' : ''}</Text>
-                    ))})</Text>
-                ) : null}
-                <View style={styles.productCart}>
-                    <Text style={styles.price}>{required.extra_price.toFixed(2) * count} Ft</Text>
-                    <View style={styles.cart}>
-                        <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
-                            count > required.extra_minQuantity && setCount(count - 1);
-                            count > required.extra_minQuantity && onSelect(check, required, count - 1);
-                        }}>
-                            <Icon type='material-community' name='minus' color='#333' size={25} />
-                        </TouchableOpacity>
-                        <View style={styles.count}>
-                            <Text style={{ color: '#333' }}>{count} db</Text>
+            <View style={styles.items}>
+                <View style={styles.check} />
+                <View style={styles.item}>
+                    <View style={styles.productCart}>
+                        <Text style={styles.price}>{required.extra_price.toFixed(2) * count} {i18n.translate('lei')}</Text>
+                        <View style={styles.cart}>
+                            <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
+                                count > required.extra_minQuantity && setCount(count - 1);
+                                count > required.extra_minQuantity && onSelect(check, required, count - 1);
+                            }}>
+                                <Icon type='material-community' name='minus' color='#333' size={25} />
+                            </TouchableOpacity>
+                            <View style={styles.count}>
+                                <Text style={{ color: '#333' }}>{count} db</Text>
+                            </View>
+                            <TouchableOpacity style={styles.countButton2} disabled={!check} onPress={() => {
+                                count < required.extra_maxQuantity && setCount(count + 1);
+                                count < required.extra_maxQuantity && onSelect(check, required, count + 1);
+                            }}>
+                                <Icon type='material-community' name='plus' color='#333' size={25} />
+                            </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.countButton2} disabled={!check} onPress={() => {
-                            count < required.extra_maxQuantity && setCount(count + 1);
-                            count < required.extra_maxQuantity && onSelect(check, required, count + 1);
-                        }}>
-                            <Icon type='material-community' name='plus' color='#333' size={25} />
-                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
-        </View>
+        </Fragment>
     )
 }
 
@@ -66,47 +67,49 @@ const Optional = ({ optional, index, onSelect }) => {
     const [check, setCheck] = useState(false);
     const [count, setCount] = useState(optional.extra_minQuantity);
     return (
-        <View key={index} style={styles.items}>
-            <TouchableOpacity style={styles.check} onPress={() => {
+        <Fragment>
+            <TouchableOpacity key={index} style={styles.items} onPress={() => {
                 setCheck(!check);
                 onSelect(!check, optional, count);
             }}>
-                <Icon
-                    type='material-community'
-                    name={check ? 'check-box-outline' : 'checkbox-blank-outline'}
-                    size={25}
-                    color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
-                />
+                <View style={styles.check}>
+                    <Icon type='material-community' name={check ? 'check-box-outline' : 'checkbox-blank-outline'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
+                </View>
+                <View style={styles.item}>
+                    <Text style={{ fontSize: 16 }} numberOfLines={1}>{optional.extra_name}</Text>
+                    {!isEmpty(optional.allergens_name) ? (
+                        <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {optional.allergens_name.map((allergen, key) => (
+                            <Text key={`allergensop${key}`} style={styles.allergen}>{allergen.allergen}{key != optional.allergens_name.length - 1 ? ', ' : ''}</Text>
+                        ))})</Text>
+                    ) : null}
+                </View>
             </TouchableOpacity>
-            <View style={styles.item}>
-                <Text style={{ fontSize: 16 }} numberOfLines={1}>{optional.extra_name}</Text>
-                {!isEmpty(optional.allergens_name) ? (
-                    <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {optional.allergens_name.map((allergen, key) => (
-                        <Text key={key} style={styles.allergen}>{allergen.allergen}{key != optional.allergens_name.length - 1 ? ', ' : ''}</Text>
-                    ))})</Text>
-                ) : null}
-                <View style={styles.productCart}>
-                    <Text style={styles.price}>{optional.extra_price.toFixed(2) * count} Ft</Text>
-                    <View style={styles.cart}>
-                        <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
-                            count > optional.extra_minQuantity && setCount(count - 1);
-                            count > optional.extra_minQuantity && onSelect(check, optional, count - 1);
-                        }}>
-                            <Icon type='material-community' name='minus' color='#333' size={25} />
-                        </TouchableOpacity>
-                        <View style={styles.count}>
-                            <Text style={{ color: '#333' }}>{count} db</Text>
+            <View style={styles.items}>
+                <View style={styles.check} />
+                <View style={styles.item}>
+                    <View style={styles.productCart}>
+                        <Text style={styles.price}>{optional.extra_price.toFixed(2) * count} {i18n.translate('lei')}</Text>
+                        <View style={styles.cart}>
+                            <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
+                                count > optional.extra_minQuantity && setCount(count - 1);
+                                count > optional.extra_minQuantity && onSelect(check, optional, count - 1);
+                            }}>
+                                <Icon type='material-community' name='minus' color='#333' size={25} />
+                            </TouchableOpacity>
+                            <View style={styles.count}>
+                                <Text style={{ color: '#333' }}>{count} db</Text>
+                            </View>
+                            <TouchableOpacity style={styles.countButton2} disabled={!check} onPress={() => {
+                                count < optional.extra_maxQuantity && setCount(count + 1);
+                                count < optional.extra_maxQuantity && onSelect(check, optional, count + 1);
+                            }}>
+                                <Icon type='material-community' name='plus' color='#333' size={25} />
+                            </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.countButton2} disabled={!check} onPress={() => {
-                            count < optional.extra_maxQuantity && setCount(count + 1);
-                            count < optional.extra_maxQuantity && onSelect(check, optional, count + 1);
-                        }}>
-                            <Icon type='material-community' name='plus' color='#333' size={25} />
-                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
-        </View>
+        </Fragment>
     )
 }
 
@@ -155,6 +158,7 @@ export default Extra = (props) => {
                 });
         }
         getOptional();
+
     }, []);
 
     const onSelect = (type, check, item, count) => {
@@ -215,7 +219,6 @@ export default Extra = (props) => {
                     extraPrice: optional.extra_price
                 })
             });
-
             cartProducts.push({
                 cartId: Date.now(),
                 variantId: product.variant_id,
@@ -228,10 +231,16 @@ export default Extra = (props) => {
                 quantity: quantity,
                 message: comment,
                 extras
-            })
+            });
+            var totalBadge = 0;
+            cartProducts.map((cartProduct, key) => {
+                totalBadge += cartProduct.quantity;
+            });
+
             dispatch(setCartRestaurant(restaurant));
             dispatch(setCartProducts(cartProducts));
-            dispatch(setCartBadge(cartBadge + 1));
+            dispatch(setCartBadge(totalBadge));
+            // dispatch(setCartBadge(cartBadge + 1));
             dispatch(setCartToast(!cartToast));
             props.navigation.goBack();
         }
@@ -344,7 +353,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        marginBottom: 10
+        marginBottom: 15
     },
 
     check: {
@@ -353,11 +362,9 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     item: {
-        marginBottom: 10,
         width: wp('100%') - 70,
     },
     productCart: {
-        marginTop: 20,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',

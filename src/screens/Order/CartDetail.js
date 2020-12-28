@@ -17,47 +17,41 @@ import moment from 'moment';
 import { TextField } from 'react-native-material-textfield';
 
 const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) => {
-    const [count, setCount] = useState(cartProduct.quantity);
+    // const [count, setCount] = useState(cartProduct.quantity);
     return (
-        <View key={index} style={styles.cart}>
+        <View key={`cart${index}`} style={styles.cart}>
             <View style={styles.cartMain}>
                 <Text style={styles.cartText} numberOfLines={1}>{cartProduct.quantity}*{cartProduct.productName}</Text>
-                <TouchableOpacity style={{ marginLeft: 20 }} onPress={() => onDelete(false, cartProduct, count)}>
+                <TouchableOpacity style={{ marginLeft: 20 }} onPress={() => onDelete(false, cartProduct, cartProduct.quantity)}>
                     <TrustIcon />
                 </TouchableOpacity>
             </View>
             <Text style={styles.allergen}>{cartProduct.productDescription}</Text>
             {!isEmpty(cartProduct.allergens) ? (
                 <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {cartProduct.allergens.map((allergen, key) => (
-                    <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != cartProduct.allergens.length - 1 ? ', ' : ''}</Text>
+                    <Text key={`allergen${key}`} style={styles.allergen}>{allergen.allergen_name}{key != cartProduct.allergens.length - 1 ? ', ' : ''}</Text>
                 ))})</Text>
             ) : null}
             {!isEmpty(cartProduct.extras) ? (
                 <Text style={styles.extraList}>+{cartProduct.extras.map((extra, key) => (
-                    <Text key={key} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
+                    <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
                 ))}</Text>
             ) : null}
             <View style={styles.cartBottom}>
                 <View style={styles.cartLeft}>
-                    <Text style={styles.price}>{cartProduct.productPrice.toFixed(2)} Ft</Text>
+                    <Text style={styles.price}>{cartProduct.productPrice.toFixed(2)} {i18n.translate('lei')}</Text>
                     {!isEmpty(cartProduct.boxPrice) && (
-                        <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice}Ft</Text>
+                        <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice}{i18n.translate('lei')}</Text>
                     )}
                 </View>
                 <View style={styles.cartButton}>
-                    <TouchableOpacity style={styles.countButton1} disabled={count == 1} onPress={() => {
-                        count > 1 && setCount(count - 1);
-                        count > 1 && onSelect(true, cartProduct, count - 1);
-                    }}>
+                    <TouchableOpacity style={styles.countButton1} disabled={cartProduct.quantity == 1} onPress={() => cartProduct.quantity > 1 && onSelect(true, cartProduct, cartProduct.quantity - 1)}>
                         <Icon type='material-community' name='minus' color='#333' size={25} />
                     </TouchableOpacity>
                     <View style={styles.count}>
-                        <Text style={{ color: '#333' }}>{count} db</Text>
+                        <Text style={{ color: '#333' }}>{cartProduct.quantity} db</Text>
                     </View>
-                    <TouchableOpacity style={styles.countButton2} onPress={() => {
-                        setCount(count + 1);
-                        onSelect(true, cartProduct, count + 1);
-                    }}>
+                    <TouchableOpacity style={styles.countButton2} onPress={() => onSelect(true, cartProduct, cartProduct.quantity + 1)}>
                         <Icon type='material-community' name='plus' color='#333' size={25} />
                     </TouchableOpacity>
                 </View>
@@ -211,14 +205,24 @@ export default CartDetail = (props) => {
                 return cartProduct.cartId == item.cartId
             });
             cartProducts[index].quantity = count;
+            var totalBadge = 0;
+            cartProducts.map((cartProduct, key) => {
+                totalBadge += cartProduct.quantity;
+            });
             dispatch(setCartProducts(cartProducts));
+            dispatch(setCartBadge(totalBadge));
         } else {
             var result = cartProducts.filter((cartProduct) => {
                 return cartProduct.cartId != item.cartId
             });
+            var totalBadge = 0;
+            result.map((cartProduct, key) => {
+                totalBadge += cartProduct.quantity;
+            });
             dispatch(setCartProducts(result));
-            dispatch(setCartBadge(cartBadge - 1));
-            if (cartBadge - 1 <= 0) props.navigation.pop();
+            dispatch(setCartBadge(totalBadge));
+            // dispatch(setCartBadge(cartBadge - 1));
+            if (totalBadge <= 0) props.navigation.pop();
         }
         setVisible(false);
     }
@@ -289,7 +293,7 @@ export default CartDetail = (props) => {
                             )}
                         />
                         <View style={styles.amount}>
-                            <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} Ft</Text>
+                            <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} {i18n.translate('lei')}</Text>
                         </View>
                         <Text style={[styles.cartText, { marginTop: 20 }]} numberOfLines={1}>{i18n.translate('Take over')}</Text>
                         {logged && !isEmpty(deliveryList) ? (

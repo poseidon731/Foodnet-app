@@ -90,8 +90,14 @@ const FoodService = {
     },
 
     order: function (token, deliveryAddressId, restaurantId, take, cutlery, products) {
+        console.log(JSON.stringify({
+            deliveryAddressId,
+            restaurantId,
+            take: take ? 1 : 0,
+            cutlery: cutlery ? 1 : 0,
+            products
+        }))
         setClientToken(token);
-        console.log('9999999999')
         return axios.post(`/order`, {
             deliveryAddressId,
             restaurantId,
@@ -100,7 +106,6 @@ const FoodService = {
             products
         }).then((response) => {
             removeClientToken();
-            console.log(response.data)
             return response.data;
         });
     },
