@@ -55,7 +55,8 @@ export default ProfileEdit = (props) => {
             .catch((error) => {
                 dispatch(setLoading(false));
                 props.navigation.push('Errors');
-                setErrorMsg(error.message);
+                setErrorMsg(i18n.translate('E-mail already exist'));
+                // setErrorMsg(error.message);
             });
     }
     return (
