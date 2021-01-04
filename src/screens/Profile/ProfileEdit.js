@@ -49,7 +49,7 @@ export default ProfileEdit = (props) => {
                     }));
                     props.navigation.push('Success', { type: 2 });
                 } else {
-                    setErrorMsg(i18n.translate('E-mail already exist'));
+                    setErrorMsg(i18n.translate(response.msg));
                 }
             })
             .catch((error) => {
