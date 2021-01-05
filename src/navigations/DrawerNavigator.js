@@ -84,8 +84,9 @@ const DrawerContent = (props) => {
                             </Fragment>
                         ) : (
                                 <Fragment>
-                                    <CartYellowIcon />
-                                    <View style={styles.badgeEmpty} />
+                                    {/* <CartYellowIcon />
+                                    <View style={styles.badgeEmpty} /> */}
+                                    <View />
                                 </Fragment>
                             )}
                     </TouchableOpacity>

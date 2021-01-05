@@ -88,6 +88,9 @@ export default CartDetail = (props) => {
     const [take, setTake] = useState(false);
     const [cutlery, setCutlery] = useState(false);
     const [comment, setComment] = useState('');
+    const [visitCommentText, setVisitCommentText] = useState(false);
+    const [errorCommentText, setErrorCommentText] = useState('');
+    
     const [payment, setPayment] = useState(1);
 
     const [addressId] = useState(0);
@@ -133,6 +136,10 @@ export default CartDetail = (props) => {
         outputRange: [HEADER_SCROLL_DISTANCE / 2 - 30, 5],
         extrapolate: 'clamp',
     });
+
+    useEffect(() => {
+        (visitCommentText && !validateBetween(comment, 0, 200)) ? setErrorCommentText('The text must be less more than 200 characters') : setErrorCommentText('');
+    }, [comment, visitCommentText]);
 
     useEffect(() => {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -191,6 +198,7 @@ export default CartDetail = (props) => {
             });
         });
         setTotal(totalAmount);
+        if(totalAmount <= cartRestaurant.minimumOrderUser) props.navigation.pop(1);
     });
 
     const onDelete = (check, item, count) => {
@@ -223,7 +231,7 @@ export default CartDetail = (props) => {
             dispatch(setCartProducts(result));
             dispatch(setCartBadge(totalBadge));
             // dispatch(setCartBadge(cartBadge - 1));
-            if (totalBadge <= 0) props.navigation.pop();
+            // if (totalBadge <= 0) props.navigation.pop();
         }
         setVisible(false);
     }
@@ -251,7 +259,7 @@ export default CartDetail = (props) => {
                     });
             }
         } else {
-            FoodService.order(user.token, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment)
+            FoodService.order(user.token, user.city, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment)
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
@@ -434,10 +442,14 @@ export default CartDetail = (props) => {
                                 value={comment}
                                 multiline={true}
                                 height={85}
-                                containerStyle={[styles.textContainer, common.borderColorGrey]}
+                                containerStyle={[styles.textContainer, !isEmpty(errorCommentText) ? common.borderColorRed : common.borderColorGrey]}
                                 inputContainerStyle={styles.inputContainer}
-                                onChangeText={(value) => setComment(value)}
+                                onChangeText={(value) => {
+                                    setComment(value);
+                                    setVisitCommentText(true);
+                                }}
                             />
+                            <Text style={common.errorText}>{errorCommentText}</Text>
                         </Card>
                         <Text style={[styles.cartText, { marginTop: 20 }]} numberOfLines={1}>{i18n.translate('Payment method')}</Text>
                         <TouchableOpacity style={styles.radioButton} disabled={true}>
@@ -451,9 +463,9 @@ export default CartDetail = (props) => {
 
                         <View style={{ marginTop: 30, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity style={[styles.button,
-                            ((!logged || isEmpty(deliveryList)) && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ? common.backColorGrey : common.backColorYellow
+                            ((!logged || isEmpty(deliveryList)) && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) || !validateBetween(comment, 0, 300) ? common.backColorGrey : common.backColorYellow
                             ]}
-                                disabled={disabled || (!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber))}
+                                disabled={disabled || (!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) || !validateBetween(comment, 0, 300)}
                                 onPress={() => onOrder()}>
                                 <Text style={styles.buttonText}>{i18n.translate('Order Now')}</Text>
                             </TouchableOpacity>

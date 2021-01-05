@@ -90,7 +90,7 @@ const FoodService = {
         });
     },
 
-    order: function (token, deliveryAddressId, restaurantId, take, cutlery, products, comment) {
+    order: function (token, city, deliveryAddressId, restaurantId, take, cutlery, products, comment) {
         setClientToken(token);
         console.log(JSON.stringify({
             token,
@@ -99,7 +99,8 @@ const FoodService = {
             take: take ? 1 : 0,
             cutlery: cutlery ? 1 : 0,
             products,
-            messageCourier: comment
+            messageCourier: comment,
+            locationId: city
         }))
         return axios.post(`/order`, {
             deliveryAddressId,
@@ -107,7 +108,8 @@ const FoodService = {
             take: take ? 1 : 0,
             cutlery: cutlery ? 1 : 0,
             products,
-            messageCourier: comment
+            messageCourier: comment,
+            locationId: city.id
         }).then((response) => {
             removeClientToken();
             return response.data;
@@ -115,19 +117,6 @@ const FoodService = {
     },
     orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment) {
         !isEmpty(token) && setClientToken(token);
-        console.log(JSON.stringify({
-            token,
-            restaurantId,
-            take: take ? 1 : 0,
-            cutlery: cutlery ? 1 : 0,
-            products,
-            messageCourier: comment,
-            street: addressStreet,
-            houseNumber: addressHouseNumber,
-            floor: addressFloor,
-            doorNumber: addressDoorNumber,
-            locationId: cityObj.id
-        }))
         return axios.post(`/order`, {
             restaurantId,
             take: take ? 1 : 0,

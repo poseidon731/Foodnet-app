@@ -279,8 +279,9 @@ export default Detail = (props) => {
                                 </Fragment>
                             ) : (
                                     <Fragment>
-                                        <CartWhiteIcon />
-                                        <View style={styles.badgeEmpty} />
+                                        {/* <CartWhiteIcon />
+                                        <View style={styles.badgeEmpty} /> */}
+                                        <View />
                                     </Fragment>
                                 )}
                         </TouchableOpacity>
