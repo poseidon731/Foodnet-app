@@ -133,6 +133,7 @@ export default Detail = (props) => {
         dispatch(setLoading(true));
         FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
             .then(async (response) => {
+                dispatch(setLoading(false));
                 if (response.status == 200) {
                     setSubCategories(response.result);
                     if (!isEmpty(response.result)) {

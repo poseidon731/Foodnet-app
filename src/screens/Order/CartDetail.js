@@ -448,7 +448,7 @@ export default CartDetail = (props) => {
 
                         <View style={{ marginTop: 30, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity style={[styles.button,
-                            (!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ? common.backColorGrey : common.backColorYellow
+                            ((!logged || isEmpty(deliveryList)) && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ? common.backColorGrey : common.backColorYellow
                             ]}
                                 disabled={!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)}
                                 onPress={() => onOrder()}>
@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
-        backgroundColor: colors.YELLOW.PRIMARY
+        // backgroundColor: colors.YELLOW.PRIMARY
     },
     buttonText: {
         fontSize: 16,
