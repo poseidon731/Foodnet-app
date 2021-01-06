@@ -108,6 +108,7 @@ export default CartDetail = (props) => {
     const [citys, setCitys] = useState([]);
     const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
     const [disabled, setDisabled] = useState(false);
+    const [navi, setNavi] = useState(true);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -198,7 +199,10 @@ export default CartDetail = (props) => {
             });
         });
         setTotal(totalAmount);
-        if(totalAmount <= cartRestaurant.minimumOrderUser) props.navigation.pop(1);
+        if(totalAmount <= cartRestaurant.minimumOrderUser && navi) {
+            setNavi(false);
+            props.navigation.pop();
+        }
     });
 
     const onDelete = (check, item, count) => {
@@ -237,6 +241,7 @@ export default CartDetail = (props) => {
     }
 
     const onOrder = () => {
+        dispatch(setLoading(true));
         setDisabled(true);
         setTimeout(() => setDisabled(false), 1000);
         if (!logged || isEmpty(deliveryList)) {
@@ -248,6 +253,7 @@ export default CartDetail = (props) => {
                     .then((response) => {
                         dispatch(setLoading(false));
                         if (response.status == 200) {
+                            setNavi(false);
                             setSuccess(true);
                             // dispatch(setCartRestaurant(null));
                             dispatch(setCartBadge(0));
@@ -263,6 +269,7 @@ export default CartDetail = (props) => {
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
+                        setNavi(false);
                         setSuccess(true);
                         // dispatch(setCartRestaurant(null));
                         dispatch(setCartBadge(0));
