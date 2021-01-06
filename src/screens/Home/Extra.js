@@ -38,7 +38,7 @@ const Required = ({ required, index, onSelect }) => {
                 <View style={styles.check} />
                 <View style={styles.item}>
                     <View style={styles.productCart}>
-                        <Text style={styles.price}>{required.extra_price.toFixed(2) * count} {i18n.translate('lei')}</Text>
+                        <Text style={styles.price}>{(required.extra_price * count).toFixed(2)} {i18n.translate('lei')}</Text>
                         <View style={styles.cart}>
                             <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
                                 count > required.extra_minQuantity && setCount(count - 1);
@@ -88,7 +88,7 @@ const Optional = ({ optional, index, onSelect }) => {
                 <View style={styles.check} />
                 <View style={styles.item}>
                     <View style={styles.productCart}>
-                        <Text style={styles.price}>{optional.extra_price.toFixed(2) * count} {i18n.translate('lei')}</Text>
+                        <Text style={styles.price}>{(optional.extra_price * count).toFixed(2)} {i18n.translate('lei')}</Text>
                         <View style={styles.cart}>
                             <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
                                 count > optional.extra_minQuantity && setCount(count - 1);

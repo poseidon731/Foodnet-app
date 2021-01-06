@@ -33,7 +33,7 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
             ) : null}
             <View style={styles.cartBottom}>
                 <View style={styles.cartLeft}>
-                    <Text style={styles.price}>{cartProduct.productPrice} {i18n.translate('lei')}</Text>
+                    <Text style={styles.price}>{cartProduct.productPrice.toFixed(2)} {i18n.translate('lei')}</Text>
                     {!isEmpty(cartProduct.boxPrice) && (
                         <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice.toFixed(2)}{i18n.translate('lei')}</Text>
                     )}

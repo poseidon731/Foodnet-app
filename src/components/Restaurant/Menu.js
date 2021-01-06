@@ -93,7 +93,7 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                     </View>
                 )}
                 <View style={styles.productCart}>
-                    <Text style={styles.price}>{product.product_price} {i18n.translate('lei')}</Text>
+                    <Text style={styles.price}>{product.product_price.toFixed(2)} {i18n.translate('lei')}</Text>
                     <View style={styles.cart}>
                         <TouchableOpacity style={styles.countButton1} disabled={count == 1 || flag} onPress={() => count > 1 && setCount(count - 1)}>
                             <Icon type='material-community' name='minus' color='#333' size={25} />
@@ -105,9 +105,9 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                             <Icon type='material-community' name='plus' color='#333' size={25} />
                         </TouchableOpacity>
                         <View style={{ width: 10 }} />
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[styles.check, { backgroundColor: (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', ''))) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY }]}
-                            disabled={(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')))} 
+                            disabled={(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')))}
                             onPress={() => {
                                 if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
                                     onModal();
