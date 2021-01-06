@@ -182,7 +182,7 @@ export default Detail = (props) => {
                 onScrollBeginDrag={() => setVisible(false)}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
                 <TabView navigationState={{ index, routes }}
-                    // swipeEnabled={Platform.OS === 'ios' ? true : false}
+                    swipeEnabled={Platform.OS === 'ios' ? true : false}
                     renderTabBar={(props) => (
                         <TabBar {...props}
                             scrollEnabled={true}

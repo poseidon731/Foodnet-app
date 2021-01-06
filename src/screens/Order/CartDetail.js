@@ -174,6 +174,7 @@ export default CartDetail = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
+                        if(cityObj.id == 0) setCityObj(response.locations[0]);
                     }
                 })
                 .catch((error) => {
