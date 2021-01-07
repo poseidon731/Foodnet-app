@@ -134,7 +134,9 @@ export default Menu = (props) => {
     useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
 
     useEffect(() => {
-        dispatch(setLoading(true));
+        if(!isEmpty(props.categories) && !isEmpty(props.subCategories)) {
+            dispatch(setLoading(true));
+        }
         setProducts([]);
         FoodService.products(country, props.restaurant.restaurant_id, props.category.category_id, props.subCategory.subcategoryId, props.subCategory.propertyValTransId, props.search)
             .then(async (response) => {
