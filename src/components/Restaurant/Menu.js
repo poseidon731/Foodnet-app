@@ -152,6 +152,22 @@ export default Menu = (props) => {
             });
     }, [props.subCategory, cartRestaurant, cartProducts]);
 
+    useEffect(() => {
+        setProducts([]);
+        FoodService.products(country, props.restaurant.restaurant_id, props.category.category_id, props.subCategory.subcategoryId, props.subCategory.propertyValTransId, props.search)
+            .then(async (response) => {
+                if (response.status == 200) {
+                    setProducts(response.result);
+                } else {
+                    // dispatch(setLoading(false));
+                    setProducts([]);
+                }
+            })
+            .catch((error) => {
+                setProducts([]);
+            });
+    }, [props.search]);
+
     return (
         <View style={styles.container}>
             <View style={{ height: 20 }} />

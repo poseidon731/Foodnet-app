@@ -109,7 +109,7 @@ export default Detail = (props) => {
         if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
         if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
         setFilterList(tempFilters);
-        dispatch(setLoading(true));
+        // dispatch(setLoading(true));
         FoodService.categories(country, restaurant.restaurant_id)
             .then(async (response) => {
                 if (response.status == 200) {
@@ -120,7 +120,7 @@ export default Detail = (props) => {
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
             });
         FoodService.information(country, restaurant.restaurant_name)
             .then((response) => {
@@ -131,10 +131,10 @@ export default Detail = (props) => {
     }, [restaurant]);
 
     useEffect(() => {
-        dispatch(setLoading(true));
+        // dispatch(setLoading(true));
         FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
             .then(async (response) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
                 if (response.status == 200) {
                     setSubCategories(response.result);
                     if (!isEmpty(response.result)) {
@@ -149,22 +149,22 @@ export default Detail = (props) => {
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
             });
     }, [category]);
 
     useEffect(() => {
-        dispatch(setLoading(true));
+        // dispatch(setLoading(true));
         FoodService.reviews(restaurant.restaurant_name, rating)
             .then(async (response) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
                 if (response.status == 200 && !isEmpty(response.result)) {
                     setReviews(response.result[0].ratings);
                     setAverage(response.result[0].AVGrating);
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
             });
     }, [rating]);
 

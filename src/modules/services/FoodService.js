@@ -46,12 +46,21 @@ const FoodService = {
         });
     },
     products: function (country, restaurantId, categoryId, subcategoryId, propertyValTransId, searchedProduct) {
+        console.log(JSON.stringify({
+            restaurantId,
+            lang: country,
+            subcategoryId,
+            propertyValTransId,
+            categoryId,
+            searchProduct: searchedProduct
+        }))
         return axios.post(`/product/subcategories-products`, {
             restaurantId,
             lang: country,
             subcategoryId,
             propertyValTransId,
-            categoryId
+            categoryId,
+            searchProduct: searchedProduct
         }).then((response) => {
             return response.data;
         });
