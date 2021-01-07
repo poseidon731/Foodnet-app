@@ -306,7 +306,7 @@ export default CartDetail = (props) => {
                         <View style={styles.amount}>
                             <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} {i18n.translate('lei')}</Text>
                         </View>
-                        <Text style={[styles.cartText, { marginTop: 20 }]} numberOfLines={1}>{i18n.translate('Take over')}</Text>
+                        <Text style={[styles.cartText, { marginTop: 20 }]}>{i18n.translate('Take over')}</Text>
                         {logged && !isEmpty(deliveryList) ? (
                             <View style={{ width: '100%' }}>
                                 {deliveryList.map((delivery, key) => (
@@ -317,7 +317,7 @@ export default CartDetail = (props) => {
                                         })
                                     }}>
                                         <Icon type='material' name={delivery.id == deliveryAddress.value ? 'radio-button-on' : 'radio-button-off'} color={delivery.id == deliveryAddress.value ? colors.YELLOW.PRIMARY : colors.BLACK} size={20} />
-                                        <Text style={styles.radioText} numberOfLines={1}>{delivery.city + ', ' + delivery.street + ', ' + delivery.houseNumber + ', ' + delivery.floor + ', ' + delivery.doorNumber}</Text>
+                                        <Text style={styles.radioText}>{delivery.city + ', ' + delivery.street + ', ' + delivery.houseNumber + ', ' + delivery.floor + ', ' + delivery.doorNumber}</Text>
                                     </TouchableOpacity>
                                 ))}
                             </View>
@@ -909,7 +909,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         marginTop: 10
     },
     radioText: {

@@ -176,14 +176,14 @@ export default Cart = (props) => {
                         </View>
                         <View style={{ marginTop: 20, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity
-                                style={[styles.button, (disabled || (cartRestaurant.minimumOrderUser >= total.toFixed(2))) ? common.backColorGrey : common.backColorYellow]}
-                                disabled={disabled || (cartRestaurant.minimumOrderUser >= total.toFixed(2))}
+                                style={[styles.button, (disabled || (cartRestaurant.minimumOrderUser > total.toFixed(2))) ? common.backColorGrey : common.backColorYellow]}
+                                disabled={disabled || (cartRestaurant.minimumOrderUser > total.toFixed(2))}
                                 onPress={() => {
                                     setDisabled(true);
                                     props.navigation.push('CartDetail');
                                     setTimeout(() => setDisabled(false), 1000);
                                 }}>
-                                {(cartRestaurant.minimumOrderUser >= total.toFixed(2)) ? (
+                                {(cartRestaurant.minimumOrderUser > total.toFixed(2)) ? (
                                     <Text style={styles.buttonText}>{i18n.translate('More')} {(cartRestaurant.minimumOrderUser - total).toFixed(2)} {i18n.translate('lei')}</Text>
                                 ) : (
                                         <Text style={styles.buttonText}>{i18n.translate('Send order')}</Text>

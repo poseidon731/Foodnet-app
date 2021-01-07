@@ -42,6 +42,7 @@ export default Detail = (props) => {
     });
     const [subCategories, setSubCategories] = useState([]);
     const [subCategory, setSubCategory] = useState({
+        ordered: 0,
         subcategoryId: 0,
         propertyValTransId: 0,
         subcategories_name: ''
@@ -137,7 +138,7 @@ export default Detail = (props) => {
                 if (response.status == 200) {
                     setSubCategories(response.result);
                     if (!isEmpty(response.result)) {
-                        if ((country === 'en' && category.category_name === 'Daily Menu') || (country === 'ro' && category.category_name === 'Meniul Zilei') || (country === 'hu' && category.category_name === 'Napi Menü')) {
+                        if (category.category_name === 'Daily Menu' || category.category_name === 'Daily menu' || category.category_name === 'Meniul Zilei' || category.category_name === 'Meniul zilei' || category.category_name === 'Napi Menü' || category.category_name === 'Napi menü') {
                             var d = new Date();
                             var n = d.getDay();
                             setSubCategory(response.result[n === 0 ? 6 : n - 1]);
@@ -206,6 +207,7 @@ export default Detail = (props) => {
                                     search={search}
                                     onCategory={(value) => setCategory(value)}
                                     onSubCategory={(value) => setSubCategory(value)}
+                                    // onSubCategory={(value) => console.log(value)}
                                     onSearch={(value) => setSearch(value)}
                                     onExtra={(product, count) => props.navigation.push('Extra', { restaurant, product, count })}
                                     onCart={() => props.navigation.navigate('Order')}

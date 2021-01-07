@@ -24,10 +24,10 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
-        // console.log('1--', moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A'))
-        // console.log('2--', moment().format('MM/DD/YYYY, h:mm:ss A'))
-        // console.log('3--', moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A'))
-        // console.log('4--', product.soldOut)
+        console.log(moment().format('MM/DD/YYYY, h:mm:ss A'))
+        console.log(moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A'))
+        console.log(moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A'))
+
         var index = cartProducts.findIndex((cartProduct) => {
             return cartRestaurant.restaurant_id == restaurant.restaurant_id && cartProduct.productId == product.product_id && cartProduct.variantId == product.variant_id
         });
