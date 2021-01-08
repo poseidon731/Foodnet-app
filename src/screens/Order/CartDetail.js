@@ -195,6 +195,7 @@ export default CartDetail = (props) => {
         var totalAmount = 0;
         cartProducts.map((cartProduct, key) => {
             totalAmount += cartProduct.quantity * cartProduct.productPrice;
+            if (cartProduct.boxPrice) totalAmount += cartProduct.quantity * cartProduct.boxPrice;
             cartProduct.extras.map((extra, key) => {
                 totalAmount += extra.quantity * extra.extraPrice;
             });
