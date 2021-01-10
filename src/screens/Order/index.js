@@ -57,11 +57,11 @@ export default Order = (props) => {
                     <Text style={styles.reviewText} numberOfLines={1}>{order.item.restaurant_name}</Text>
                 </View>
                 <View style={styles.status}>
-                    <Text style={styles.statusText}>{i18n.translate('Kit')}</Text>
+                    <Text style={[styles.statusText, { width: '40%' }]}>{i18n.translate('Kit')}</Text>
                     <Text style={styles.statusText}>{i18n.translate('Operations')}</Text>
                 </View>
                 <View style={styles.reviewMain}>
-                    <Text style={styles.reviewText} numberOfLines={1}>{order.item.total} {i18n.translate('lei')}</Text>
+                    <Text style={[styles.reviewText, { width: '40%' }]} numberOfLines={1}>{order.item.total} {i18n.translate('lei')}</Text>
                     <TouchableOpacity onPress={() => goOrder(order.item.order_id)}>
                         <Text style={styles.reviewAdd}>{i18n.translate('View')}</Text>
                     </TouchableOpacity>
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     },
     status: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         alignItems: 'flex-start',
         width: '100%',
         marginBottom: 5
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     },
     reviewMain: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         width: '100%',
         height: 30,

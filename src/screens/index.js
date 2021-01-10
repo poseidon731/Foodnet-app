@@ -31,6 +31,7 @@ import CartDetail from '@screens/Cart/CartDetail';
 
 import Order from '@screens/Order';
 import OrderDetail from '@screens/Order/OrderDetail';
+import OrderSuccess from '@screens/Order/OrderSuccess';
 
 export {
     Internet,
@@ -63,5 +64,6 @@ export {
     Cart,
     CartDetail,
     Order,
-    OrderDetail
+    OrderDetail,
+    OrderSuccess
 }

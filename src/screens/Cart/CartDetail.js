@@ -90,7 +90,7 @@ export default CartDetail = (props) => {
     const [comment, setComment] = useState('');
     const [visitCommentText, setVisitCommentText] = useState(false);
     const [errorCommentText, setErrorCommentText] = useState('');
-    
+
     const [payment, setPayment] = useState(1);
 
     const [addressId] = useState(0);
@@ -109,6 +109,7 @@ export default CartDetail = (props) => {
     const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
     const [disabled, setDisabled] = useState(false);
     const [navi, setNavi] = useState(true);
+    const [orderId, setOrderId] = useState(0);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -174,7 +175,7 @@ export default CartDetail = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
-                        if(cityObj.id == 0) setCityObj(response.locations[0]);
+                        if (cityObj.id == 0) setCityObj(response.locations[0]);
                     }
                 })
                 .catch((error) => {
@@ -201,7 +202,7 @@ export default CartDetail = (props) => {
             });
         });
         setTotal(totalAmount);
-        if(totalAmount <= cartRestaurant.minimumOrderUser && navi) {
+        if (totalAmount <= cartRestaurant.minimumOrderUser && navi) {
             setNavi(false);
             props.navigation.pop();
         }
@@ -257,6 +258,7 @@ export default CartDetail = (props) => {
                         if (response.status == 200) {
                             setNavi(false);
                             setSuccess(true);
+                            setOrderId(response.finalOrderId);
                             // dispatch(setCartRestaurant(null));
                             dispatch(setCartBadge(0));
                             dispatch(setCartProducts([]));
@@ -273,6 +275,7 @@ export default CartDetail = (props) => {
                     if (response.status == 200) {
                         setNavi(false);
                         setSuccess(true);
+                        setOrderId(response.finalOrderId);
                         // dispatch(setCartRestaurant(null));
                         dispatch(setCartBadge(0));
                         dispatch(setCartProducts([]));
@@ -282,6 +285,21 @@ export default CartDetail = (props) => {
                     dispatch(setLoading(false));
                 });
         }
+    }
+
+    const goOrder = () => {
+        dispatch(setLoading(true));
+        FoodService.getOrder(user.token, country, orderId)
+            .then((response) => {
+                dispatch(setLoading(false));
+                if (response.status == 200) {
+                    props.navigation.navigate('OrderSuccess', { order: response });
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+                console.log(error.message);
+            });
     }
 
     return (
@@ -487,7 +505,7 @@ export default CartDetail = (props) => {
                             <Text style={styles.iconText}>{i18n.translate('Congratulation')}</Text>
                             <Text style={styles.mainText}>{i18n.translate('Successful offer')}</Text>
                             <Text style={styles.mainDescription}>{i18n.translate('Your order will arrive soon We wish you a good appetite in advance')}</Text>
-                            <TouchableOpacity style={styles.successButton} onPress={() => props.navigation.navigate('Order')}>
+                            <TouchableOpacity style={styles.successButton} onPress={() => goOrder()}>
                                 <Text style={styles.successText}>{i18n.translate('Order status')}</Text>
                             </TouchableOpacity>
                             <View style={common.height50} />
