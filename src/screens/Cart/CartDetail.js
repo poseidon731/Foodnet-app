@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react';
+import { CommonActions } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header, Content } from 'native-base';
-import { Platform, StatusBar, StyleSheet, SafeAreaView, ScrollView, FlatList, View, Text, Animated, Image, TouchableOpacity, LogBox } from 'react-native';
+import { Platform, StatusBar, BackHandler, StyleSheet, SafeAreaView, ScrollView, FlatList, View, Text, Animated, Image, TouchableOpacity, LogBox } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
@@ -193,6 +194,13 @@ export default CartDetail = (props) => {
     }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber]);
 
     useEffect(() => {
+        if (success) {
+            const handleBackButton = () => { return true; }
+            BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+        }
+    }, [success]);
+
+    useEffect(() => {
         var totalAmount = 0;
         cartProducts.map((cartProduct, key) => {
             totalAmount += cartProduct.quantity * cartProduct.productPrice;
@@ -293,10 +301,13 @@ export default CartDetail = (props) => {
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {
-                    props.navigation.popToTop();
-                    props.navigation.goBack();
-                    props.navigation.goBack();
-                    props.navigation.navigate('OrderSuccess', { order: response });
+                    props.navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'Home' }]
+                        })
+                    );
+                    props.navigation.navigate('Order', { screen: 'OrderIndex', params: { order: response } });
                 }
             })
             .catch((error) => {
@@ -534,9 +545,11 @@ export default CartDetail = (props) => {
             <Animated.View style={[styles.headerTop, { transform: [{ translateY: headerTopTranslateY }] }]}>
                 <Header style={styles.headerContent}>
                     <View style={common.headerLeft}>
-                        <TouchableOpacity onPress={() => props.navigation.pop()}>
-                            <BackWhiteIcon />
-                        </TouchableOpacity>
+                        {!success && (
+                            <TouchableOpacity onPress={() => props.navigation.pop()}>
+                                <BackWhiteIcon />
+                            </TouchableOpacity>
+                        )}
                     </View>
                     <Animated.View style={[{ transform: [{ translateY: titleTranslateY }] }]}>
                         <Text style={styles.headerTitle} numberOfLines={1}>{restaurant.restaurant_name}</Text>

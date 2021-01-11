@@ -24,12 +24,16 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
-        var index = cartProducts.findIndex((cartProduct) => {
-            return cartRestaurant.restaurant_id == restaurant.restaurant_id && cartProduct.productId == product.product_id && cartProduct.variantId == product.variant_id
-        });
-        if (index >= 0) {
-            setCount(cartProducts[index].quantity);
-            setFlag(true);
+        if(isEmpty(cartProducts)) {
+            return;
+        } else {
+            var index = cartProducts.findIndex((cartProduct) => {
+                return cartRestaurant.restaurant_id == restaurant.restaurant_id && cartProduct.productId == product.product_id && cartProduct.variantId == product.variant_id
+            });
+            if (index >= 0) {
+                setCount(cartProducts[index].quantity);
+                setFlag(true);
+            }
         }
     });
 

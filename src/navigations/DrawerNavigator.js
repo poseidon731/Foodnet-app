@@ -101,7 +101,9 @@ const DrawerContent = (props) => {
             <Content style={styles.content}>
                 {logged && (
                     <Fragment>
-                        <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Order')}>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => {
+                            props.navigation.navigate('Order', { screen: 'OrderIndex', params: { orderId: null } });
+                        }}>
                             <OrderIcon />
                             <Text style={styles.menuTitle}>{i18n.translate('My orders')}</Text>
                         </TouchableOpacity>

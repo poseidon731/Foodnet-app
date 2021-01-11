@@ -26,10 +26,10 @@ import ReviewAdd from '@screens/Review/ReviewAdd';
 import ReviewDelete from '@screens/Review/ReviewDelete';
 import CouponCodes from '@screens/Profile/CouponCodes';
 
-import Cart from '@screens/Cart';
+import CartIndex from '@screens/Cart/CartIndex';
 import CartDetail from '@screens/Cart/CartDetail';
 
-import Order from '@screens/Order';
+import OrderIndex from '@screens/Order/OrderIndex';
 import OrderDetail from '@screens/Order/OrderDetail';
 import OrderSuccess from '@screens/Order/OrderSuccess';
 
@@ -61,9 +61,9 @@ export {
     ReviewDelete,
     CouponCodes,
 
-    Cart,
+    CartIndex,
     CartDetail,
-    Order,
+    OrderIndex,
     OrderDetail,
     OrderSuccess
 }

@@ -55,7 +55,7 @@ export default OrderSuccess = (props) => {
             <StatusBar />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
-                    <TouchableOpacity onPress={() => props.navigation.navigate('Order')}>
+                    <TouchableOpacity onPress={() => props.navigation.navigate('App', { screen: 'Order' })}>
                         <Icon type='material' name='arrow-back' size={30} color={colors.YELLOW.PRIMARY} />
                     </TouchableOpacity>
                 </View>
