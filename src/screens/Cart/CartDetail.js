@@ -293,6 +293,9 @@ export default CartDetail = (props) => {
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {
+                    props.navigation.popToTop();
+                    props.navigation.goBack();
+                    props.navigation.goBack();
                     props.navigation.navigate('OrderSuccess', { order: response });
                 }
             })
