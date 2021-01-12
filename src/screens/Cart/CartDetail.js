@@ -297,23 +297,32 @@ export default CartDetail = (props) => {
 
     const goOrder = () => {
         dispatch(setLoading(true));
-        FoodService.getOrder(user.token, country, orderId)
-            .then((response) => {
-                dispatch(setLoading(false));
-                if (response.status == 200) {
-                    props.navigation.dispatch(
-                        CommonActions.reset({
-                            index: 0,
-                            routes: [{ name: 'Home' }]
-                        })
-                    );
-                    props.navigation.navigate('Order', { screen: 'OrderIndex', params: { order: response } });
-                }
-            })
-            .catch((error) => {
-                dispatch(setLoading(false));
-                console.log(error.message);
-            });
+        if (logged) {
+            FoodService.getOrder(user.token, country, orderId)
+                .then((response) => {
+                    dispatch(setLoading(false));
+                    if (response.status == 200) {
+                        props.navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Home' }]
+                            })
+                        );
+                        props.navigation.navigate('Order', { screen: 'OrderIndex', params: { order: response } });
+                    }
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false));
+                    console.log(error.message);
+                });
+        } else {
+            props.navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'Home' }]
+                })
+            );
+        }
     }
 
     return (
