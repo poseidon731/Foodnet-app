@@ -34,9 +34,14 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
                 ))})</Text>
             ) : null}
             {!isEmpty(cartProduct.extras) ? (
-                <Text style={styles.extraList}>+{cartProduct.extras.map((extra, key) => (
-                    <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
-                ))}</Text>
+                // <Text style={styles.extraList}>+{cartProduct.extras.map((extra, key) => (
+                //     <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
+                // ))}</Text>
+                cartProduct.extras.map((extra, key) => (
+                    <Text style={styles.extraList} key={`extra${key}`}>+
+                        <Text style={styles.extra}>{extra.quantity}*{extra.extraName} : {extra.quantity * extra.extraPrice} lei</Text>
+                    </Text>
+                ))
             ) : null}
             <View style={styles.cartBottom}>
                 <View style={styles.cartLeft}>
@@ -277,7 +282,7 @@ export default CartDetail = (props) => {
                     });
             }
         } else {
-            FoodService.order(user.token, user.city, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment)
+            FoodService.order(user.token, user.city, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment, 0)
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {

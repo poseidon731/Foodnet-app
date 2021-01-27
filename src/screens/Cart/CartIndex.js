@@ -27,9 +27,15 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
                 ))})</Text>
             ) : null}
             {!isEmpty(cartProduct.extras) ? (
-                <Text style={styles.extraList}>+ {cartProduct.extras.map((extra, key) => (
-                    <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
-                ))}</Text>
+                
+                    cartProduct.extras.map((extra, key) => (
+                        <Text style={styles.extraList} key={`extra${key}`}>+
+                            <Text style={styles.extra}>{extra.quantity}*{extra.extraName} : {extra.quantity * extra.extraPrice} lei</Text>
+                        </Text>
+                    ))
+                // <Text style={styles.extraList}>+ {
+                    
+                // </Text>
             ) : null}
             <View style={styles.cartBottom}>
                 <View style={styles.cartLeft}>

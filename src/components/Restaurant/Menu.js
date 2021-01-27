@@ -31,8 +31,8 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                 return cartRestaurant.restaurant_id == restaurant.restaurant_id && cartProduct.productId == product.product_id && cartProduct.variantId == product.variant_id
             });
             if (index >= 0) {
-                setCount(cartProducts[index].quantity);
-                setFlag(true);
+                // setCount(cartProducts[index].quantity);
+                // setFlag(true);
             }
         }
     });

@@ -39,7 +39,7 @@ const Required = ({ required, index, onSelect }) => {
                 <View style={styles.item}>
                     <View style={styles.productCart}>
                         <Text style={styles.price}>{(required.extra_price * count).toFixed(2)} {i18n.translate('lei')}</Text>
-                        <View style={styles.cart}>
+                        {/* <View style={styles.cart}>
                             <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
                                 count > required.extra_minQuantity && setCount(count - 1);
                                 count > required.extra_minQuantity && onSelect(check, required, count - 1);
@@ -55,7 +55,7 @@ const Required = ({ required, index, onSelect }) => {
                             }}>
                                 <Icon type='material-community' name='plus' color='#333' size={25} />
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
                     </View>
                 </View>
             </View>
@@ -65,7 +65,7 @@ const Required = ({ required, index, onSelect }) => {
 
 const Optional = ({ optional, index, onSelect }) => {
     const [check, setCheck] = useState(false);
-    const [count, setCount] = useState(optional.extra_minQuantity);
+    const [count, setCount] = useState(optional.extra_minQuantity == undefined ? 1 : optional.extra_minQuantity);
 
     return (
         <Fragment>
@@ -90,7 +90,7 @@ const Optional = ({ optional, index, onSelect }) => {
                 <View style={styles.item}>
                     <View style={styles.productCart}>
                         <Text style={styles.price}>{(optional.extra_price * count).toFixed(2)} {i18n.translate('lei')}</Text>
-                        <View style={styles.cart}>
+                        {/* <View style={styles.cart}>
                             <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
                                 count > optional.extra_minQuantity && setCount(count - 1);
                                 count > optional.extra_minQuantity && onSelect(check, optional, count - 1);
@@ -106,7 +106,7 @@ const Optional = ({ optional, index, onSelect }) => {
                             }}>
                                 <Icon type='material-community' name='plus' color='#333' size={25} />
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
                     </View>
                 </View>
             </View>
@@ -178,6 +178,7 @@ export default Extra = (props) => {
     }, []);
 
     const onSelect = (type, check, item, count) => {
+        console.log("count = ", count);
         if (type == 1) {
             var requiredResult = requiredList.filter((required) => {
                 return required.extra_id != item.extra_id
@@ -186,7 +187,8 @@ export default Extra = (props) => {
                 setRequiredList([...requiredResult, {
                     extra_id: item.extra_id,
                     extra_name: item.extra_name,
-                    extra_minQuantity: item.extra_minQuantity,
+                    // extra_minQuantity: item.extra_minQuantity,
+                    extra_minQuantity: count,
                     extra_price: item.extra_price,
                     extra_maxQuantity: item.extra_maxQuantity,
                     allergens_name: item.allergens_name,
@@ -203,7 +205,8 @@ export default Extra = (props) => {
                 setOptionalList([...optionalResult, {
                     extra_id: item.extra_id,
                     extra_name: item.extra_name,
-                    extra_minQuantity: item.extra_minQuantity,
+                    // extra_minQuantity: item.extra_minQuantity,
+                    extra_minQuantity: count,
                     extra_price: item.extra_price,
                     extra_maxQuantity: item.extra_maxQuantity,
                     allergens_name: item.allergens_name,
@@ -222,19 +225,25 @@ export default Extra = (props) => {
             requiredList.map((required, key) => {
                 extras.push({
                     id: required.extra_id,
-                    quantity: required.extra_dash,
+                    // quantity: required.extra_dash,
+                    quantity: quantity,
                     extraName: required.extra_name,
-                    extraPrice: required.extra_price
+                    extraPrice: required.extra_price,
+                    type: 'require'
                 })
             });
             optionalList.map((optional, key) => {
                 extras.push({
                     id: optional.extra_id,
-                    quantity: optional.extra_dash,
+                    // quantity: optional.extra_dash,
+                    quantity: quantity,
                     extraName: optional.extra_name,
-                    extraPrice: optional.extra_price
+                    extraPrice: optional.extra_price,
+                    type: 'opt'
                 })
             });
+            console.log(extras);
+            var counter = cartProducts.length + 1;
             cartProducts.push({
                 cartId: Date.now(),
                 variantId: product.variant_id,
@@ -243,10 +252,11 @@ export default Extra = (props) => {
                 productDescription: product.product_description,
                 allergens: product.allergens_name,
                 productPrice: product.product_price,
-                boxPrice: isEmpty(product.box_price) ? null : product.box_price,
+                boxPrice: isEmpty(product.box_price) ? 0 : product.box_price,
                 quantity: quantity,
                 message: comment,
-                extras
+                extras,
+                counter
             });
             var totalBadge = 0;
             cartProducts.map((cartProduct, key) => {
@@ -283,7 +293,7 @@ export default Extra = (props) => {
                     ))})</Text>
                 ) : null}
                 {!isEmpty(requireds) && (
-                    <Text style={{ marginTop: 30, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional soft drinks (')}{requireds.length}{i18n.translate('db Required)')}</Text>
+                    <Text style={{ marginTop: 30, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Required extras (')}{requireds.length}{i18n.translate('is required)')}</Text>
                 )}
                 <FlatList
                     showsVerticalScrollIndicator={false}
@@ -300,7 +310,7 @@ export default Extra = (props) => {
                 />
                 {/* <View style={{ width: wp('100%'), marginLeft: -10, height: 1, backgroundColor: '#C4C4C4' }} /> */}
                 {!isEmpty(optionals) && (
-                    <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional Things(optional)')}</Text>
+                    <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional extras (Not required)')}</Text>
                 )}
                 <FlatList
                     showsVerticalScrollIndicator={false}
@@ -328,7 +338,10 @@ export default Extra = (props) => {
 
                 <Card key='review' style={styles.card}>
                     <View style={[common.flexRow, { marginTop: 10 }]}>
-                        <Text style={styles.labelText}>{i18n.translate('Comment')}</Text>
+                        <Text style={styles.labelText}>{i18n.translate('Special requests')}</Text>
+                    </View>
+                    <View style={[common.flexRow, { marginTop: 2 }]}>
+                        <Text style={styles.labelDesText}>({i18n.translate('Tell me if you have any allergies or if we need to omit any ingredients')})</Text>
                     </View>
                     <TextField
                         keyboardType='default'
@@ -429,8 +442,13 @@ const styles = StyleSheet.create({
         // padding: 10,
     },
     labelText: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
+        color: colors.BLACK
+    },
+    labelDesText: {
+        fontSize: 14,
+        fontWeight: 'normal',
         color: colors.BLACK
     },
     textContainer: {
