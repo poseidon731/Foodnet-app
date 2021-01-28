@@ -117,7 +117,8 @@ export default CartDetail = (props) => {
     const [navi, setNavi] = useState(true);
     const [orderId, setOrderId] = useState(0);
 
-    const [visibleNoti, setVisibleNoti] = useState(0);
+    const [visibleNotiPlus, setVisibleNotiPlus] = useState(0);
+    const [visibleNotiMinus, setVisibleNotiMinus] = useState(0);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -247,10 +248,14 @@ export default CartDetail = (props) => {
             dispatch(setCartProducts(cartProducts));
             dispatch(setCartBadge(totalBadge));
 
-            if(visibleNotiStatus == '+') setVisibleNoti(1);
-            else if(visibleNotiStatus == '-') setVisibleNoti(2);
-
-            setTimeout(() => setVisibleNoti(0), 5000);
+            if(visibleNotiStatus == '+') {
+                setVisibleNotiPlus(1);
+                setTimeout(() => setVisibleNotiPlus(0), 5000);
+            }
+            else if(visibleNotiStatus == '-') {
+                setVisibleNotiMinus(1);
+                setTimeout(() => setVisibleNotiMinus(0), 5000);
+            }    
 
         } else {
             var result = cartProducts.filter((cartProduct) => {
@@ -344,11 +349,11 @@ export default CartDetail = (props) => {
 
     return (
         <SafeAreaView style={styles.saveArea}>
-            {visibleNoti == 1 && (<View style={styles.notificationBack}>
+            {visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
                 <WarningIcon />
                 <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
             </View>)}
-            {visibleNoti == 2 && (<View style={styles.notificationBack}>
+            {visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
                 <WarningIcon />
                 <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
             </View>)}
