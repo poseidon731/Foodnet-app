@@ -353,14 +353,21 @@ export default CartDetail = (props) => {
 
     return (
         <SafeAreaView style={styles.saveArea}>
-            
+            {Platform.OS !== 'ios' && isExtra == 1 && visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
+                <WarningIcon />
+                <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
+            </View>)}
+            {Platform.OS !== 'ios' && isExtra == 1 && visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
+                <WarningIcon />
+                <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
+            </View>)}
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
-                    {isExtra == 1 && visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
+                    {Platform.OS === 'ios' && isExtra == 1 && visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
                         <WarningIcon />
                         <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
                     </View>)}
-                    {isExtra == 1 && visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
+                    {Platform.OS === 'ios' && isExtra == 1 && visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
                         <WarningIcon />
                         <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
                     </View>)}
