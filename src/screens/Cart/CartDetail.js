@@ -119,6 +119,7 @@ export default CartDetail = (props) => {
 
     const [visibleNotiPlus, setVisibleNotiPlus] = useState(0);
     const [visibleNotiMinus, setVisibleNotiMinus] = useState(0);
+    const [isExtra, setIsExtra] = useState(0);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -248,6 +249,9 @@ export default CartDetail = (props) => {
             dispatch(setCartProducts(cartProducts));
             dispatch(setCartBadge(totalBadge));
 
+            if(cartProducts[index].extras.length != 0) setIsExtra(1);
+            else setIsExtra(0);
+            
             if(visibleNotiStatus == '+') {
                 setVisibleNotiPlus(1);
                 setTimeout(() => setVisibleNotiPlus(0), 5000);
@@ -354,11 +358,21 @@ export default CartDetail = (props) => {
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
                     {visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
                         <WarningIcon />
-                        <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
+                        {isExtra == 0 && (
+                            <Text style={styles.notification}>Product increased</Text>
+                        )}
+                        {isExtra == 1 && (
+                            <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
+                        )}
                     </View>)}
                     {visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
                         <WarningIcon />
-                        <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
+                        {isExtra == 0 && (
+                            <Text style={styles.notification}>Product reduced</Text>
+                        )}
+                        {isExtra == 1 && (
+                            <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
+                        )}
                     </View>)}
                 {!success ? (
                     <View style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }}>
