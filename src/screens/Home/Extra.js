@@ -352,6 +352,8 @@ export default Extra = (props) => {
                         value={comment}
                         multiline={true}
                         height={85}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         containerStyle={[styles.textContainer, common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         onChangeText={(value) => setComment(value)}

@@ -45,9 +45,9 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
             ) : null}
             <View style={styles.cartBottom}>
                 <View style={styles.cartLeft}>
-                    <Text style={styles.price}>{cartProduct.productPrice.toFixed(2)} {i18n.translate('lei')}</Text>
-                    {!isEmpty(cartProduct.boxPrice) && (
-                        <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice}{i18n.translate('lei')}</Text>
+                    <Text style={styles.price}>{(cartProduct.productPrice * cartProduct.quantity).toFixed(2)} {i18n.translate('lei')}</Text>
+                    {!isEmpty(cartProduct.boxPrice) && (cartProduct.boxPrice != 0) && (
+                        <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {(cartProduct.boxPrice * cartProduct.quantity).toFixed(2)}{i18n.translate('lei')}</Text>
                     )}
                 </View>
                 <View style={styles.cartButton}>
@@ -239,7 +239,7 @@ export default CartDetail = (props) => {
             for(var i = 0; i < cartProducts[index].extras.length; i++) {
                 cartProducts[index].extras[i].quantity = count;
             }
-            
+
             var totalBadge = 0;
             cartProducts.map((cartProduct, key) => {
                 totalBadge += cartProduct.quantity;
@@ -519,6 +519,8 @@ export default CartDetail = (props) => {
                                 height={85}
                                 containerStyle={[styles.textContainer, !isEmpty(errorCommentText) ? common.borderColorRed : common.borderColorGrey]}
                                 inputContainerStyle={styles.inputContainer}
+                                lineWidth={0}
+                                activeLineWidth={0}
                                 onChangeText={(value) => {
                                     setComment(value);
                                     setVisitCommentText(true);
@@ -1026,7 +1028,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
     },
     inputContainer: {
-        marginTop: -20,
+        marginTop: -23,
         borderWidth: 0,
         overflow: "scroll"
     },

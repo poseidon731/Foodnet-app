@@ -5,7 +5,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Icon } from 'react-native-elements';
 import Card from '../Athena/Card';
 import { setLoading } from '@modules/reducers/auth/actions';
-import { setCartProducts } from '@modules/reducers/food/actions';
+import { setCartRestaurant, setCartProducts, setCartBadge, setCartToast } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -18,10 +18,11 @@ import { TextField } from 'react-native-material-textfield';
 import FastImage from 'react-native-fast-image';
 import ContentLoader from 'react-native-easy-content-loader';
 
-const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onExtra, onModal, onCart }) => {
+const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onExtra, onModal, onCart, checkExtr }) => {
     const [loader, setLoader] = useState(true);
     const [count, setCount] = useState(1);
     const [flag, setFlag] = useState(false);
+    const { country } = useSelector(state => state.auth);
 
     useEffect(() => {
         if(isEmpty(cartProducts)) {
@@ -112,7 +113,8 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                                 if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
                                     onModal();
                                 } else {
-                                    flag ? onCart() : onExtra(product, count);
+                                    // flag ? onCart() : onExtra(product, count);
+                                    checkExtr(cartProducts, restaurant, product, count);
                                 }
                             }}>
                             {flag ? (<Icon type='material' name='check' color={colors.WHITE} size={25} />) : (<CartWhiteIcon />)}
@@ -169,6 +171,50 @@ export default Menu = (props) => {
                 setProducts([]);
             });
     }, [props.search]);
+
+    const checkExtr = (cartProducts, restaurant, product, count, onExtra) => {
+        console.log(restaurant, product);
+        dispatch(setLoading(true));
+        FoodService.optional(country, restaurant.restaurant_id, product.variant_id)
+            .then((response) => {
+                dispatch(setLoading(false));
+                if (response.status == 200) {
+                    console.log(response.result);
+                    if(response.result.length == 0) {
+    
+                        var counter = cartProducts.length + 1;
+                        cartProducts.push({
+                            cartId: Date.now(),
+                            variantId: product.variant_id,
+                            productId: product.product_id,
+                            productName: product.product_name,
+                            productDescription: product.product_description,
+                            allergens: product.allergens_name,
+                            productPrice: product.product_price,
+                            boxPrice: isEmpty(product.box_price) ? 0 : product.box_price,
+                            quantity: count,
+                            message: '',
+                            extras: [],
+                            counter
+                        });
+                        var totalBadge = 0;
+                        cartProducts.map((cartProduct, key) => {
+                            totalBadge += cartProduct.quantity;
+                        });
+    
+                        dispatch(setCartRestaurant(restaurant));
+                        dispatch(setCartProducts(cartProducts));
+                        dispatch(setCartBadge(totalBadge));
+                        dispatch(setCartToast(!cartToast));
+                    } else {
+                        onExtra(product, count);
+                    }
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+            });
+    }
 
     return (
         <View style={styles.container}>
@@ -241,6 +287,7 @@ export default Menu = (props) => {
                                     onExtra={props.onExtra}
                                     onCart={props.onCart}
                                     onModal={props.onModal}
+                                    checkExtr={(cartProducts, restaurant, product, count) => checkExtr(cartProducts, props.restaurant, product, count, props.onExtra)}
                                 />
                             )}
                         />
