@@ -182,23 +182,13 @@ export default CartIndex = (props) => {
                 </View>
             </Header>
             <Content style={{ flex: 1, padding: 20 }}>
-                {visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
+                {isExtra == 1 && visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
                     <WarningIcon />
-                    {isExtra == 0 && (
-                        <Text style={styles.notification}>Product increased</Text>
-                    )}
-                    {isExtra == 1 && (
-                        <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
-                    )}
+                    <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
                 </View>)}
-                {visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
+                {isExtra == 1 && visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
                     <WarningIcon />
-                    {isExtra == 0 && (
-                        <Text style={styles.notification}>Product reduced</Text>
-                    )}
-                    {isExtra == 1 && (
-                        <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
-                    )}
+                    <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
                 </View>)}
                 {!isEmpty(cartProducts) ? (
                     <Fragment>

@@ -251,7 +251,7 @@ export default CartDetail = (props) => {
 
             if(cartProducts[index].extras.length != 0) setIsExtra(1);
             else setIsExtra(0);
-            
+
             if(visibleNotiStatus == '+') {
                 setVisibleNotiPlus(1);
                 setTimeout(() => setVisibleNotiPlus(0), 5000);
@@ -356,23 +356,13 @@ export default CartDetail = (props) => {
             
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
-                    {visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
+                    {isExtra == 1 && visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
                         <WarningIcon />
-                        {isExtra == 0 && (
-                            <Text style={styles.notification}>Product increased</Text>
-                        )}
-                        {isExtra == 1 && (
-                            <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
-                        )}
+                        <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
                     </View>)}
-                    {visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
+                    {isExtra == 1 && visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
                         <WarningIcon />
-                        {isExtra == 0 && (
-                            <Text style={styles.notification}>Product reduced</Text>
-                        )}
-                        {isExtra == 1 && (
-                            <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
-                        )}
+                        <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
                     </View>)}
                 {!success ? (
                     <View style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }}>
