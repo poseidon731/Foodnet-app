@@ -113,8 +113,8 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                                 if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
                                     onModal();
                                 } else {
-                                    // flag ? onCart() : onExtra(product, count);
-                                    checkExtr(cartProducts, restaurant, product, count);
+                                    flag ? onCart() : onExtra(product, count);
+                                    // checkExtr(cartProducts, restaurant, product, count);
                                 }
                             }}>
                             {flag ? (<Icon type='material' name='check' color={colors.WHITE} size={25} />) : (<CartWhiteIcon />)}
