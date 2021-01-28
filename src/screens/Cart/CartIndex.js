@@ -8,7 +8,7 @@ import { setLoading } from '@modules/reducers/auth/actions';
 import { setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { TrustIcon, CartYellowIcon, CartWhiteIcon } from '@constants/svgs';
+import { TrustIcon, CartYellowIcon, CartWhiteIcon, WarningIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) => {
@@ -45,11 +45,11 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
                     )}
                 </View>
                 <View style={styles.cartButton}>
-                    <TouchableOpacity style={styles.countButton1} disabled={cartProduct.quantity == 1} onPress={() => cartProduct.quantity > 1 && onSelect(true, cartProduct, cartProduct.quantity - 1)}>
+                    <TouchableOpacity style={styles.countButton1} disabled={cartProduct.quantity == 1} onPress={() => cartProduct.quantity > 1 && onSelect(true, cartProduct, cartProduct.quantity - 1, '-')}>
                         <Icon type='material-community' name='minus' color='#333' size={25} />
                     </TouchableOpacity>
                     <View style={styles.count}><Text style={{ color: '#333' }}>{cartProduct.quantity} db</Text></View>
-                    <TouchableOpacity style={styles.countButton2} onPress={() => onSelect(true, cartProduct, cartProduct.quantity + 1)}>
+                    <TouchableOpacity style={styles.countButton2} onPress={() => onSelect(true, cartProduct, cartProduct.quantity + 1, '+')}>
                         <Icon type='material-community' name='plus' color='#333' size={25} />
                     </TouchableOpacity>
                 </View>
@@ -76,6 +76,7 @@ export default CartIndex = (props) => {
     const [countTemp, setCountTemp] = useState(0);
     const [total, setTotal] = useState(0);
     const [disabled, setDisabled] = useState(false);
+    const [visibleNoti, setVisibleNoti] = useState(0);
 
     useEffect(() => {
         var totalAmount = 0;
@@ -98,18 +99,28 @@ export default CartIndex = (props) => {
         setVisible(true);
     };
 
-    const onSelect = (check, item, count) => {
+    const onSelect = (check, item, count, visibleNotiStatus) => {
+        console.log("visible noti = ", visibleNotiStatus);
         if (check) {
             var index = cartProducts.findIndex((cartProduct) => {
                 return cartProduct.cartId == item.cartId
             });
             cartProducts[index].quantity = count;
+            for(var i = 0; i < cartProducts[index].extras.length; i++) {
+                cartProducts[index].extras[i].quantity = count;
+            }
             var totalBadge = 0;
             cartProducts.map((cartProduct, key) => {
                 totalBadge += cartProduct.quantity;
             });
             dispatch(setCartBadge(totalBadge));
             dispatch(setCartProducts(cartProducts));
+
+            if(visibleNotiStatus == '+') setVisibleNoti(1);
+            else if(visibleNotiStatus == '-') setVisibleNoti(2);
+
+            setTimeout(() => setVisibleNoti(0), 5000);
+
         } else {
             var result = cartProducts.filter((cartProduct) => {
                 return cartProduct.cartId != item.cartId
@@ -162,6 +173,14 @@ export default CartIndex = (props) => {
                 </View>
             </Header>
             <Content style={{ flex: 1, padding: 20 }}>
+                {visibleNoti == 1 && (<View style={styles.notificationBack}>
+                    <WarningIcon />
+                    <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
+                </View>)}
+                {visibleNoti == 2 && (<View style={styles.notificationBack}>
+                    <WarningIcon />
+                    <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
+                </View>)}
                 {!isEmpty(cartProducts) ? (
                     <Fragment>
                         <FlatList
@@ -172,7 +191,7 @@ export default CartIndex = (props) => {
                                 <CartItem
                                     cartRestaurant={cartRestaurant}
                                     cartProduct={cartProduct.item}
-                                    onSelect={(check, item, count) => onSelect(check, item, count)}
+                                    onSelect={(check, item, count, visibleNotiStatus) => onSelect(check, item, count, visibleNotiStatus)}
                                     onDelete={(check, item, count) => onDelete(check, item, count)}
                                 />
                             )}
@@ -222,7 +241,7 @@ export default CartIndex = (props) => {
                             <Text style={styles.modalDescription}>{i18n.translate('This operation cannot be undone')}</Text>
                         </View>
                         <TouchableOpacity style={styles.modalButton} onPress={() => {
-                            !type ? onSelect(checkTemp, itemTemp, countTemp) : onEmpty()
+                            !type ? onSelect(checkTemp, itemTemp, countTemp, '+') : onEmpty()
                         }}>
                             <Text style={styles.saveText}>{i18n.translate('Delete')}</Text>
                         </TouchableOpacity>
@@ -237,6 +256,27 @@ export default CartIndex = (props) => {
 }
 
 const styles = StyleSheet.create({
+    notificationBack: { 
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: 5, 
+        marginBottom: 5, 
+        paddingHorizontal: 10, 
+        paddingVertical: 10,
+        width: '100%',  
+        justifyContent: 'flex-start', 
+        backgroundColor: '#feebd6',
+        shadowColor: 'rgba(0, 0, 0, 0.6)',
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: Platform.OS === 'ios' ? 0.5 : 0.7,
+        shadowRadius: 5,
+        elevation: 5,
+    },
+    notification: {
+        fontSize: 16,
+        marginLeft: 3,
+        color: colors.YELLOW.PRIMARY
+    },
     descriptionText: {
         width: '100%',
         fontSize: 16,

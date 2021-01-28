@@ -11,7 +11,7 @@ import { ProfileService, FoodService, AuthService } from '@modules/services';
 import { isEmpty, validateBetween } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { RES_URL } from '@constants/configs';
-import { BackWhiteIcon, TrustIcon, SuccessIcon, MapPinIcon } from '@constants/svgs';
+import { BackWhiteIcon, TrustIcon, SuccessIcon, MapPinIcon, WarningIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 import moment from 'moment';
@@ -51,13 +51,13 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
                     )}
                 </View>
                 <View style={styles.cartButton}>
-                    <TouchableOpacity style={styles.countButton1} disabled={cartProduct.quantity == 1} onPress={() => cartProduct.quantity > 1 && onSelect(true, cartProduct, cartProduct.quantity - 1)}>
+                    <TouchableOpacity style={styles.countButton1} disabled={cartProduct.quantity == 1} onPress={() => cartProduct.quantity > 1 && onSelect(true, cartProduct, cartProduct.quantity - 1, '-')}>
                         <Icon type='material-community' name='minus' color='#333' size={25} />
                     </TouchableOpacity>
                     <View style={styles.count}>
                         <Text style={{ color: '#333' }}>{cartProduct.quantity} db</Text>
                     </View>
-                    <TouchableOpacity style={styles.countButton2} onPress={() => onSelect(true, cartProduct, cartProduct.quantity + 1)}>
+                    <TouchableOpacity style={styles.countButton2} onPress={() => onSelect(true, cartProduct, cartProduct.quantity + 1, '+')}>
                         <Icon type='material-community' name='plus' color='#333' size={25} />
                     </TouchableOpacity>
                 </View>
@@ -116,6 +116,8 @@ export default CartDetail = (props) => {
     const [disabled, setDisabled] = useState(false);
     const [navi, setNavi] = useState(true);
     const [orderId, setOrderId] = useState(0);
+
+    const [visibleNoti, setVisibleNoti] = useState(0);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -228,18 +230,28 @@ export default CartDetail = (props) => {
         setVisible(true);
     };
 
-    const onSelect = (check, item, count) => {
+    const onSelect = (check, item, count, visibleNotiStatus) => {
         if (check) {
             var index = cartProducts.findIndex((cartProduct) => {
                 return cartProduct.cartId == item.cartId
             });
             cartProducts[index].quantity = count;
+            for(var i = 0; i < cartProducts[index].extras.length; i++) {
+                cartProducts[index].extras[i].quantity = count;
+            }
+            
             var totalBadge = 0;
             cartProducts.map((cartProduct, key) => {
                 totalBadge += cartProduct.quantity;
             });
             dispatch(setCartProducts(cartProducts));
             dispatch(setCartBadge(totalBadge));
+
+            if(visibleNotiStatus == '+') setVisibleNoti(1);
+            else if(visibleNotiStatus == '-') setVisibleNoti(2);
+
+            setTimeout(() => setVisibleNoti(0), 5000);
+
         } else {
             var result = cartProducts.filter((cartProduct) => {
                 return cartProduct.cartId != item.cartId
@@ -332,6 +344,14 @@ export default CartDetail = (props) => {
 
     return (
         <SafeAreaView style={styles.saveArea}>
+            {visibleNoti == 1 && (<View style={styles.notificationBack}>
+                <WarningIcon />
+                <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
+            </View>)}
+            {visibleNoti == 2 && (<View style={styles.notificationBack}>
+                <WarningIcon />
+                <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
+            </View>)}
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
                 {!success ? (
@@ -345,7 +365,7 @@ export default CartDetail = (props) => {
                                 <CartItem
                                     cartRestaurant={cartRestaurant}
                                     cartProduct={cartProduct.item}
-                                    onSelect={(check, item, count) => onSelect(check, item, count)}
+                                    onSelect={(check, item, count, visibleNotiStatus) => onSelect(check, item, count, visibleNotiStatus)}
                                     onDelete={(check, item, count) => onDelete(check, item, count)}
                                 />
                             )}
@@ -579,7 +599,7 @@ export default CartDetail = (props) => {
                             <Text style={styles.modalTitle}>{i18n.translate('Are you sure you want to delete the contents of your cart')}</Text>
                             <Text style={styles.modalDescription}>{i18n.translate('This operation cannot be undone')}</Text>
                         </View>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => onSelect(checkTemp, itemTemp, countTemp)}>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => onSelect(checkTemp, itemTemp, countTemp, '+')}>
                             <Text style={styles.saveText}>{i18n.translate('Delete')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.modalButton} onPress={() => setVisible(false)}>
@@ -593,6 +613,28 @@ export default CartDetail = (props) => {
 }
 
 const styles = StyleSheet.create({
+    notificationBack: { 
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: 5, 
+        marginBottom: 5, 
+        marginHorizontal: '5%',
+        paddingHorizontal: 10, 
+        paddingVertical: 10,
+        width: '90%',  
+        justifyContent: 'flex-start', 
+        backgroundColor: '#feebd6',
+        shadowColor: 'rgba(0, 0, 0, 0.6)',
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: Platform.OS === 'ios' ? 0.5 : 0.7,
+        shadowRadius: 5,
+        elevation: 5,
+    },
+    notification: {
+        fontSize: 16,
+        marginLeft: 3,
+        color: colors.YELLOW.PRIMARY
+    },
     saveArea: {
         flex: 1,
         backgroundColor: colors.WHITE,
