@@ -105,6 +105,8 @@ export default Forgot = (props) => {
                                 value={email}
                                 containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                                 inputContainerStyle={styles.inputContainer}
+                                lineWidth={0}
+                                activeLineWidth={0}
                                 onChangeText={(value) => {
                                     setEmail(value);
                                     setVisitEmail(true);

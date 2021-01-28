@@ -108,6 +108,8 @@ export default SignIn = (props) => {
                         value={email}
                         containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         onChangeText={(value) => {
                             setEmail(value);
                             setVisitEmail(true);
@@ -132,6 +134,8 @@ export default SignIn = (props) => {
                         secureTextEntry={secureTextEntry}
                         containerStyle={[styles.textContainer, !isEmpty(errorPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         renderRightAccessory={() => {
                             let name = secureTextEntry ? 'eye' : 'eye-off';
                             return (

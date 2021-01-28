@@ -104,6 +104,8 @@ export default ProfilePassword = (props) => {
                         secureTextEntry={secureTextEntry1}
                         containerStyle={[styles.textContainer, !isEmpty(errorOldPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         renderRightAccessory={() => {
                             let name = secureTextEntry1 ? 'eye' : 'eye-off';
                             return (
@@ -133,6 +135,8 @@ export default ProfilePassword = (props) => {
                         secureTextEntry={secureTextEntry2}
                         containerStyle={[styles.textContainer, !isEmpty(errorNewPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         renderRightAccessory={() => {
                             let name = secureTextEntry2 ? 'eye' : 'eye-off';
                             return (
@@ -162,6 +166,8 @@ export default ProfilePassword = (props) => {
                         secureTextEntry={secureTextEntry3}
                         containerStyle={[styles.textContainer, !isEmpty(errorConfirmPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         renderRightAccessory={() => {
                             let name = secureTextEntry3 ? 'eye' : 'eye-off';
                             return (

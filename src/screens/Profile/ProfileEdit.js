@@ -100,6 +100,8 @@ export default ProfileEdit = (props) => {
                         value={name}
                         containerStyle={[styles.textContainer, !isEmpty(errorName) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         onChangeText={(value) => {
                             setName(value);
                             setVisitName(true);
@@ -121,6 +123,8 @@ export default ProfileEdit = (props) => {
                         value={email}
                         containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         onChangeText={(value) => {
                             setEmail(value);
                             setVisitEmail(true);
@@ -140,6 +144,8 @@ export default ProfileEdit = (props) => {
                         value={mobile}
                         containerStyle={[styles.textContainer, !isEmpty(errorMobile) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         onChangeText={(value) => {
                             setMobile(value);
                             setVisitMobile(true);

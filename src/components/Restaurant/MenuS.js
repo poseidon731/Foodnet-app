@@ -165,6 +165,8 @@ export default Menu = (props) => {
                     value={props.search}
                     containerStyle={styles.textContainer}
                     inputContainerStyle={styles.inputContainer}
+                    lineWidth={0}
+                    activeLineWidth={0}
                     onChangeText={(value) => props.onSearch(value)}
                 />
             </Card>

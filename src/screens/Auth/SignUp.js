@@ -104,6 +104,8 @@ export default SignUp = (props) => {
                         value={name}
                         containerStyle={[styles.textContainer, !isEmpty(errorName) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         onChangeText={(value) => {
                             setName(value);
                             setVisitName(true);
@@ -123,6 +125,8 @@ export default SignUp = (props) => {
                         value={email}
                         containerStyle={[styles.textContainer, !isEmpty(errorEmail) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         onChangeText={(value) => {
                             setEmail(value);
                             setVisitEmail(true);
@@ -143,6 +147,8 @@ export default SignUp = (props) => {
                         secureTextEntry={secureTextEntry1}
                         containerStyle={[styles.textContainer, !isEmpty(errorPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         renderRightAccessory={() => {
                             let name = secureTextEntry1 ? 'eye' : 'eye-off';
                             return (
@@ -169,6 +175,8 @@ export default SignUp = (props) => {
                         secureTextEntry={secureTextEntry2}
                         containerStyle={[styles.textContainer, !isEmpty(errorConfirm) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         renderRightAccessory={() => {
                             let name = secureTextEntry2 ? 'eye' : 'eye-off';
                             return (

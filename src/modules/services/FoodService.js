@@ -161,6 +161,36 @@ const FoodService = {
 
         console.log("order with delivery address ==== ", products);
 
+        var totalPrice = 0;
+
+        products.map((cartProduct, key) => {
+            totalPrice += cartProduct.quantity * cartProduct.productPrice;
+
+            totalPrice += cartProduct.quantity * cartProduct.boxPrice;
+
+            cartProduct.extras.map((extr, kk) => {
+                totalPrice += extr.quantity * extr.extraPrice;
+            })
+        });
+
+        var finalPrice = totalPrice + deliveryPrice;
+
+        console.log("order with delivery address ==== ", {
+            restaurantId,
+            take: take ? 1 : 0,
+            cutlery: cutlery ? 1 : 0,
+            products,
+            messageCourier: comment,
+            street: addressStreet,
+            houseNumber: addressHouseNumber,
+            floor: addressFloor,
+            doorNumber: addressDoorNumber,
+            locationId: cityObj.id,
+            deliveryPrice,
+            totalPrice,
+            finalPrice
+        });
+
         return axios.post(`/order`, {
             restaurantId,
             take: take ? 1 : 0,
@@ -172,7 +202,9 @@ const FoodService = {
             floor: addressFloor,
             doorNumber: addressDoorNumber,
             locationId: cityObj.id,
-            deliveryPrice
+            deliveryPrice,
+            totalPrice,
+            finalPrice
         }).then((response) => {
             !isEmpty(token) && removeClientToken(token);
             console.log(response.data);

@@ -144,6 +144,8 @@ export default DeliveryAdd = (props) => {
                                     value={addressStreet}
                                     containerStyle={[styles.textContainer, !isEmpty(errorStreet) ? common.borderColorRed : common.borderColorGrey]}
                                     inputContainerStyle={styles.inputContainer}
+                                    lineWidth={0}
+                                    activeLineWidth={0}
                                     onChangeText={(value) => {
                                         setAddressStreet(value);
                                         setVisitStreet(true);
@@ -164,6 +166,8 @@ export default DeliveryAdd = (props) => {
                                         value={addressHouseNumber}
                                         containerStyle={[styles.textContainer, !isEmpty(errorHouseNumber) ? common.borderColorRed : common.borderColorGrey]}
                                         inputContainerStyle={styles.inputContainer}
+                                        lineWidth={0}
+                                        activeLineWidth={0}
                                         onChangeText={(value) => {
                                             setAddressHouseNumber(value);
                                             setVisitHouseNumber(true);
@@ -183,6 +187,8 @@ export default DeliveryAdd = (props) => {
                                         value={addressFloor}
                                         containerStyle={[styles.textContainer, common.borderColorGrey]}
                                         inputContainerStyle={styles.inputContainer}
+                                        lineWidth={0}
+                                        activeLineWidth={0}
                                         onChangeText={(value) => {
                                             setAddressFloor(value);
                                         }}
@@ -199,6 +205,8 @@ export default DeliveryAdd = (props) => {
                                         value={addressDoorNumber}
                                         containerStyle={[styles.textContainer, common.borderColorGrey]}
                                         inputContainerStyle={styles.inputContainer}
+                                        lineWidth={0}
+                                        activeLineWidth={0}
                                         onChangeText={(value) => {
                                             setAddressDoorNumber(value);
                                         }}

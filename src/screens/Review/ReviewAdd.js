@@ -108,6 +108,8 @@ export default ReviewAdd = (props) => {
                         disabled={type == 1 ? false : true}
                         containerStyle={[styles.textContainer, !isEmpty(errorReviewText) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         onChangeText={(value) => {
                             setReviewText(value);
                             setVisitReviewText(true);

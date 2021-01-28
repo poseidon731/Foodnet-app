@@ -277,7 +277,7 @@ export default CartDetail = (props) => {
                 alert('Please enter required field');
             } else {
                 dispatch(setLoading(true));
-                FoodService.orderWithDeliveryAddress(user.token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment)
+                FoodService.orderWithDeliveryAddress(user.token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment, 0)
                     .then((response) => {
                         dispatch(setLoading(false));
                         if (response.status == 200) {
@@ -429,6 +429,8 @@ export default CartDetail = (props) => {
                                                         value={addressStreet}
                                                         containerStyle={[styles.textContainer1, !isEmpty(errorStreet) ? common.borderColorRed : common.borderColorGrey]}
                                                         inputContainerStyle={styles.inputContainer1}
+                                                        lineWidth={0}
+                                                        activeLineWidth={0}
                                                         onChangeText={(value) => {
                                                             setAddressStreet(value);
                                                             setVisitStreet(true);
@@ -449,6 +451,8 @@ export default CartDetail = (props) => {
                                                             value={addressHouseNumber}
                                                             containerStyle={[styles.textContainer1, !isEmpty(errorHouseNumber) ? common.borderColorRed : common.borderColorGrey]}
                                                             inputContainerStyle={styles.inputContainer1}
+                                                            lineWidth={0}
+                                                            activeLineWidth={0}
                                                             onChangeText={(value) => {
                                                                 setAddressHouseNumber(value);
                                                                 setVisitHouseNumber(true);
@@ -468,6 +472,8 @@ export default CartDetail = (props) => {
                                                             value={addressFloor}
                                                             containerStyle={[styles.textContainer1, common.borderColorGrey]}
                                                             inputContainerStyle={styles.inputContainer1}
+                                                            lineWidth={0}
+                                                            activeLineWidth={0}
                                                             onChangeText={(value) => {
                                                                 setAddressFloor(value);
                                                             }}
@@ -484,6 +490,8 @@ export default CartDetail = (props) => {
                                                             value={addressDoorNumber}
                                                             containerStyle={[styles.textContainer1, common.borderColorGrey]}
                                                             inputContainerStyle={styles.inputContainer1}
+                                                            lineWidth={0}
+                                                            activeLineWidth={0}
                                                             onChangeText={(value) => {
                                                                 setAddressDoorNumber(value);
                                                             }}

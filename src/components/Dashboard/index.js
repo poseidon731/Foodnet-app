@@ -47,6 +47,8 @@ export default Dashboard = (props) => {
                                 value={props.search}
                                 containerStyle={styles.textContainer}
                                 inputContainerStyle={styles.inputContainer}
+                                lineWidth={0}
+                                activeLineWidth={0}
                                 renderLeftAccessory={() => {
                                     return (
                                         <SearchIcon style={{ marginRight: 10 }} />

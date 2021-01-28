@@ -80,6 +80,8 @@ export default ProfileDelete = (props) => {
                         height={85}
                         containerStyle={[styles.textContainer, common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
                         onChangeText={(value) => setReason(value)}
                     />
                 </Card>
