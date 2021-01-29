@@ -353,24 +353,8 @@ export default CartDetail = (props) => {
 
     return (
         <SafeAreaView style={styles.saveArea}>
-            {Platform.OS !== 'ios' && isExtra == 1 && visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
-                <WarningIcon />
-                <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
-            </View>)}
-            {Platform.OS !== 'ios' && isExtra == 1 && visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
-                <WarningIcon />
-                <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
-            </View>)}
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
-                    {Platform.OS === 'ios' && isExtra == 1 && visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
-                        <WarningIcon />
-                        <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
-                    </View>)}
-                    {Platform.OS === 'ios' && isExtra == 1 && visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
-                        <WarningIcon />
-                        <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
-                    </View>)}
                 {!success ? (
                     <View style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }}>
                         <Text style={[styles.cartText, { marginTop: 10 }]} numberOfLines={1}>{i18n.translate('Order complete')}</Text>
@@ -604,6 +588,17 @@ export default CartDetail = (props) => {
                 </Animated.View>
             </Animated.View>
             <Animated.View style={[styles.headerTop, { transform: [{ translateY: headerTopTranslateY }] }]}>
+                {isExtra == 1 && (<View style={styles.notificationView}>
+                    {visibleNotiPlus == 1 && (<View style={styles.notificationBack}>
+                        <WarningIcon />
+                        <Text style={styles.notification}>As the products increases, the extras are also assigned</Text>
+                    </View>)}
+                    {visibleNotiMinus == 1 && (<View style={styles.notificationBack}>
+                        <WarningIcon />
+                        <Text style={styles.notification}>As the products reduces, the extras are also reduced</Text>
+                    </View>)}
+                </View>)}
+                
                 <Header style={styles.headerContent}>
                     <View style={common.headerLeft}>
                         {!success && (
@@ -640,6 +635,13 @@ export default CartDetail = (props) => {
 }
 
 const styles = StyleSheet.create({
+    notificationView: {
+        position: 'absolute',
+        zIndex: 999,
+        top: 5,
+        display: 'flex',
+        flexDirection: 'column'
+    },
     notificationBack: { 
         display: 'flex',
         flexDirection: 'row',
@@ -655,7 +657,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 4, height: 4 },
         shadowOpacity: Platform.OS === 'ios' ? 0.5 : 0.7,
         shadowRadius: 5,
-        elevation: 5,
+        elevation: 5
     },
     notification: {
         fontSize: 16,
