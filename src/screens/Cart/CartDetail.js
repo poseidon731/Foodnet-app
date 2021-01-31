@@ -667,7 +667,7 @@ export default CartDetail = (props) => {
                     <View style={styles.modalView}>
                         <View style={styles.modalMain}>
                             <Text style={styles.modalTitle}>{i18n.translate('Are you sure you want to delete the contents of your cart')}</Text>
-                            <Text style={styles.modalDescription}>{i18n.translate('This operation cannot be undone')}</Text>
+                            
                         </View>
                         <TouchableOpacity style={styles.modalButton} onPress={() => onSelect(checkTemp, itemTemp, countTemp, '+')}>
                             <Text style={styles.saveText}>{i18n.translate('Delete')}</Text>
