@@ -1673,7 +1673,7 @@ const styles = StyleSheet.create({
   },
   listView1: {
     width: "100%",
-    height: 250,
+    // height: 250,
     paddingHorizontal: 10,
     backgroundColor: colors.WHITE,
     borderLeftWidth: 1,
