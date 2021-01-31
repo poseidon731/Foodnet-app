@@ -19,6 +19,12 @@ const FoodService = {
         });
     },
     result: function (country, cityName, search, filters) {
+        console.log({
+            lang: country,
+            location: cityName,
+            searchString: search,
+            filters
+        });
         return axios.post(`/location/home/search`, {
             lang: country,
             location: cityName,

@@ -264,7 +264,7 @@ export default CartIndex = (props) => {
           <View style={styles.notificationBack}>
             <WarningIcon />
             <Text style={styles.notification}>
-              {i18n.translate("incerase items")}
+              {i18n.translate("increase items")}
             </Text>
           </View>
         )}

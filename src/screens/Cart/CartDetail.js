@@ -559,15 +559,15 @@ export default CartDetail = (props) => {
               )}
             />
             <View style={styles.amount}>
-              <Text style={styles.price}>
+              <Text style={styles.priceGrey}>
                 {i18n.translate("Total")}: {total.toFixed(2)}{" "}
                 {i18n.translate("lei")}
               </Text>
             </View>
-            {deliveryPrice != 0 && (
+            {/* {deliveryPrice != 0 && ( */}
               <View>
                 <View style={styles.amount1}>
-                  <Text style={styles.price}>
+                  <Text style={styles.priceGrey}>
                     {i18n.translate("Delivery")}: {deliveryPrice.toFixed(2)}{" "}
                     {i18n.translate("lei")}
                   </Text>
@@ -579,7 +579,7 @@ export default CartDetail = (props) => {
                   </Text>
                 </View>
               </View>
-            )}
+            {/* )} */}
 
             <Text style={[styles.cartText, { marginTop: 20 }]}>
               {i18n.translate("Take over")}
@@ -1085,7 +1085,7 @@ export default CartDetail = (props) => {
               <View style={styles.notificationBack}>
                 <WarningIcon />
                 <Text style={styles.notification}>
-                  {i18n.translate("incerase items")}
+                  {i18n.translate("increase items")}
                 </Text>
               </View>
             )}
@@ -1344,6 +1344,11 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingTop: 10,
     paddingBottom: 10,
+  },
+  priceGrey: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.GREY.PRIMARY,
   },
   price: {
     fontSize: 18,
