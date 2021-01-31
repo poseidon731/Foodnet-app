@@ -6,7 +6,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Icon } from 'react-native-elements';
 import { setLoading, setUser } from '@modules/reducers/auth/actions';
 import { AuthService } from '@modules/services';
-import { isEmpty, validateName, validateEmail, validatePassword } from '@utils/functions';
+import { isEmpty, validateName, validateEmail, validatePassword, validateMobile } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { BackIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -36,17 +36,22 @@ export default SignUp = (props) => {
     const [newsLetter, setNewsLetter] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
+    const [mobile, setMobile] = useState('');
+    const [visitMobile, setVisitMobile] = useState(false);
+    const [errorMobile, setErrorMobile] = useState('');
+
     useEffect(() => {
         setErrorMsg('');
         (visitName && isEmpty(name)) || (visitName && !validateName(name)) ? setErrorName('The name must be at least 3 characters long') : setErrorName('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
-        (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('The password must be at least 3 characters long')) : setErrorPassword('');
-        (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validatePassword(confirm)) ? setErrorConfirm(i18n.translate('The password must be at least 3 characters long')) : (confirm.length >= 5 && password !== confirm) ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
-    }, [name, visitName, email, visitEmail, password, visitPassword, confirm, visitConfirm]);
+        (visitMobile && isEmpty(mobile)) || (visitMobile && !validateMobile(mobile)) ? setErrorMobile(i18n.translate('Mobile is not valid')) : setErrorMobile('');
+        (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('The password must be at least 6 characters long')) : setErrorPassword('');
+        (visitConfirm && isEmpty(confirm)) || (visitConfirm && !validatePassword(confirm)) ? setErrorConfirm(i18n.translate('The password must be at least 6 characters long')) : (confirm.length >= 5 && password !== confirm) ? setErrorConfirm(i18n.translate('The two passwords do not match')) : setErrorConfirm('');
+    }, [name, visitName, email, visitEmail, password, visitPassword, confirm, visitConfirm, mobile, visitMobile]);
 
     const onSignup = () => {
         dispatch(setLoading(true));
-        AuthService.register(country, name, email, password, newsLetter ? 1 : 0)
+        AuthService.register(country, name, email, mobile, password, newsLetter ? 1 : 0)
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200 || response.status == 201) {
@@ -135,8 +140,26 @@ export default SignUp = (props) => {
                     <Text style={common.errorText}>{errorEmail}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop15]}>
+                    <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Phone number')}</Text>
+                    <TextField
+                        autoCapitalize='none'
+                        fontSize={16}
+                        autoCorrect={false}
+                        value={mobile}
+                        containerStyle={[styles.textContainer, !isEmpty(errorMobile) ? common.borderColorRed : common.borderColorGrey]}
+                        inputContainerStyle={styles.inputContainer}
+                        lineWidth={0}
+                        activeLineWidth={0}
+                        onChangeText={(value) => {
+                            setMobile(value);
+                            setVisitMobile(true);
+                        }}
+                    />
+                    <Text style={common.errorText}>{errorMobile}</Text>
+                </View>
+                <View style={[styles.inputView, common.marginTop15]}>
                     <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
-                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('6+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='next'
@@ -164,7 +187,7 @@ export default SignUp = (props) => {
                 </View>
                 <View style={[styles.inputView, common.marginTop15]}>
                     <Text style={[styles.labelText, !isEmpty(errorConfirm) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
-                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('6+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='done'
@@ -212,8 +235,8 @@ export default SignUp = (props) => {
                 </TouchableOpacity>
                 <View style={[styles.buttonView, common.marginTop35]}>
                     <TouchableOpacity
-                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg ? true : false}
-                        style={[common.button, (isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg) ? common.backColorGrey : common.backColorYellow]}
+                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg || errorMobile ? true : false}
+                        style={[common.button, (isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg || errorMobile) ? common.backColorGrey : common.backColorYellow]}
                         onPress={() => onSignup()}
                     >
                         <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Registration')}</Text>

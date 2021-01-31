@@ -14,8 +14,8 @@ import i18n from '@utils/i18n';
 import { TextField } from 'react-native-material-textfield';
 
 const Required = ({ required, index, onSelect }) => {
-    const [check, setCheck] = useState(true);
-    const [count, setCount] = useState(required.extra_minQuantity);
+    const [check, setCheck] = useState(false);
+    const [count, setCount] = useState(required.extra_minQuantity == undefined ? 1 : required.extra_minQuantity);
     return (
         <Fragment>
             <TouchableOpacity key={index} style={styles.items} onPress={() => {
@@ -144,14 +144,14 @@ export default Extra = (props) => {
                                 tempList.push({
                                     extra_id: requiredOne.extra_id,
                                     extra_name: requiredOne.extra_name,
-                                    extra_minQuantity: requiredOne.extra_minQuantity,
+                                    extra_minQuantity: 1,
                                     extra_price: requiredOne.extra_price,
                                     extra_maxQuantity: requiredOne.extra_maxQuantity,
                                     allergens_name: requiredOne.allergens_name,
-                                    extra_dash: requiredOne.extra_minQuantity
+                                    extra_dash: 1
                                 });
                             })
-                            setRequiredList(tempList);
+                            // setRequiredList(tempList);
                         }
                     }
                 })
@@ -178,7 +178,6 @@ export default Extra = (props) => {
     }, []);
 
     const onSelect = (type, check, item, count) => {
-        console.log("count = ", count);
         if (type == 1) {
             var requiredResult = requiredList.filter((required) => {
                 return required.extra_id != item.extra_id
@@ -197,6 +196,9 @@ export default Extra = (props) => {
             } else {
                 setRequiredList(requiredResult);
             }
+
+            console.log(requiredList.length, "  : minRequired = " , minRequired);
+
         } else {
             var optionalResult = optionalList.filter((optional) => {
                 return optional.extra_id != item.extra_id
@@ -219,7 +221,7 @@ export default Extra = (props) => {
     }
 
     const onAdd = () => {
-        if (minRequired <= requiredList.length) {
+        if (minRequired == requiredList.length) {
 
             var extras = [];
             requiredList.map((required, key) => {
@@ -293,7 +295,7 @@ export default Extra = (props) => {
                     ))})</Text>
                 ) : null}
                 {!isEmpty(requireds) && (
-                    <Text style={{ marginTop: 30, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Required extras (')}{requireds.length}{i18n.translate('is required)')}</Text>
+                    <Text style={{ marginTop: 30, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Required extras (')}{minRequired} {i18n.translate('is required)')}</Text>
                 )}
                 <FlatList
                     showsVerticalScrollIndicator={false}
@@ -359,7 +361,7 @@ export default Extra = (props) => {
                         onChangeText={(value) => setComment(value)}
                     />
                 </Card>
-                <TouchableOpacity disabled={minRequired > requiredList.length} style={[styles.button, { backgroundColor: minRequired > requiredList.length ? '#AAA' : colors.YELLOW.PRIMARY }]} onPress={() => onAdd()}>
+                <TouchableOpacity disabled={minRequired != requiredList.length} style={[styles.button, { backgroundColor: minRequired != requiredList.length ? '#AAA' : colors.YELLOW.PRIMARY }]} onPress={() => onAdd()}>
                     <Text style={styles.buttonText}>{i18n.translate('Add to the cart')}</Text>
                 </TouchableOpacity>
             </Content>

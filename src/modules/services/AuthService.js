@@ -9,11 +9,12 @@ const AuthService = {
             return response.data;
         });
     },
-    register: function (country, name, email, password, newsletter) {
+    register: function (country, name, email, mobile, password, newsletter) {
         return axios.post(`/auth/register`, {
             lang: country,
             email,
             name,
+            mobile,
             password,
             newsletter
         }).then((response) => {

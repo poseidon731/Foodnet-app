@@ -16,6 +16,7 @@ import i18n from '@utils/i18n';
 
 import moment from 'moment';
 import { TextField } from 'react-native-material-textfield';
+import { ActivityIndicator } from 'react-native-paper';
 
 const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) => {
     // const [count, setCount] = useState(cartProduct.quantity);
@@ -121,6 +122,8 @@ export default CartDetail = (props) => {
     const [visibleNotiMinus, setVisibleNotiMinus] = useState(0);
     const [isExtra, setIsExtra] = useState(0);
 
+    const [deliveryPrice, setDeliveryPrice] = useState(0);
+
     const scrollY = useRef(new Animated.Value(0)).current;
 
     const headerTranslateY = scrollY.interpolate({
@@ -149,34 +152,37 @@ export default CartDetail = (props) => {
         extrapolate: 'clamp',
     });
 
+    const getDeliveryAddress = () => {
+        dispatch(setLoading(true));
+        console.log("country = ", country);
+        ProfileService.getDeliveryList(user.token, country)
+            .then((response) => {
+                dispatch(setLoading(false));
+                if (response.status == 200) {
+                    setDeliveryList(response.result);
+                    if (!isEmpty(response.result)) {
+                        setDeliveryAddress({
+                            value: response.result[0].id,
+                            label: response.result[0].city + ', ' + response.result[0].street + ', ' + response.result[0].houseNumber
+                        });
+                        getDeliveryPrice(response.result[0].city_id);
+                    } else {
+                        getDeliveryPrice(cityObj.id);
+                    }
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+                console.log(error.message);
+            });
+    }
+
     useEffect(() => {
         (visitCommentText && !validateBetween(comment, 0, 200)) ? setErrorCommentText('The text must be less more than 200 characters') : setErrorCommentText('');
     }, [comment, visitCommentText]);
 
     useEffect(() => {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-
-        const getDeliveryAddress = () => {
-            dispatch(setLoading(true));
-            ProfileService.getDeliveryList(user.token, country)
-                .then((response) => {
-                    dispatch(setLoading(false));
-                    if (response.status == 200) {
-                        setDeliveryList(response.result);
-                        if (!isEmpty(response.result)) {
-                            setDeliveryAddress({
-                                value: response.result[0].id,
-                                label: response.result[0].city + ', ' + response.result[0].street + ', ' + response.result[0].houseNumber
-                            })
-                        }
-                    }
-                })
-                .catch((error) => {
-                    dispatch(setLoading(false));
-                    console.log(error.message);
-                });
-        }
-        logged && getDeliveryAddress();
 
         const getCities = () => {
             dispatch(setLoading(true));
@@ -185,7 +191,9 @@ export default CartDetail = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
-                        if (cityObj.id == 0) setCityObj(response.locations[0]);
+                        if (cityObj.id == 0) {
+                            setCityObj(response.locations[0]);
+                        }
                     }
                 })
                 .catch((error) => {
@@ -193,6 +201,8 @@ export default CartDetail = (props) => {
                 });
         }
         getCities();
+
+        logged && getDeliveryAddress();
 
         return () => console.log('Unmounted');
     }, []);
@@ -224,6 +234,15 @@ export default CartDetail = (props) => {
             props.navigation.pop();
         }
     });
+
+    useEffect(() => {
+        console.log('setCities', logged, citys);
+        if(logged)
+            getDeliveryAddress();
+        else {
+            getDeliveryPrice(cityObj.id);
+        }
+    }, [citys])
 
     const onDelete = (check, item, count) => {
         setCheckTemp(check);
@@ -286,7 +305,8 @@ export default CartDetail = (props) => {
                 alert('Please enter required field');
             } else {
                 dispatch(setLoading(true));
-                FoodService.orderWithDeliveryAddress(user.token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment, 0)
+                
+                FoodService.orderWithDeliveryAddress(user.token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment, deliveryPrice)
                     .then((response) => {
                         dispatch(setLoading(false));
                         if (response.status == 200) {
@@ -303,7 +323,7 @@ export default CartDetail = (props) => {
                     });
             }
         } else {
-            FoodService.order(user.token, user.city, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment, 0)
+            FoodService.order(user.token, user.city, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment, deliveryPrice)
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
@@ -351,6 +371,20 @@ export default CartDetail = (props) => {
         }
     }
 
+    const getDeliveryPrice = (city_id) => {
+        console.log(city_id, "  : ", citys, "  : ==========  ", cartRestaurant);
+        citys.map((city) => {
+            if(city.id == city_id) {
+                if(city.locationType == 0) {
+                    setDeliveryPrice(cartRestaurant.delivery_price_city);
+                }
+                else if (city.locationType == 1) {
+                    setDeliveryPrice(cartRestaurant.delivery_price_village);
+                }
+            }                    
+        })
+    }
+
     return (
         <SafeAreaView style={styles.saveArea}>
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
@@ -374,6 +408,18 @@ export default CartDetail = (props) => {
                         <View style={styles.amount}>
                             <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} {i18n.translate('lei')}</Text>
                         </View>
+                        { (deliveryPrice != 0) && (
+                            <View>
+                                <View style={styles.amount1}>
+                                    <Text style={styles.price}>{i18n.translate('Delivery')}: {deliveryPrice.toFixed(2)} {i18n.translate('lei')}</Text>
+                                </View>
+                                <View style={styles.amount1}>
+                                    <Text style={styles.price}>{i18n.translate('Final')}: {(total + deliveryPrice).toFixed(2)} {i18n.translate('lei')}</Text>
+                                </View>
+                            </View>
+                            )
+                        }
+
                         <Text style={[styles.cartText, { marginTop: 20 }]}>{i18n.translate('Take over')}</Text>
                         {logged && !isEmpty(deliveryList) ? (
                             <View style={{ width: '100%' }}>
@@ -382,7 +428,8 @@ export default CartDetail = (props) => {
                                         setDeliveryAddress({
                                             value: delivery.id,
                                             label: delivery.city + ', ' + delivery.street + ', ' + delivery.houseNumber + ', ' + delivery.floor + ', ' + delivery.doorNumber
-                                        })
+                                        });
+                                        getDeliveryPrice(delivery.city_id);
                                     }}>
                                         <Icon type='material' name={delivery.id == deliveryAddress.value ? 'radio-button-on' : 'radio-button-off'} color={delivery.id == deliveryAddress.value ? colors.YELLOW.PRIMARY : colors.BLACK} size={20} />
                                         <Text style={styles.radioText}>{delivery.city + ', ' + delivery.street + ', ' + delivery.houseNumber + ', ' + delivery.floor + ', ' + delivery.doorNumber}</Text>
@@ -409,6 +456,7 @@ export default CartDetail = (props) => {
                                                 <TouchableOpacity key={key} style={[styles.itemView1, key == citys.length - 1 && styles.noborder1]} onPress={() => {
                                                     setActive(false);
                                                     setCityObj(cityOne);
+                                                    getDeliveryPrice(cityOne.id);
                                                 }}>
                                                     <Text style={styles.itemText1} numberOfLines={1}>{cityOne.cities}</Text>
                                                 </TouchableOpacity>
@@ -824,7 +872,12 @@ const styles = StyleSheet.create({
     amount: {
         width: '100%',
         paddingTop: 20,
-        paddingBottom: 20
+        paddingBottom: 10
+    },
+    amount1: {
+        width: '100%',
+        paddingTop: 10,
+        paddingBottom: 10
     },
     price: {
         fontSize: 18,

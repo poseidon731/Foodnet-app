@@ -208,7 +208,7 @@ export default Detail = (props) => {
                                     onCategory={(value) => setCategory(value)}
                                     onSubCategory={(value) => setSubCategory(value)}
                                     // onSubCategory={(value) => console.log(value)}
-                                    onSearch={(value) => setSearch(value)}
+                                    onSearch={(value) => {setSearch(value); console.log("set search - ", value);}}
                                     onExtra={(product, count) => props.navigation.push('Extra', { restaurant, product, count })}
                                     onCart={() => props.navigation.navigate('Cart')}
                                     onModal={() => setModal(true)}

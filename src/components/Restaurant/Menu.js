@@ -50,26 +50,31 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                 containerStyles={styles.loader}
             />
             <View key={index} style={loader ? styles.default : styles.product}>
+                {/* // (!isEmpty(product.startTime) && moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A') > moment().format('MM/DD/YYYY, h:mm:ss A')) ||
+                    // (!isEmpty(product.endTime) && moment().format('MM/DD/YYYY, h:mm:ss A') > moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A')) || */}
                 {(
-                    (!isEmpty(product.startTime) && moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A') > moment().format('MM/DD/YYYY, h:mm:ss A')) ||
-                    (!isEmpty(product.endTime) && moment().format('MM/DD/YYYY, h:mm:ss A') > moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A')) ||
-                    product.soldOut == 1
+                    (!isEmpty(product.startTime) && product.startTime > moment().format('HH:mm')) ||
+                    (!isEmpty(product.endTime) && moment().format('HH:mm') > product.endTime) || 
+                    (product.isDailyMenu == 1 && product.soldOut == 1)
                 ) && (
-                        <View style={styles.overlay} />
-                    )}
+                        <View style={styles.productImageSold}>
+                            <Text style={styles.productImageSoldText}>{i18n.translate('Sold Out')}</Text>
+                        </View>
+                    )
+                }
                 <FastImage style={styles.productImage} source={{ uri: RES_URL + product.product_imageUrl }} resizeMode='cover' onLoadEnd={e => setLoader(false)} />
                 <Text style={styles.productTitle} numberOfLines={1}>{product.product_name}</Text>
-                {isEmpty(product.soldOut) && (
+                {/* {!isEmpty(product.soldOut) && ( */}
                     <Text style={styles.productDescription}>{product.product_description}</Text>
-                )}
-                {isEmpty(product.soldOut) && !isEmpty(product.allergens_name) ? (
+                {/* )} */}
+                {!isEmpty(product.allergens_name) ? (
                     <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
                         <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
                     ))})</Text>
                 ) : null}
                 {!isEmpty(product.soldOut) && (
                     <View style={styles.dailyWrapper}>
-                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Soup')}: </Text>{'Product name'}</Text>
+                        {/* <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Soup')}: </Text>{'Product name'}</Text>
                         {!isEmpty(product.allergens_name) ? (
                             <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
                                 <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
@@ -89,8 +94,8 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                                 <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
                             ))})</Text>
                         ) : null}
-                        <View style={{ height: 20 }} />
-                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Available')}: </Text>{product.startTime.split(', ')[1]}-{product.endTime.split(', ')[1]}</Text>
+                        <View style={{ height: 20 }} /> */}
+                        {!isEmpty(product.startTime) && !isEmpty(product.endTime) && (<Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Order time')}: </Text>{product.startTime}-{product.endTime}</Text>)}
                     </View>
                 )}
                 <View style={styles.productCart}>
@@ -107,8 +112,20 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                         </TouchableOpacity>
                         <View style={{ width: 10 }} />
                         <TouchableOpacity
-                            style={[styles.check, { backgroundColor: (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', ''))) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY }]}
-                            disabled={(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')))}
+                            style={[styles.check, { backgroundColor: (
+                                    parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || 
+                                    parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')) || 
+                                    (!isEmpty(product.startTime) && product.startTime > moment().format('HH:mm')) ||
+                                    (!isEmpty(product.endTime) && moment().format('HH:mm') > product.endTime) || 
+                                    (product.isDailyMenu == 1 && product.soldOut == 1)
+                                ) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY }]}
+                            disabled={(
+                                parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || 
+                                parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')) || 
+                                (!isEmpty(product.startTime) && product.startTime > moment().format('HH:mm')) ||
+                                (!isEmpty(product.endTime) && moment().format('HH:mm') > product.endTime) || 
+                                (product.isDailyMenu == 1 && product.soldOut == 1)
+                            )}
                             onPress={() => {
                                 if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
                                     onModal();
@@ -228,7 +245,11 @@ export default Menu = (props) => {
                     keyExtractor={(category, index) => index.toString()}
                     renderItem={(item, index) => (
                         <TouchableOpacity key={index} style={[styles.category, props.category.category_id == item.item.category_id ? common.borderColorYellow : common.borderColorGrey]}
-                            onPress={() => props.onCategory(item.item)}>
+                            onPress={() => {
+                                this.textInput.clear()
+                                props.onCategory(item.item);
+                            }}
+                        >
                             <Text style={styles.name}>{item.item.category_name}</Text>
                         </TouchableOpacity>
                     )}
@@ -244,7 +265,11 @@ export default Menu = (props) => {
                     keyExtractor={(subCategory, index) => index.toString()}
                     renderItem={(item, index) => (
                         <TouchableOpacity key={index} style={[styles.category, props.subCategory.propertyValTransId == item.item.propertyValTransId ? common.borderColorYellow : common.borderColorGrey]}
-                            onPress={() => props.onSubCategory(item.item)}>
+                            onPress={() => {
+                                this.textInput.clear()
+                                props.onSubCategory(item.item); 
+                            }}
+                        >
                             <Text style={styles.name}>{item.item.subcategories_name}</Text>
                         </TouchableOpacity>
                     )}
@@ -259,7 +284,8 @@ export default Menu = (props) => {
                     fontSize={16}
                     autoCorrect={false}
                     enablesReturnKeyAutomatically={true}
-                    value={props.search}
+                    // value={props.search}
+                    ref={input => { this.textInput = input }}
                     containerStyle={styles.textContainer}
                     inputContainerStyle={styles.inputContainer}
                     lineWidth={0}
@@ -273,7 +299,7 @@ export default Menu = (props) => {
                 </View>
             ) : (
                     <Card key='product' style={styles.card}>
-                        <Text style={[styles.cardTitle, { marginTop: 20, fontSize: 14 }]}>{props.category.category_name} - {props.subCategory.subcategories_name}</Text>
+                        {/* <Text style={[styles.cardTitle, { marginTop: 20, fontSize: 14 }]}>{props.category.category_name} - {props.subCategory.subcategories_name}</Text> */}
                         <FlatList
                             contentContainerStyle={{ paddingVertical: 20 }}
                             showsHorizontalScrollIndicator={false}
@@ -374,6 +400,23 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 200,
         borderRadius: 6
+    },
+    productImageSold: {
+        position: 'absolute',
+        top: 16,
+        left: 16,
+        width: '100%',
+        height: 200,
+        borderRadius: 6,
+        zIndex: 2000,
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    productImageSoldText: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        textAlign: 'center'
     },
     productTitle: {
         width: '100%',

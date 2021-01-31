@@ -3,6 +3,7 @@ import { isEmpty } from '@utils/functions';
 
 const FoodService = {
     promotion: function (country, cityName) {
+        console.log("country - ", country, " == cityName = ", cityName);
         return axios.get(`/location/promotion/${country}/${cityName}`).then((response) => {
             return response.data;
         });
@@ -46,6 +47,14 @@ const FoodService = {
         });
     },
     products: function (country, restaurantId, categoryId, subcategoryId, propertyValTransId, searchedProduct) {
+        console.log({
+            restaurantId,
+            lang: country,
+            subcategoryId,
+            propertyValTransId,
+            categoryId,
+            searchProduct: searchedProduct
+        });
         return axios.post(`/product/subcategories-products`, {
             restaurantId,
             lang: country,
