@@ -238,9 +238,9 @@ export default CartDetail = (props) => {
     useEffect(() => {
         console.log('setCities', logged, citys);
         if(logged)
-            getDeliveryAddress();
+            !isEmpty(citys) && getDeliveryAddress();
         else {
-            getDeliveryPrice(cityObj.id);
+            !isEmpty(citys) && getDeliveryPrice(cityObj.id);
         }
     }, [citys])
 
