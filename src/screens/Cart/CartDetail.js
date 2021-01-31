@@ -338,12 +338,12 @@ export default CartDetail = (props) => {
   });
 
   useEffect(() => {
-    console.log("setCities", logged, citys);
+    console.log("setCities", logged, cityObj.id, citys);
     if (logged) !isEmpty(citys) && getDeliveryAddress();
     else {
-      !isEmpty(citys) && getDeliveryPrice(cityObj.id);
+      !isEmpty(citys) && getDeliveryPrice((cityObj.id == 0) ? citys[0].id : cityObj.id);
     }
-  }, [citys]);
+  }, [citys, cityObj]);
 
   const onDelete = (check, item, count) => {
     setCheckTemp(check);
