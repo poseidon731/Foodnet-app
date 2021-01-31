@@ -111,7 +111,7 @@ const FoodService = {
 
     getOrder: function (token, country, orderId) {
         setClientToken(token);
-        console.log(token)
+        console.log("order status = ", country, orderId)
         return axios.get(`/order/${country}/${orderId}`).then((response) => {
             removeClientToken();
             return response.data;
