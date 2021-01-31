@@ -376,10 +376,10 @@ export default CartDetail = (props) => {
         citys.map((city) => {
             if(city.id == city_id) {
                 if(city.locationType == 0) {
-                    setDeliveryPrice(cartRestaurant.delivery_price_city);
+                    setDeliveryPrice(cartRestaurant.delivery_price_city ? cartRestaurant.delivery_price_city : 0);
                 }
                 else if (city.locationType == 1) {
-                    setDeliveryPrice(cartRestaurant.delivery_price_village);
+                    setDeliveryPrice(cartRestaurant.delivery_price_village ? cartRestaurant.delivery_price_village : 0);
                 }
             }                    
         })

@@ -18,11 +18,11 @@ import { TextField } from 'react-native-material-textfield';
 import FastImage from 'react-native-fast-image';
 import ContentLoader from 'react-native-easy-content-loader';
 
-const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onExtra, onModal, onCart, checkExtr }) => {
+const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, subCategoryIndex, onExtra, onModal, onCart }) => {
     const [loader, setLoader] = useState(true);
     const [count, setCount] = useState(1);
     const [flag, setFlag] = useState(false);
-    const { country } = useSelector(state => state.auth);
+    const [isToday, setIsToday] = useState(0);
 
     useEffect(() => {
         if(isEmpty(cartProducts)) {
@@ -37,6 +37,16 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
             }
         }
     });
+
+    useEffect(() => {
+        console.log("subCategory - ", subCategoryIndex);
+        if(product.isDailyMenu == 1) {
+            var d = new Date();
+            var n = d.getDay();
+            console.log("isToday = ", subCategoryIndex, (n === 0 ? 6 : n - 1));
+            if(subCategoryIndex == (n === 0 ? 6 : n - 1)) setIsToday(1);
+        }
+    }, [subCategoryIndex])
 
     return (
         <Fragment>
@@ -55,7 +65,9 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                 {(
                     (!isEmpty(product.startTime) && product.startTime > moment().format('HH:mm')) ||
                     (!isEmpty(product.endTime) && moment().format('HH:mm') > product.endTime) || 
-                    (product.isDailyMenu == 1 && product.soldOut == 1)
+                    (product.isDailyMenu == 1 && product.soldOut == 1) || 
+                    (product.isDailyMenu == 1 && isToday == 0) || 
+                    (product.isDailyMenu == 0 && product.soldOut == 0) 
                 ) && (
                         <View style={styles.productImageSold}>
                             <Text style={styles.productImageSoldText}>{i18n.translate('Sold Out')}</Text>
@@ -117,14 +129,18 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                                     parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')) || 
                                     (!isEmpty(product.startTime) && product.startTime > moment().format('HH:mm')) ||
                                     (!isEmpty(product.endTime) && moment().format('HH:mm') > product.endTime) || 
-                                    (product.isDailyMenu == 1 && product.soldOut == 1)
-                                ) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY }]}
+                                    (product.isDailyMenu == 1 && product.soldOut == 1) || 
+                                    (product.isDailyMenu == 1 && isToday == 0) || 
+                                    (product.isDailyMenu == 0 && product.soldOut == 0) 
+                                ) ? '#F78F1E80' : colors.YELLOW.PRIMARY }]}
                             disabled={(
                                 parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || 
                                 parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')) || 
                                 (!isEmpty(product.startTime) && product.startTime > moment().format('HH:mm')) ||
                                 (!isEmpty(product.endTime) && moment().format('HH:mm') > product.endTime) || 
-                                (product.isDailyMenu == 1 && product.soldOut == 1)
+                                (product.isDailyMenu == 1 && product.soldOut == 1) || 
+                                (product.isDailyMenu == 1 && isToday == 0) || 
+                                (product.isDailyMenu == 0 && product.soldOut == 0) 
                             )}
                             onPress={() => {
                                 if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
@@ -150,12 +166,16 @@ export default Menu = (props) => {
 
     const [products, setProducts] = useState([]);
 
+    const [subCategoryIndex, setSubCategoryIndex] = useState(props.subCategory.index);
+
     useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
 
     useEffect(() => {
         if(!isEmpty(props.categories) && !isEmpty(props.subCategories)) {
             dispatch(setLoading(true));
         }
+        console.log("sub = ", props.subCategory);
+        setSubCategoryIndex(props.subCategory.index);
         setProducts([]);
         FoodService.products(country, props.restaurant.restaurant_id, props.category.category_id, props.subCategory.subcategoryId, props.subCategory.propertyValTransId, props.search)
             .then(async (response) => {
@@ -188,50 +208,6 @@ export default Menu = (props) => {
                 setProducts([]);
             });
     }, [props.search]);
-
-    const checkExtr = (cartProducts, restaurant, product, count, onExtra) => {
-        console.log(restaurant, product);
-        dispatch(setLoading(true));
-        FoodService.optional(country, restaurant.restaurant_id, product.variant_id)
-            .then((response) => {
-                dispatch(setLoading(false));
-                if (response.status == 200) {
-                    console.log(response.result);
-                    if(response.result.length == 0) {
-    
-                        var counter = cartProducts.length + 1;
-                        cartProducts.push({
-                            cartId: Date.now(),
-                            variantId: product.variant_id,
-                            productId: product.product_id,
-                            productName: product.product_name,
-                            productDescription: product.product_description,
-                            allergens: product.allergens_name,
-                            productPrice: product.product_price,
-                            boxPrice: isEmpty(product.box_price) ? 0 : product.box_price,
-                            quantity: count,
-                            message: '',
-                            extras: [],
-                            counter
-                        });
-                        var totalBadge = 0;
-                        cartProducts.map((cartProduct, key) => {
-                            totalBadge += cartProduct.quantity;
-                        });
-    
-                        dispatch(setCartRestaurant(restaurant));
-                        dispatch(setCartProducts(cartProducts));
-                        dispatch(setCartBadge(totalBadge));
-                        dispatch(setCartToast(!cartToast));
-                    } else {
-                        onExtra(product, count);
-                    }
-                }
-            })
-            .catch((error) => {
-                dispatch(setLoading(false));
-            });
-    }
 
     return (
         <View style={styles.container}>
@@ -312,10 +288,10 @@ export default Menu = (props) => {
                                     restaurant={props.restaurant}
                                     product={product.item}
                                     index={index}
+                                    subCategoryIndex={subCategoryIndex}
                                     onExtra={props.onExtra}
                                     onCart={props.onCart}
                                     onModal={props.onModal}
-                                    checkExtr={(cartProducts, restaurant, product, count) => checkExtr(cartProducts, props.restaurant, product, count, props.onExtra)}
                                 />
                             )}
                         />
@@ -409,13 +385,14 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 6,
         zIndex: 2000,
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: '#000000D0',
         justifyContent: 'center',
         alignItems: 'center'
     },
     productImageSoldText: {
         fontSize: 32,
         fontWeight: 'bold',
+        color: colors.WHITE,
         textAlign: 'center'
     },
     productTitle: {

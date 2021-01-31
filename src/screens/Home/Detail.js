@@ -45,7 +45,8 @@ export default Detail = (props) => {
         ordered: 0,
         subcategoryId: 0,
         propertyValTransId: 0,
-        subcategories_name: ''
+        subcategories_name: '',
+        index: 0
     });
     const [information, setInformation] = useState({
         restaurant_id: 0,
@@ -136,14 +137,36 @@ export default Detail = (props) => {
             .then(async (response) => {
                 // dispatch(setLoading(false));
                 if (response.status == 200) {
-                    setSubCategories(response.result);
+                    var data = [];
+                    for(var i = 0; i < response.result.length; i++) {
+                        data.push({
+                            ordered: response.result[i].ordered,
+                            subcategoryId: response.result[i].subcategoryId,
+                            propertyValTransId: response.result[i].propertyValTransId,
+                            subcategories_name: response.result[i].subcategories_name,
+                            index: i
+                        })
+                    }
+                    setSubCategories(data);
                     if (!isEmpty(response.result)) {
                         if (category.category_name === 'Daily Menu' || category.category_name === 'Daily menu' || category.category_name === 'Meniul Zilei' || category.category_name === 'Meniul zilei' || category.category_name === 'Napi Menü' || category.category_name === 'Napi menü') {
                             var d = new Date();
                             var n = d.getDay();
-                            setSubCategory(response.result[n === 0 ? 6 : n - 1]);
+                            setSubCategory({
+                                ordered: response.result[n === 0 ? 6 : n - 1].ordered,
+                                subcategoryId: response.result[n === 0 ? 6 : n - 1].subcategoryId,
+                                propertyValTransId: response.result[n === 0 ? 6 : n - 1].propertyValTransId,
+                                subcategories_name: response.result[n === 0 ? 6 : n - 1].subcategories_name,
+                                index: (n === 0 ? 6 : n - 1)
+                            });
                         } else {
-                            setSubCategory(response.result[0]);
+                            setSubCategory({
+                                ordered: response.result[0].ordered,
+                                subcategoryId: response.result[0].subcategoryId,
+                                propertyValTransId: response.result[0].propertyValTransId,
+                                subcategories_name: response.result[0].subcategories_name,
+                                index: 0
+                            });
                         }
                     }
                 }
