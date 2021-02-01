@@ -248,6 +248,7 @@ export default Detail = (props) => {
             </Animated.ScrollView>
 
             <Animated.View style={[styles.header, { transform: [{ translateY: headerTranslateY }] }]}>
+                <Animated.View style={[styles.headerBackgroundGrey, { transform: [{ translateY: imageTranslateY }] }]} />
                 <Animated.Image style={[styles.headerBackground, { transform: [{ translateY: imageTranslateY }] }]} source={{ uri: RES_URL + restaurant.restaurant_coverImage }} />
                 <Animated.View style={[styles.headerBottom, { transform: [{ translateY: headerBottomTranslateY }] }]}>
                     <View style={styles.avatar}>
@@ -285,9 +286,10 @@ export default Detail = (props) => {
                     <Animated.View style={[{ transform: [{ translateY: titleTranslateY }] }]}>
                         <Text style={styles.headerTitle} numberOfLines={1}>{restaurant.restaurant_name}</Text>
                         <Animated.View style={[styles.headerMiddle, { opacity: titleOpacity }]}>
-                            <View style={styles.headerRating}>
-                                <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
-                                <Text style={styles.headerRate}>{isEmpty(average) ? 0 : average}/5</Text>
+                            <View style={{height: 25}}>
+                                {/* <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
+                                <Text style={styles.headerRate}>{isEmpty(average) ? 0 : average}/5</Text> */}
+                                <Text> </Text>
                             </View>
                         </Animated.View>
                     </Animated.View>
@@ -364,6 +366,17 @@ const styles = StyleSheet.create({
         height: HEADER_MAX_HEIGHT,
         marginTop: 0
     },
+    headerBackgroundGrey: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: null,
+        height: HEADER_MAX_HEIGHT,
+        resizeMode: 'cover',
+        zIndex: 2000,
+        backgroundColor: "#000000D0"
+    },
     headerBackground: {
         position: 'absolute',
         top: 0,
@@ -427,7 +440,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: wp('100%'),
-        backgroundColor: colors.WHITE
+        backgroundColor: colors.WHITE,
+        zIndex: 2001,
     },
     avatar: {
         marginTop: -55,
