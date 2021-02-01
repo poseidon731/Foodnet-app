@@ -385,11 +385,11 @@ export default CartIndex = (props) => {
             <View style={styles.modalMain}>
               <Text style={styles.modalTitle}>
                 {i18n.translate(
-                  "Are you sure you want to delete the contents of your cart"
+                  "Are you sure you want to delete the contents of your cart all"
                 )}
               </Text>
               <Text style={styles.modalDescription}>
-                {i18n.translate("This operation cannot be undone")}
+                {/* {i18n.translate("This operation cannot be undone")} */}
               </Text>
             </View>
             <TouchableOpacity
