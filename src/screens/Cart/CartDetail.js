@@ -1029,6 +1029,7 @@ export default CartDetail = (props) => {
           { transform: [{ translateY: headerTranslateY }] },
         ]}
       >
+        <Animated.View style={[styles.headerBackgroundGrey, { transform: [{ translateY: imageTranslateY }] }]} />
         <Animated.Image
           style={[
             styles.headerBackground,
@@ -1197,6 +1198,17 @@ const styles = StyleSheet.create({
     height: HEADER_MAX_HEIGHT,
     marginTop: 0,
   },
+  headerBackgroundGrey: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      width: null,
+      height: HEADER_MAX_HEIGHT,
+      resizeMode: 'cover',
+      zIndex: 2000,
+      backgroundColor: "#000000D0"
+  },
   headerBackground: {
     position: "absolute",
     top: 0,
@@ -1240,6 +1252,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: wp("100%"),
     backgroundColor: colors.WHITE,
+    zIndex: 2001,
   },
   avatar: {
     marginTop: -55,
