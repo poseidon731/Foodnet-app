@@ -47,7 +47,7 @@ const CartItem = ({
           <TrustIcon />
         </TouchableOpacity>
       </View>
-      <Text style={styles.allergen} numberOfLines={1}>
+      <Text style={styles.allergen}>
         {cartProduct.productDescription}
       </Text>
       {!isEmpty(cartProduct.allergens) ? (
@@ -264,6 +264,7 @@ export default CartIndex = (props) => {
           <View style={styles.notificationBack}>
             <WarningIcon />
             <Text style={styles.notification}>
+              {" "}
               {i18n.translate("increase items")}
             </Text>
           </View>
@@ -272,6 +273,7 @@ export default CartIndex = (props) => {
           <View style={styles.notificationBack}>
             <WarningIcon />
             <Text style={styles.notification}>
+              {" "}
               {i18n.translate("decrease items")}
             </Text>
           </View>
@@ -383,8 +385,11 @@ export default CartIndex = (props) => {
             <View style={styles.modalMain}>
               <Text style={styles.modalTitle}>
                 {i18n.translate(
-                  "Are you sure you want to delete the contents of your cart"
+                  "Are you sure you want to delete the contents of your cart all"
                 )}
+              </Text>
+              <Text style={styles.modalDescription}>
+                {/* {i18n.translate("This operation cannot be undone")} */}
               </Text>
             </View>
             <TouchableOpacity
