@@ -138,7 +138,7 @@ const DrawerContent = (props) => {
                 ) : (
                     // <Footer style={styles.header}>
                         <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
-                            <GoBackIcon />
+                            <Icon type='material-community' name='login-variant' size={25} color={colors.YELLOW.PRIMARY} />
                             <Text style={styles.menuTitle}>{i18n.translate('Back to the login')}</Text>
                         </TouchableOpacity>
                     // </Footer>
