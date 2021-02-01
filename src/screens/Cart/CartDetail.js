@@ -999,7 +999,9 @@ export default CartDetail = (props) => {
           <View style={styles.success}>
             <View style={common.height50} />
             <SuccessIcon />
-
+            <Text style={styles.iconText}>
+              {i18n.translate("Congratulation")}
+            </Text>
             <Text style={styles.mainText}>
               {i18n.translate("Successful offer")}
             </Text>
@@ -1085,7 +1087,7 @@ export default CartDetail = (props) => {
               <View style={styles.notificationBack}>
                 <WarningIcon />
                 <Text style={styles.notification}>
-                  {i18n.translate("incerase items")}
+                  {i18n.translate("increase items")}
                 </Text>
               </View>
             )}
@@ -1127,6 +1129,9 @@ export default CartDetail = (props) => {
                 {i18n.translate(
                   "Are you sure you want to delete the contents of your cart"
                 )}
+              </Text>
+              <Text style={styles.modalDescription}>
+                {i18n.translate("This operation cannot be undone")}
               </Text>
             </View>
             <TouchableOpacity
