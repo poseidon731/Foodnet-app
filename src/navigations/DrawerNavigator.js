@@ -128,22 +128,22 @@ const DrawerContent = (props) => {
                     <ServiceIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Customer service')}</Text>
                 </TouchableOpacity>
-            </Content>
-            {logged ? (
-                <Footer style={styles.header}>
-                    <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
-                        <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
-                        <Text style={styles.menuTitle}>{i18n.translate('Log out')}</Text>
-                    </TouchableOpacity>
-                </Footer>
-            ) : (
-                    <Footer style={styles.header}>
+                {logged ? (
+                    // <Footer style={styles.header}>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
+                            <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
+                            <Text style={styles.menuTitle}>{i18n.translate('Log out')}</Text>
+                        </TouchableOpacity>
+                    // </Footer>
+                ) : (
+                    // <Footer style={styles.header}>
                         <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
                             <GoBackIcon />
                             <Text style={styles.menuTitle}>{i18n.translate('Back to the login')}</Text>
                         </TouchableOpacity>
-                    </Footer>
+                    // </Footer>
                 )}
+            </Content>
         </Container>
     )
 }
