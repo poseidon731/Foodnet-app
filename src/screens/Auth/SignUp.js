@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header, Content } from 'native-base';
-import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, Linking } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading, setUser } from '@modules/reducers/auth/actions';
@@ -33,6 +33,7 @@ export default SignUp = (props) => {
     const [secureTextEntry1, setSecureTextEntry1] = useState(true);
     const [secureTextEntry2, setSecureTextEntry2] = useState(true);
     const [termOfService, setTermOfService] = useState(false);
+    const [privacy, setPrivacy] = useState(false);
     const [newsLetter, setNewsLetter] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
@@ -221,7 +222,18 @@ export default SignUp = (props) => {
                         color={termOfService ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
                     />
                     <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
-                        <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => alert('OK')}>{i18n.translate('Terms and Conditions')}</Text>
+                        <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/terms')}>{i18n.translate('Terms and Conditions')}</Text>
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.rememberMe} onPress={() => setPrivacy(!privacy)}>
+                    <Icon
+                        type='material-community'
+                        name={privacy ? 'check-box-outline' : 'checkbox-blank-outline'}
+                        size={25}
+                        color={privacy ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
+                    />
+                    <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
+                        <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/privacy')}>{i18n.translate('Privacy')}</Text>
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.rememberMe, common.marginTop10]} onPress={() => setNewsLetter(!newsLetter)}>
@@ -235,8 +247,8 @@ export default SignUp = (props) => {
                 </TouchableOpacity>
                 <View style={[styles.buttonView, common.marginTop35]}>
                     <TouchableOpacity
-                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg || errorMobile ? true : false}
-                        style={[common.button, (isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg || errorMobile) ? common.backColorGrey : common.backColorYellow]}
+                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || !privacy || errorMsg || errorMobile ? true : false}
+                        style={[common.button, (isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || !privacy || errorMsg || errorMobile) ? common.backColorGrey : common.backColorYellow]}
                         onPress={() => onSignup()}
                     >
                         <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Registration')}</Text>
@@ -289,7 +301,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        marginTop: 40,
+        marginTop: 10,
         width: '100%',
     },
     rememberText: {

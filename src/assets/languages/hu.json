@@ -27,8 +27,9 @@
   "The password must be at least 6 characters long": "A jelszónak minimum 6 karakterből kell állnia",
   "The password must be at least 3 characters long": "A jelszónak minimum 6 karakterből kell állnia",
 
-  "I accept the ": "Elfogadom az ",
-  "Terms and Conditions": "Általános Szerződési Feltételeket",
+  "I accept the ": "Elfogadom ",
+  "Terms and Conditions": "a felhasználási feltételeket",
+  "Privacy": "az adatkezelési tájékoztatót",
   "I subscribe to the newsletter": "Feliratkozom a hírlevélre",
   "Forgotten Password": "Elfelejtett jelszó",
   "Please enter your email address to send us your new password": "Kérlek add meg az e-mail címed, hogy elküldhessük az új jelszót",

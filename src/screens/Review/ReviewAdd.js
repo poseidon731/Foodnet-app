@@ -120,7 +120,7 @@ export default ReviewAdd = (props) => {
 
                 {type === 1 && (
                     <Fragment>
-                        <TouchableOpacity style={[styles.rememberMe, { marginTop: 30 }]} onPress={() => setAccept(!accept)}>
+                        {/* <TouchableOpacity style={[styles.rememberMe, { marginTop: 30 }]} onPress={() => setAccept(!accept)}>
                             <Icon
                                 type='material-community'
                                 name={accept ? 'check-box-outline' : 'checkbox-blank-outline'}
@@ -143,11 +143,11 @@ export default ReviewAdd = (props) => {
                                 <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => alert('OK')}>foodnet.ro</Text>
                                 <Text style={styles.rememberText}>{i18n.translate('website')}</Text>
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <View style={[styles.buttonView, common.marginTop35]}>
                             <TouchableOpacity
                                 disabled={(ratingStar === 0 || isEmpty(reviewText) || !validateBetween(reviewText, 1, 300)) ? true : false}
-                                style={[common.button, (ratingStar === 0 || isEmpty(reviewText) || !validateBetween(reviewText, 1, 300)) || !accept || !agree ? common.backColorGrey : common.backColorYellow]}
+                                style={[common.button, (ratingStar === 0 || isEmpty(reviewText) || !validateBetween(reviewText, 1, 300)) ? common.backColorGrey : common.backColorYellow]}
                                 onPress={() => onSave()}
                             >
                                 <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Registration')}</Text>

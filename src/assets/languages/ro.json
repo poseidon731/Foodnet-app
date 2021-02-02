@@ -27,8 +27,9 @@
     "The password must be at least 6 characters long": "Parola sa conțină nimum 6 caractere",
     "The password must be at least 3 characters long": "Parola sa conțină nimum 6 caractere",
   
-    "I accept the ": "Sunt de acord cu ",
-    "Terms and Conditions": "termenii și condițiile contractului",
+    "I accept the ": "Acept ",
+    "Terms and Conditions": "termeni și condiții",
+    "Privacy": "politica de confidențialitate",
     "I subscribe to the newsletter": "Vreau să primesc informații și oferte",
     "Forgotten Password": "Am uitat parola",
     "Please enter your email address to send us your new password": "Noă parolanvreau să primesc pe adresa",

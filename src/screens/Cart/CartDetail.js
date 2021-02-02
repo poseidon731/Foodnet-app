@@ -210,6 +210,9 @@ export default CartDetail = (props) => {
 
   const [deliveryPrice, setDeliveryPrice] = useState(0);
 
+  const [termOfService, setTermOfService] = useState(false);
+  const [privacy, setPrivacy] = useState(false);
+
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const headerTranslateY = scrollY.interpolate({
@@ -954,6 +957,32 @@ export default CartDetail = (props) => {
                             <Icon type='material' name={'radio-button-off'} color={colors.BLACK} size={20} />
                             <Text style={styles.radioText} numberOfLines={1}>{i18n.translate('Credit card')}</Text>
                         </TouchableOpacity> */}
+            {!logged && (
+                <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
+                    <Icon
+                        type='material-community'
+                        name={termOfService ? 'check-box-outline' : 'checkbox-blank-outline'}
+                        size={25}
+                        color={termOfService ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
+                    />
+                    <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
+                        <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/terms')}>{i18n.translate('Terms and Conditions')}</Text>
+                    </Text>
+                </TouchableOpacity>
+            )}
+            {!logged && (
+                <TouchableOpacity style={styles.rememberMe} onPress={() => setPrivacy(!privacy)}>
+                    <Icon
+                        type='material-community'
+                        name={privacy ? 'check-box-outline' : 'checkbox-blank-outline'}
+                        size={25}
+                        color={privacy ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
+                    />
+                    <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
+                        <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/privacy')}>{i18n.translate('Privacy')}</Text>
+                    </Text>
+                </TouchableOpacity>
+            )}
 
             <View
               style={{
@@ -964,35 +993,52 @@ export default CartDetail = (props) => {
                 alignItems: "center",
               }}
             >
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  ((!logged || isEmpty(deliveryList)) &&
-                    (cityObj.id == 0 ||
-                      isEmpty(addressStreet) ||
-                      isEmpty(addressHouseNumber) ||
-                      errorStreet ||
-                      errorHouseNumber)) ||
-                  !validateBetween(comment, 0, 300)
+              {logged ? (
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    (isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    !validateBetween(comment, 0, 300)
                     ? common.backColorGrey
                     : common.backColorYellow,
-                ]}
-                disabled={
-                  disabled ||
-                  (!logged &&
-                    (cityObj.id == 0 ||
-                      isEmpty(addressStreet) ||
-                      isEmpty(addressHouseNumber) ||
-                      errorStreet ||
-                      errorHouseNumber)) ||
-                  !validateBetween(comment, 0, 300)
-                }
-                onPress={() => onOrder()}
-              >
-                <Text style={styles.buttonText}>
-                  {i18n.translate("Order Now")}
-                </Text>
-              </TouchableOpacity>
+                  ]}
+                  disabled={
+                    disabled ||
+                    (isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    !validateBetween(comment, 0, 300)
+                  }
+                  onPress={() => onOrder()}
+                >
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("Order Now")}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    ((isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy)
+                    ? common.backColorGrey
+                    : common.backColorYellow,
+                  ]}
+                  disabled={
+                    disabled ||
+                    ((isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy)
+                  }
+                  onPress={() => onOrder()}
+                >
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("Order Now")}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              
             </View>
           </View>
         ) : (
@@ -1155,6 +1201,18 @@ export default CartDetail = (props) => {
 };
 
 const styles = StyleSheet.create({
+  rememberMe: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      marginTop: 10,
+      width: '100%',
+  },
+  rememberText: {
+      marginLeft: 10,
+      fontSize: 16,
+      paddingRight: 30,
+  },
   notificationView: {
     position: "absolute",
     zIndex: 999,
