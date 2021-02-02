@@ -16,6 +16,7 @@ import {
   Image,
   TouchableOpacity,
   LogBox,
+  Linking
 } from "react-native";
 import {
   widthPercentageToDP as wp,
