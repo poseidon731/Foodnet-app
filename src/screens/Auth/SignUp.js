@@ -177,6 +177,9 @@ export default SignUp = (props) => {
                             setVisitMobile(true);
                         }}
                     />
+                    <View style={styles.phoneDes}>
+                        <Text>{i18n.translate('The phone number only for orders')}</Text>
+                    </View>
                     <Text style={common.errorText}>{errorMobile}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop15]}>
@@ -334,4 +337,8 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center'
     },
+    phoneDes: {
+        paddingVertical: 5,
+        color: colors.GREY.PRIMARY
+    }
 });
