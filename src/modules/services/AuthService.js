@@ -38,7 +38,7 @@ const AuthService = {
         });
     },
     cities: function (country) {
-        return axios.get(`/location/${country}`).then((response) => {
+        return axios.get(`/location/${country}/cities`).then((response) => {
             return response.data;
         });
     },

@@ -43,7 +43,7 @@ export default SignUp = (props) => {
 
     useEffect(() => {
         setErrorMsg('');
-        (visitName && isEmpty(name)) || (visitName && !validateName(name)) ? setErrorName('The name must be at least 3 characters long') : setErrorName('');
+        (visitName && isEmpty(name)) || (visitName && !validateName(name)) ? setErrorName(i18n.translate('The name must be at least 3 characters long')) : setErrorName('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
         (visitMobile && isEmpty(mobile)) || (visitMobile && !validateMobile(mobile)) ? setErrorMobile(i18n.translate('Mobile is not valid')) : setErrorMobile('');
         (visitPassword && isEmpty(password)) || (visitPassword && !validatePassword(password)) ? setErrorPassword(i18n.translate('The password must be at least 6 characters long')) : setErrorPassword('');

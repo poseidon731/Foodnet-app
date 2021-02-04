@@ -313,13 +313,13 @@ export default CartDetail = (props) => {
   useEffect(() => {
     (visitStreet && isEmpty(addressStreet)) ||
     (visitStreet && !validateBetween(addressStreet, 2, 100))
-      ? setErrorStreet("The text length must be between 2 ~ 100 characters")
+      ? setErrorStreet(i18n.translate("The text length must be between 2 ~ 100 characters"))
       : setErrorStreet("");
     (visitHouseNumber && isEmpty(addressHouseNumber)) ||
     (visitHouseNumber && !validateBetween(addressHouseNumber, 1, 20))
-      ? setErrorHouseNumber("The text must be less more than 20 characters")
+      ? setErrorHouseNumber(i18n.translate("The text must be less more than 20 characters"))
       : setErrorHouseNumber("");
-    (visitName && isEmpty(userName)) || (visitName && !validateName(userName)) ? setErrorName('The name must be at least 3 characters long') : setErrorName('');
+    (visitName && isEmpty(userName)) || (visitName && !validateName(userName)) ? setErrorName(i18n.translate('The name must be at least 3 characters long')) : setErrorName('');
     (visitPhone && isEmpty(phone)) || (visitPhone && !validateMobile(phone)) ? setErrorPhone(i18n.translate('Mobile is not valid')) : setErrorPhone('');
   }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber, visitPhone, phone, visitName, userName]);
 
