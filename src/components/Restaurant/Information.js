@@ -36,10 +36,10 @@ export default Information = (props) => {
                 <Text style={[styles.cardText, { fontSize: 14 }]} numberOfLines={1}>{isEmpty(props.information.restaurant_address) ? '' : props.information.restaurant_address}</Text>
                 <Text style={[styles.cardText, { marginTop: 10, fontSize: 14 }]}>{isEmpty(props.information.restaurant_phoneNumber) ? '' : props.information.restaurant_phoneNumber}</Text>
             </Card>
-            <Card key='Description' style={styles.card}>
+            {/* <Card key='Description' style={styles.card}>
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Description')}</Text>
                 <Text style={[styles.cardText, { fontSize: 14 }]}>{isEmpty(props.information.restaurant_description) ? '' : props.information.restaurant_description}</Text>
-            </Card>
+            </Card> */}
             {!isEmpty(props.information.result) && (
                 <Card key='OpenHours' style={styles.card}>
                     <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Opening Hours')}</Text>

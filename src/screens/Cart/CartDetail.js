@@ -344,10 +344,17 @@ export default CartDetail = (props) => {
     });
     setTotal(totalAmount);
     if (totalAmount < cartRestaurant.minimumOrderUser && navi) {
+      console.log("total amount minimum");
       setNavi(false);
       props.navigation.pop();
     }
-    if(isEmpty(cartProducts)) props.navigation.goBack();
+    if(isEmpty(cartProducts) && navi) {
+      console.log("empty cartproducts");
+      setTimeout(() => {
+        props.navigation.goBack(null);
+      }, 50);
+      
+    }
   });
 
   useEffect(() => {
