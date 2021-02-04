@@ -143,6 +143,7 @@ export default SignUp = (props) => {
                 <View style={[styles.inputView, common.marginTop15]}>
                     <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Phone number')}</Text>
                     <TextField
+                        keyboardType="number-pad"
                         autoCapitalize='none'
                         fontSize={16}
                         autoCorrect={false}
@@ -160,7 +161,7 @@ export default SignUp = (props) => {
                                     setMobile('+4' + value);
                                     this.textInput.setValue('+4' + value);
                                 }
-                                else if(value.substr(0, 2) != '40' && value.substr(0, 3) != '+40') {
+                                else if(value.substr(0, 2) != '40' && value.substr(0, 3) != '+40' && value.substr(0, 1) != '+') {
                                     setMobile('+40' + value);
                                     this.textInput.setValue('+40' + value);
                                 } 
@@ -168,6 +169,8 @@ export default SignUp = (props) => {
                                     setMobile('+' + value);
                                     this.textInput.setValue('+' + value);
                                 }
+                                else 
+                                    setMobile(value);
                             }
                             else
                                 setMobile(value);

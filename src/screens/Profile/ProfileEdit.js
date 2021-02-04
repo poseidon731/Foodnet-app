@@ -138,6 +138,7 @@ export default ProfileEdit = (props) => {
                         <Text style={[styles.labelTextNormal, !isEmpty(errorMobile) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
                     <TextField
+                        keyboardType="number-pad"
                         autoCapitalize='none'
                         fontSize={16}
                         autoCorrect={false}
@@ -155,7 +156,7 @@ export default ProfileEdit = (props) => {
                                     setMobile('+4' + value);
                                     this.textInput.setValue('+4' + value);
                                 }
-                                else if(value.substr(0, 2) != '40' && value.substr(0, 3) != '+40') {
+                                else if(value.substr(0, 2) != '40' && value.substr(0, 3) != '+40' && value.substr(0, 1) != '+') {
                                     setMobile('+40' + value);
                                     this.textInput.setValue('+40' + value);
                                 } 
@@ -163,6 +164,8 @@ export default ProfileEdit = (props) => {
                                     setMobile('+' + value);
                                     this.textInput.setValue('+' + value);
                                 }
+                                else 
+                                    setMobile(value);
                             }
                             else
                                 setMobile(value);

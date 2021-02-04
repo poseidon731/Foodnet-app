@@ -163,7 +163,7 @@ export default CartIndex = (props) => {
       });
     });
     setTotal(totalAmount);
-    // console.log(cartRestaurant);
+    console.log(cartRestaurant);
   });
 
   const onDelete = (check, item, count) => {
@@ -212,6 +212,7 @@ export default CartIndex = (props) => {
       dispatch(setCartBadge(totalBadge));
       dispatch(setCartProducts(result));
       // dispatch(setCartBadge(cartBadge - 1));
+      if(isEmpty(result)) props.navigation.goBack();
     }
     setVisible(false);
   };
@@ -220,6 +221,8 @@ export default CartIndex = (props) => {
     dispatch(setCartBadge(0));
     dispatch(setCartProducts([]));
     setVisible(false);
+
+    props.navigation.goBack();
   };
 
   return (
@@ -278,7 +281,7 @@ export default CartIndex = (props) => {
             </Text>
           </View>
         )}
-        {!isEmpty(cartProducts) ? (
+        {!isEmpty(cartProducts) && (
           <Fragment>
             <FlatList
               showsVerticalScrollIndicator={false}
@@ -357,31 +360,34 @@ export default CartIndex = (props) => {
               </TouchableOpacity>
             </View>
           </Fragment>
-        ) : (
-          <View style={styles.emptyView}>
-            <Text style={styles.emptyText1}>
-              {i18n.translate("Your cart is currently empty")}
-            </Text>
-            <Text style={styles.emptyText2}>
-              {i18n.translate(
-                "But tomorrow versatile and mass I hate football and a valuable asset to free macro as an integer"
-              )}
-            </Text>
-            <TouchableOpacity
-              style={[
-                common.button,
-                common.backColorYellow,
-                common.marginTop35,
-              ]}
-              onPress={() => props.navigation.goBack()}
-            >
-              <Text style={[common.buttonText, common.fontColorWhite]}>
-                {i18n.translate("Minimum")} {cartRestaurant.minimumOrderUser}{" "}
-                {i18n.translate("lei")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        ) 
+        // : 
+        // (
+        //   <View style={styles.emptyView}>
+        //     <Text style={styles.emptyText1}>
+        //       {i18n.translate("Your cart is currently empty")}
+        //     </Text>
+        //     <Text style={styles.emptyText2}>
+        //       {i18n.translate(
+        //         "But tomorrow versatile and mass I hate football and a valuable asset to free macro as an integer"
+        //       )}
+        //     </Text>
+        //     <TouchableOpacity
+        //       style={[
+        //         common.button,
+        //         common.backColorYellow,
+        //         common.marginTop35,
+        //       ]}
+        //       onPress={() => props.navigation.goBack()}
+        //     >
+        //       <Text style={[common.buttonText, common.fontColorWhite]}>
+        //         {i18n.translate("Minimum")} {cartRestaurant.minimumOrderUser}{" "}
+        //         {i18n.translate("lei")}
+        //       </Text>
+        //     </TouchableOpacity>
+        //   </View>
+        // )
+      }
       </Content>
       {visible && (
         <View style={styles.modalContainer}>

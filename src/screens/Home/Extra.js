@@ -265,6 +265,8 @@ export default Extra = (props) => {
                 totalBadge += cartProduct.quantity;
             });
 
+            console.log("+++++", restaurant);
+
             dispatch(setCartRestaurant(restaurant));
             dispatch(setCartProducts(cartProducts));
             dispatch(setCartBadge(totalBadge));
