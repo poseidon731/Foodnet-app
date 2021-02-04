@@ -39,7 +39,7 @@ export default Cities = (props) => {
   useEffect(() => {
     props.onLoading(true);
     const getCities = () => {
-      AuthService.cities(country)
+      AuthService.citiesRes(country)
         .then((response) => {
           props.onLoading(false);
           if (response.status == 200) {
