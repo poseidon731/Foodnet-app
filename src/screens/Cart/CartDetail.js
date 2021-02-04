@@ -89,7 +89,7 @@ const CartItem = ({
               +
               <Text style={styles.extra}>
                 {extra.quantity}*{extra.extraName} :{" "}
-                {extra.quantity * extra.extraPrice} lei
+                {extra.quantity * extra.extraPrice} {i18n.translate("lei")}
               </Text>
             </Text>
           ))
