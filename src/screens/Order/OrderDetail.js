@@ -39,11 +39,11 @@ const OrderItem = ({ orderItem, index }) => {
                     )
                         
                 )) : null}
-                <View style={styles.cartBottom}>
+                {/* <View style={styles.cartBottom}>
                     <View style={styles.cartLeft}>
                         <Text style={styles.price}>{orderItem.item.total_product_price} {i18n.translate('lei')}</Text>
                     </View>
-                </View>
+                </View> */}
             </View>
         </View>
     )
