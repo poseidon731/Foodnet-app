@@ -141,19 +141,6 @@ const FoodService = {
 
         var finalPrice = totalPrice + deliveryPrice;
 
-        console.log("order +++++++++ ", {
-            deliveryAddressId,
-            restaurantId,
-            take: take ? 1 : 0,
-            cutlery: cutlery ? 1 : 0,
-            products,
-            messageCourier: comment,
-            locationId: city.id,
-            deliveryPrice,
-            totalPrice,
-            finalPrice
-        });
-
         return axios.post(`/order`, {
             deliveryAddressId,
             restaurantId,
@@ -171,10 +158,8 @@ const FoodService = {
             return response.data;
         });
     },
-    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment, deliveryPrice) {
+    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment, deliveryPrice, phone, fullName) {
         !isEmpty(token) && setClientToken(token);
-
-        console.log("order with delivery address ==== ", products);
 
         var totalPrice = 0;
 
@@ -190,22 +175,6 @@ const FoodService = {
 
         var finalPrice = totalPrice + deliveryPrice;
 
-        console.log("order with delivery address ==== ", {
-            restaurantId,
-            take: take ? 1 : 0,
-            cutlery: cutlery ? 1 : 0,
-            products,
-            messageCourier: comment,
-            street: addressStreet,
-            houseNumber: addressHouseNumber,
-            floor: addressFloor,
-            doorNumber: addressDoorNumber,
-            locationId: cityObj.id,
-            deliveryPrice,
-            totalPrice,
-            finalPrice
-        });
-
         return axios.post(`/order`, {
             restaurantId,
             take: take ? 1 : 0,
@@ -219,7 +188,9 @@ const FoodService = {
             locationId: cityObj.id,
             deliveryPrice,
             totalPrice,
-            finalPrice
+            finalPrice,
+            phone,
+            fullName
         }).then((response) => {
             !isEmpty(token) && removeClientToken(token);
             console.log(response.data);

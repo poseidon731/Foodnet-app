@@ -28,11 +28,17 @@ const OrderItem = ({ orderItem, index }) => {
                         <Text key={`allergen${key}`} style={styles.allergen}>{allergen}{key != orderItem.item.allergenName.length - 1 ? ', ' : ''}</Text>
                     ))})</Text>
                 ) : null}
-                {!isEmpty(orderItem.item.extras) ? (
-                    <Text style={styles.extraList}>+ {orderItem.item.extras.map((extra, key) => (
-                        <Text key={`extra${key}`} style={styles.extra}>{extra.extra_quantity}*{extra.extra_name}{key != orderItem.item.extras.length - 1 ? ', ' : ''}</Text>
-                    ))}</Text>
-                ) : null}
+                {!isEmpty(orderItem.item.extras) ? orderItem.item.extras.map((extra, key) => (
+                    !isEmpty(extra.extra_quantity) && (
+                        <Text style={styles.extraList} key={`extra${key}`}>
+                        +
+                            <Text style={styles.extra}>
+                                {extra.extra_quantity} * {extra.extra_name}
+                            </Text>
+                        </Text>
+                    )
+                        
+                )) : null}
                 <View style={styles.cartBottom}>
                     <View style={styles.cartLeft}>
                         <Text style={styles.price}>{orderItem.item.total_product_price} {i18n.translate('lei')}</Text>

@@ -111,6 +111,7 @@ export default Detail = (props) => {
         if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
         setFilterList(tempFilters);
         // dispatch(setLoading(true));
+        console.log("--category-- country = ", country, "  :  restaurant id = ", restaurant.restaurant_id);
         FoodService.categories(country, restaurant.restaurant_id)
             .then(async (response) => {
                 if (response.status == 200) {
@@ -133,7 +134,9 @@ export default Detail = (props) => {
 
     useEffect(() => {
         // dispatch(setLoading(true));
-        FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
+        if(category.category_id != 0) {
+            console.log("--subcategory-- country = ", country, "  :  restaurant id = ", restaurant.restaurant_id, "  :  category id = ", category.category_id);
+            FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
             .then(async (response) => {
                 // dispatch(setLoading(false));
                 if (response.status == 200) {
@@ -172,8 +175,11 @@ export default Detail = (props) => {
                 }
             })
             .catch((error) => {
+                console.log("getting subcategory - ", error);
                 // dispatch(setLoading(false));
             });
+        }
+        
     }, [category]);
 
     useEffect(() => {

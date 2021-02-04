@@ -70,11 +70,9 @@ const Product = ({
   });
 
   useEffect(() => {
-    console.log("subCategory - ", subCategoryIndex);
     if (product.isDailyMenu == 1) {
       var d = new Date();
       var n = d.getDay();
-      console.log("isToday = ", subCategoryIndex, n === 0 ? 6 : n - 1);
       if (subCategoryIndex == (n === 0 ? 6 : n - 1)) setIsToday(1);
     }
   }, [subCategoryIndex]);
@@ -281,53 +279,59 @@ export default Menu = (props) => {
     if (!isEmpty(props.categories) && !isEmpty(props.subCategories)) {
       dispatch(setLoading(true));
     }
-    console.log("sub = ", props.subCategory);
-    setSubCategoryIndex(props.subCategory.index);
-    setProducts([]);
-    FoodService.products(
-      country,
-      props.restaurant.restaurant_id,
-      props.category.category_id,
-      props.subCategory.subcategoryId,
-      props.subCategory.propertyValTransId,
-      props.search
-    )
-      .then(async (response) => {
-        dispatch(setLoading(false));
-        if (response.status == 200) {
-          setProducts(response.result);
-        } else {
-          // dispatch(setLoading(false));
+    if(props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
+      console.log(props.category.category_id, "sub = ", props.subCategory);
+      setSubCategoryIndex(props.subCategory.index);
+      setProducts([]);
+      FoodService.products(
+        country,
+        props.restaurant.restaurant_id,
+        props.category.category_id,
+        props.subCategory.subcategoryId,
+        props.subCategory.propertyValTransId,
+        props.search
+      )
+        .then(async (response) => {
+          dispatch(setLoading(false));
+          if (response.status == 200) {
+            setProducts(response.result);
+          } else {
+            // dispatch(setLoading(false));
+            setProducts([]);
+          }
+        })
+        .catch((error) => {
+          dispatch(setLoading(false));
           setProducts([]);
-        }
-      })
-      .catch((error) => {
-        dispatch(setLoading(false));
-        setProducts([]);
-      });
+        });
+    }
+    
   }, [props.subCategory, cartRestaurant, cartProducts]);
 
   useEffect(() => {
     setProducts([]);
-    FoodService.products(
-      country,
-      props.restaurant.restaurant_id,
-      props.category.category_id,
-      props.subCategory.subcategoryId,
-      props.subCategory.propertyValTransId,
-      props.search
-    )
-      .then(async (response) => {
-        if (response.status == 200) {
-          setProducts(response.result);
-        } else {
-          // dispatch(setLoading(false));
+    if(props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
+      console.log(props.category.category_id, "search = ", props.subCategory);
+      FoodService.products(
+        country,
+        props.restaurant.restaurant_id,
+        props.category.category_id,
+        props.subCategory.subcategoryId,
+        props.subCategory.propertyValTransId,
+        props.search
+      )
+        .then(async (response) => {
+          if (response.status == 200) {
+            setProducts(response.result);
+          } else {
+            // dispatch(setLoading(false));
+            setProducts([]);
+          }
+        })
+        .catch((error) => {
           setProducts([]);
-        }
-      })
-      .catch((error) => {
-        setProducts([]);
-      });
+        });
+    }
   }, [props.search]);
 
   return (

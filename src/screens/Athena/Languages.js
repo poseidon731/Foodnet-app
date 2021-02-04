@@ -33,12 +33,12 @@ export default Languages = (props) => {
 
   const [active, setActive] = useState(false);
   const [language, setLanguage] = useState(
-    country === "ro" ? 0 : country === "hu" ? 1 : 0
+    country === "ro" ? 0 : country === "hu" ? 1 : 2
   );
   const [languages, setLanguages] = useState([
     { value: 0, label: "Romanian", code: "ro" },
     { value: 1, label: "Hungarian", code: "hu" },
-    // { value: 2, label: "English", code: "en" },
+    { value: 2, label: "English", code: "en" },
   ]);
   const [disabled, setDisabled] = useState(false);
 

@@ -151,8 +151,26 @@ export default SignUp = (props) => {
                         inputContainerStyle={styles.inputContainer}
                         lineWidth={0}
                         activeLineWidth={0}
+                        ref={(input) => {
+                            this.textInput = input;
+                        }}
                         onChangeText={(value) => {
-                            setMobile(value);
+                            if(value.length >= 9) {
+                                if(value.substr(0, 1) == '0') {
+                                    setMobile('+4' + value);
+                                    this.textInput.setValue('+4' + value);
+                                }
+                                else if(value.substr(0, 2) != '40' && value.substr(0, 3) != '+40') {
+                                    setMobile('+40' + value);
+                                    this.textInput.setValue('+40' + value);
+                                } 
+                                else if(value.substr(0, 2) == '40') {
+                                    setMobile('+' + value);
+                                    this.textInput.setValue('+' + value);
+                                }
+                            }
+                            else
+                                setMobile(value);
                             setVisitMobile(true);
                         }}
                     />

@@ -30,7 +30,7 @@ import {
   setCartBadge,
 } from "@modules/reducers/food/actions";
 import { ProfileService, FoodService, AuthService } from "@modules/services";
-import { isEmpty, validateBetween } from "@utils/functions";
+import { isEmpty, validateBetween, validateName, validateMobile } from "@utils/functions";
 import { common, colors } from "@constants/themes";
 import { RES_URL } from "@constants/configs";
 import {
@@ -184,6 +184,12 @@ export default CartDetail = (props) => {
 
   const [payment, setPayment] = useState(1);
 
+  const [errorPhone, setErrorPhone] = useState('');
+  const [errorName, setErrorName] = useState('');
+  const [visitName, setVisitName] = useState(false);
+  const [visitPhone, setVisitPhone] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [userName, setUserName] = useState('');
   const [addressId] = useState(0);
   const [errorCity, setErrorCity] = useState("");
   const [addressStreet, setAddressStreet] = useState("");
@@ -313,7 +319,9 @@ export default CartDetail = (props) => {
     (visitHouseNumber && !validateBetween(addressHouseNumber, 1, 20))
       ? setErrorHouseNumber("The text must be less more than 20 characters")
       : setErrorHouseNumber("");
-  }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber]);
+    (visitName && isEmpty(userName)) || (visitName && !validateName(userName)) ? setErrorName('The name must be at least 3 characters long') : setErrorName('');
+    (visitPhone && isEmpty(phone)) || (visitPhone && !validateMobile(phone)) ? setErrorPhone(i18n.translate('Mobile is not valid')) : setErrorPhone('');
+  }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber, visitPhone, phone, visitName, userName]);
 
   useEffect(() => {
     if (success) {
@@ -335,7 +343,7 @@ export default CartDetail = (props) => {
       });
     });
     setTotal(totalAmount);
-    if (totalAmount <= cartRestaurant.minimumOrderUser && navi) {
+    if (totalAmount < cartRestaurant.minimumOrderUser && navi) {
       setNavi(false);
       props.navigation.pop();
     }
@@ -427,7 +435,9 @@ export default CartDetail = (props) => {
           cutlery,
           cartProducts,
           comment,
-          deliveryPrice
+          deliveryPrice,
+          phone, 
+          userName
         )
           .then((response) => {
             dispatch(setLoading(false));
@@ -641,6 +651,119 @@ export default CartDetail = (props) => {
               </View>
             ) : (
               <View style={styles.content1}>
+                <View style={styles.PhoneAndName}>
+                  <View style={common.flexRow}>
+                    <Text
+                      style={[
+                        styles.labelText1,
+                        !isEmpty(errorPhone)
+                          ? common.fontColorRed
+                          : common.fontColorBlack,
+                      ]}
+                    >
+                      {i18n.translate("Phone number")}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.labelTextNormal1,
+                        !isEmpty(errorPhone)
+                          ? common.fontColorRed
+                          : common.fontColorBlack,
+                      ]}
+                    >
+                      {" "}
+                      ({i18n.translate("Required")})
+                    </Text>
+                  </View>
+                  <TextField
+                    keyboardType="default"
+                    returnKeyType="next"
+                    fontSize={16}
+                    autoCorrect={false}
+                    enablesReturnKeyAutomatically={true}
+                    value={phone}
+                    containerStyle={[
+                      styles.textContainer1,
+                      !isEmpty(errorPhone)
+                        ? common.borderColorRed
+                        : common.borderColorGrey,
+                    ]}
+                    inputContainerStyle={styles.inputContainer1}
+                    lineWidth={0}
+                    activeLineWidth={0}
+                    ref={(input) => {
+                      this.textInput = input;
+                    }}
+                    onChangeText={(value) => {
+                      if(value.length >= 9) {
+                          if(value.substr(0, 1) == '0') {
+                            setPhone('+4' + value);
+                            this.textInput.setValue('+4' + value);
+                          }
+                          else if(value.substr(0, 2) != '40' && value.substr(0, 3) != '+40') {
+                            setPhone('+40' + value);
+                            this.textInput.setValue('+40' + value);
+                          } 
+                          else if(value.substr(0, 2) == '40') {
+                            setPhone('+' + value);
+                            this.textInput.setValue('+' + value);
+                          }
+                      }
+                      else
+                        setPhone(value);
+                        
+                      setVisitPhone(true);
+                    }}
+                  />
+                  <Text style={common.errorText}>{errorPhone}</Text>
+                </View>
+                <View style={styles.PhoneAndName}>
+                  <View style={common.flexRow}>
+                    <Text
+                      style={[
+                        styles.labelText1,
+                        !isEmpty(errorName)
+                          ? common.fontColorRed
+                          : common.fontColorBlack,
+                      ]}
+                    >
+                      {i18n.translate("Name")}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.labelTextNormal1,
+                        !isEmpty(errorName)
+                          ? common.fontColorRed
+                          : common.fontColorBlack,
+                      ]}
+                    >
+                      {" "}
+                      ({i18n.translate("Required")})
+                    </Text>
+                  </View>
+                  <TextField
+                    keyboardType="default"
+                    returnKeyType="next"
+                    fontSize={16}
+                    autoCorrect={false}
+                    enablesReturnKeyAutomatically={true}
+                    value={userName}
+                    containerStyle={[
+                      styles.textContainer1,
+                      !isEmpty(errorName)
+                        ? common.borderColorRed
+                        : common.borderColorGrey,
+                    ]}
+                    inputContainerStyle={styles.inputContainer1}
+                    lineWidth={0}
+                    activeLineWidth={0}
+                    onChangeText={(value) => {
+                      setUserName(value);
+                      setVisitName(true);
+                    }}
+                  />
+                  <Text style={common.errorText}>{errorName}</Text>
+                </View>
                 <View style={styles.selectView1}>
                   <View style={common.flexRow}>
                     <Text
@@ -1022,7 +1145,7 @@ export default CartDetail = (props) => {
                     styles.button,
                     ((isEmpty(deliveryList) &&
                     (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy)
+                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName))
                     ? common.backColorGrey
                     : common.backColorYellow,
                   ]}
@@ -1030,7 +1153,7 @@ export default CartDetail = (props) => {
                     disabled ||
                     ((isEmpty(deliveryList) &&
                     (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy)
+                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName))
                   }
                   onPress={() => onOrder()}
                 >
@@ -1720,6 +1843,10 @@ const styles = StyleSheet.create({
   streetView1: {
     marginTop: 40,
     width: "100%",
+  },
+  PhoneAndName: {
+    marginTop: 10,
+    width: '100%'
   },
   threeView1: {
     marginTop: 20,

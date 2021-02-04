@@ -303,6 +303,11 @@ export default CartIndex = (props) => {
                 {i18n.translate("lei")}
               </Text>
             </View>
+            {(cartRestaurant.minimumOrderUser > total.toFixed(2)) && (
+              <View>
+                <Text>{i18n.translate('Restaurant minimum order')}{': '}{cartRestaurant.minimumOrderUser}{" "}{i18n.translate("lei")}</Text>
+              </View>
+            )}
             <View
               style={{
                 marginTop: 20,
@@ -553,6 +558,11 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingTop: 20,
     paddingBottom: 20,
+  },
+  mimimumAlert: {
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderColor: "#C4C4C4",
   },
   subscription: {
     marginTop: 5,
