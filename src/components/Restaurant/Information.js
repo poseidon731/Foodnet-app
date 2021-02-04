@@ -21,11 +21,11 @@ export default Information = (props) => {
             </Card>
             <Card key='delivery_price_city' style={styles.card}>
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Delivery Price City')}</Text>
-                <Text style={[styles.cardText, { fontSize: 16 }]}>{isEmpty(props.information.delivery_price_city) ? 0 : props.information.delivery_price_city} lei</Text>
+                <Text style={[styles.cardText, { fontSize: 16 }]}>{isEmpty(props.information.delivery_price_city) ? 0 : props.information.delivery_price_city} {i18n.translate("lei")}</Text>
             </Card>
             <Card key='delivery_price_village' style={styles.card}>
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Delivery Price Village')}</Text>
-                <Text style={[styles.cardText, { fontSize: 16 }]}>{isEmpty(props.information.delivery_price_village) ? 0 : props.information.delivery_price_village} lei</Text>
+                <Text style={[styles.cardText, { fontSize: 16 }]}>{isEmpty(props.information.delivery_price_village) ? 0 : props.information.delivery_price_village} {i18n.translate("lei")}</Text>
             </Card>
             <Card key='Discount' style={styles.card}>
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Discount')}</Text>
