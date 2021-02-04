@@ -347,6 +347,7 @@ export default CartDetail = (props) => {
       setNavi(false);
       props.navigation.pop();
     }
+    if(isEmpty(cartProducts)) props.navigation.goBack();
   });
 
   useEffect(() => {
@@ -770,119 +771,6 @@ export default CartDetail = (props) => {
               </View>
             ) : (
               <View style={styles.content1}>
-                <View style={styles.PhoneAndName}>
-                  <View style={common.flexRow}>
-                    <Text
-                      style={[
-                        styles.labelText1,
-                        !isEmpty(errorPhone)
-                          ? common.fontColorRed
-                          : common.fontColorBlack,
-                      ]}
-                    >
-                      {i18n.translate("Phone number")}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.labelTextNormal1,
-                        !isEmpty(errorPhone)
-                          ? common.fontColorRed
-                          : common.fontColorBlack,
-                      ]}
-                    >
-                      {" "}
-                      ({i18n.translate("Required")})
-                    </Text>
-                  </View>
-                  <TextField
-                    keyboardType="default"
-                    returnKeyType="next"
-                    fontSize={16}
-                    autoCorrect={false}
-                    enablesReturnKeyAutomatically={true}
-                    value={phone}
-                    containerStyle={[
-                      styles.textContainer1,
-                      !isEmpty(errorPhone)
-                        ? common.borderColorRed
-                        : common.borderColorGrey,
-                    ]}
-                    inputContainerStyle={styles.inputContainer1}
-                    lineWidth={0}
-                    activeLineWidth={0}
-                    ref={(input) => {
-                      this.textInput = input;
-                    }}
-                    onChangeText={(value) => {
-                      if(value.length >= 9) {
-                          if(value.substr(0, 1) == '0') {
-                            setPhone('+4' + value);
-                            this.textInput.setValue('+4' + value);
-                          }
-                          else if(value.substr(0, 2) != '40' && value.substr(0, 3) != '+40') {
-                            setPhone('+40' + value);
-                            this.textInput.setValue('+40' + value);
-                          } 
-                          else if(value.substr(0, 2) == '40') {
-                            setPhone('+' + value);
-                            this.textInput.setValue('+' + value);
-                          }
-                      }
-                      else
-                        setPhone(value);
-
-                      setVisitPhone(true);
-                    }}
-                  />
-                  <Text style={common.errorText}>{errorPhone}</Text>
-                </View>
-                <View style={styles.PhoneAndName}>
-                  <View style={common.flexRow}>
-                    <Text
-                      style={[
-                        styles.labelText1,
-                        !isEmpty(errorName)
-                          ? common.fontColorRed
-                          : common.fontColorBlack,
-                      ]}
-                    >
-                      {i18n.translate("Name")}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.labelTextNormal1,
-                        !isEmpty(errorName)
-                          ? common.fontColorRed
-                          : common.fontColorBlack,
-                      ]}
-                    >
-                      {" "}
-                      ({i18n.translate("Required")})
-                    </Text>
-                  </View>
-                  <TextField
-                    keyboardType="default"
-                    returnKeyType="next"
-                    fontSize={16}
-                    autoCorrect={false}
-                    enablesReturnKeyAutomatically={true}
-                    value={userName}
-                    containerStyle={[
-                      styles.textContainer1,
-                      !isEmpty(errorName)
-                        ? common.borderColorRed
-                        : common.borderColorGrey,
-                    ]}
-                    inputContainerStyle={styles.inputContainer1}
-                    lineWidth={0}
-                    activeLineWidth={0}
-                    onChangeText={(value) => {
-                      setUserName(value);
-                      setVisitName(true);
-                    }}
-                  />
-                  <Text style={common.errorText}>{errorName}</Text>
-                </View>
                 <View style={styles.selectView1}>
                   <View style={common.flexRow}>
                     <Text

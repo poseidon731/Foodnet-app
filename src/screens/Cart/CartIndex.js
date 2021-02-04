@@ -163,7 +163,8 @@ export default CartIndex = (props) => {
       });
     });
     setTotal(totalAmount);
-    console.log(cartRestaurant);
+    // console.log(cartRestaurant);
+    // if(isEmpty(cartProducts)) props.navigation.pop();
   });
 
   const onDelete = (check, item, count) => {
