@@ -289,7 +289,7 @@ export default Extra = (props) => {
                 </View>
             </Header>
             <Content contentContainerStyle={{ width: wp('100%'), padding: 15 }}>
-                <Text style={{ marginTop: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{product.product_name}</Text>
+                <Text style={{ marginTop: 20, fontSize: 18, fontWeight: 'bold' }}>{product.product_name}</Text>
                 <Text style={{ marginTop: 10, fontSize: 14 }}>{product.product_description}</Text>
                 {!isEmpty(product.allergens_name) ? (
                     <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (

@@ -1409,7 +1409,7 @@ const styles = StyleSheet.create({
   },
   notificationView: {
     position: "absolute",
-    zIndex: 999,
+    zIndex: 2002,
     top: 5,
     display: "flex",
     flexDirection: "column",

@@ -443,6 +443,7 @@ const styles = StyleSheet.create({
     shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
     shadowRadius: 5,
     elevation: 5,
+    zIndex: 2002
   },
   notification: {
     fontSize: 16,
