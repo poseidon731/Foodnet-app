@@ -31,7 +31,7 @@ export default ReviewAdd = (props) => {
     const [agree, setAgree] = useState(false);
 
     useEffect(() => {
-        (visitReviewText && isEmpty(reviewText)) || (visitReviewText && !validateBetween(reviewText, 1, 300)) ? setErrorReviewText('The text must be less more than 300 characters') : setErrorReviewText('');
+        (visitReviewText && isEmpty(reviewText)) || (visitReviewText && !validateBetween(reviewText, 1, 300)) ? setErrorReviewText(i18n.translate('The text must be less more than 300 characters')) : setErrorReviewText('');
     }, [reviewText, visitReviewText]);
 
     const onSave = () => {
@@ -150,7 +150,7 @@ export default ReviewAdd = (props) => {
                                 style={[common.button, (ratingStar === 0 || isEmpty(reviewText) || !validateBetween(reviewText, 1, 300)) ? common.backColorGrey : common.backColorYellow]}
                                 onPress={() => onSave()}
                             >
-                                <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Registration')}</Text>
+                                <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Sending')}</Text>
                             </TouchableOpacity>
                         </View>
                     </Fragment>

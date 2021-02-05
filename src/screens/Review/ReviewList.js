@@ -149,11 +149,11 @@ export default ReviewList = (props) => {
         <View style={common.headerRight} />
       </Header>
       <View style={{ flex: 1, padding: 20 }}>
-        <Text style={styles.descriptionText}>
+        {/* <Text style={styles.descriptionText}>
           {i18n.translate(
             "You can only write a review if you have ordered at least 5 times before"
           )}
-        </Text>
+        </Text> */}
         <FlatList
           showsVerticalScrollIndicator={false}
           data={[...addReviewList, ...viewReviewList]}
