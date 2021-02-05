@@ -110,7 +110,7 @@ const Product = ({
           resizeMode="cover"
           onLoadEnd={(e) => setLoader(false)}
         />
-        <Text style={styles.productTitle} numberOfLines={1}>
+        <Text style={styles.productTitle}>
           {product.product_name}
         </Text>
         {/* {!isEmpty(product.soldOut) && ( */}

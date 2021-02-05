@@ -32,7 +32,7 @@ const CartItem = ({
   return (
     <View key={`cart${index}`} style={styles.cart}>
       <View style={styles.cartMain}>
-        <Text style={styles.cartText} numberOfLines={1}>
+        <Text style={styles.cartText}>
           {cartProduct.quantity}*{cartProduct.productName}
         </Text>
         <TouchableOpacity
@@ -42,7 +42,7 @@ const CartItem = ({
           <TrustIcon />
         </TouchableOpacity>
       </View>
-      <Text style={styles.allergen} numberOfLines={1}>
+      <Text style={styles.allergen}>
         {cartProduct.productDescription}
       </Text>
       {!isEmpty(cartProduct.allergens) ? (

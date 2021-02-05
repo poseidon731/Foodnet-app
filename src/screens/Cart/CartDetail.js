@@ -57,7 +57,7 @@ const CartItem = ({
   return (
     <View key={`cart${index}`} style={styles.cart}>
       <View style={styles.cartMain}>
-        <Text style={styles.cartText} numberOfLines={1}>
+        <Text style={styles.cartText}>
           {cartProduct.quantity}*{cartProduct.productName}
         </Text>
         <TouchableOpacity
