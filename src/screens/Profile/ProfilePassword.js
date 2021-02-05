@@ -15,7 +15,7 @@ import { TextField } from 'react-native-material-textfield';
 
 export default ProfilePassword = (props) => {
     const dispatch = useDispatch();
-    const { user } = useSelector(state => state.auth);
+    const { user, country } = useSelector(state => state.auth);
 
     const [oldPassword, setOldPassword] = useState('');
     const [visitOldPassword, setVisitOldPassword] = useState(false);
@@ -33,14 +33,14 @@ export default ProfilePassword = (props) => {
 
     useEffect(() => {
         setErrorMsg('');
-        (visitOldPassword && isEmpty(oldPassword)) || (visitOldPassword && !validatePassword(oldPassword)) ? setErrorOldPassword(i18n.translate('The password must be at least 3 characters long')) : setErrorOldPassword('');
-        (visitNewPassword && isEmpty(newPassword)) || (visitNewPassword && !validatePassword(newPassword)) ? setErrorNewPassword(i18n.translate('The password must be at least 3 characters long')) : setErrorNewPassword('');
-        (visitConfirmPassword && isEmpty(confirmPassword)) || (visitConfirmPassword && !validatePassword(confirmPassword)) ? setErrorConfirmPassword(i18n.translate('The password must be at least 3 characters long')) : (confirmPassword.length >= 5 && newPassword !== confirmPassword) ? setErrorConfirmPassword(i18n.translate('The two passwords do not match')) : setErrorConfirmPassword('');
+        (visitOldPassword && isEmpty(oldPassword)) || (visitOldPassword && !validatePassword(oldPassword)) ? setErrorOldPassword(i18n.translate('The password must be at least 6 characters long')) : setErrorOldPassword('');
+        (visitNewPassword && isEmpty(newPassword)) || (visitNewPassword && !validatePassword(newPassword)) ? setErrorNewPassword(i18n.translate('The password must be at least 6 characters long')) : setErrorNewPassword('');
+        (visitConfirmPassword && isEmpty(confirmPassword)) || (visitConfirmPassword && !validatePassword(confirmPassword)) ? setErrorConfirmPassword(i18n.translate('The password must be at least 6 characters long')) : (confirmPassword.length >= 5 && newPassword !== confirmPassword) ? setErrorConfirmPassword(i18n.translate('The two passwords do not match')) : setErrorConfirmPassword('');
     }, [oldPassword, visitOldPassword, newPassword, visitNewPassword, confirmPassword, visitConfirmPassword]);
 
     const onChange = () => {
         dispatch(setLoading(true));
-        ProfileService.modifyProfilePassword(user.token, oldPassword, newPassword, confirmPassword)
+        ProfileService.modifyProfilePassword(user.token, oldPassword, newPassword, confirmPassword, country)
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {
@@ -93,7 +93,7 @@ export default ProfilePassword = (props) => {
                         <Text style={[styles.labelText, !isEmpty(errorOldPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Old password')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorOldPassword) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
-                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('6+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='next'
@@ -124,7 +124,7 @@ export default ProfilePassword = (props) => {
                         <Text style={[styles.labelText, !isEmpty(errorNewPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorNewPassword) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
-                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('6+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='next'
@@ -155,7 +155,7 @@ export default ProfilePassword = (props) => {
                         <Text style={[styles.labelText, !isEmpty(errorConfirmPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorConfirmPassword) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
-                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('6+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='done'

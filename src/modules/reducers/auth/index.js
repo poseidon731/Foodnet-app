@@ -2,7 +2,7 @@ import types from './types';
 
 const initialState = {
     loading: false,
-    country: 'en',
+    country: 'ro',
     city: {
         id: 0,
         name: '',

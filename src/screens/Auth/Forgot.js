@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header, Content } from 'native-base';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -19,6 +19,8 @@ import { isMoment } from 'moment';
 export default Forgot = (props) => {
     const dispatch = useDispatch();
 
+    const { country } = useSelector(state => state.auth);
+
     const [email, setEmail] = useState('');
     const [visitEmail, setVisitEmail] = useState(false);
     const [errorEmail, setErrorEmail] = useState('');
@@ -34,7 +36,7 @@ export default Forgot = (props) => {
 
     const onVerification = () => {
         dispatch(setLoading(true));
-        AuthService.verification(email)
+        AuthService.verification(email, country)
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200 && !isEmpty(response.result)) {

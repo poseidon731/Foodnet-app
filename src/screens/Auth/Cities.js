@@ -45,7 +45,7 @@ export default Cities = (props) => {
 
     const getCities = () => {
       dispatch(setLoading(true));
-      AuthService.cities(country)
+      AuthService.citiesRes(country)
         .then((response) => {
           dispatch(setLoading(false));
           if (response.status == 200) {

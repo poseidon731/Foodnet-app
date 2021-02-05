@@ -124,7 +124,7 @@ const FoodService = {
         });
     },
 
-    order: function (token, city, deliveryAddressId, restaurantId, take, cutlery, products, comment, deliveryPrice) {
+    order: function (token, city, deliveryAddressId, restaurantId, take, cutlery, products, comment, deliveryPrice, country) {
         setClientToken(token);
         
         var totalPrice = 0;
@@ -151,14 +151,15 @@ const FoodService = {
             locationId: city.id,
             deliveryPrice,
             totalPrice,
-            finalPrice
+            finalPrice,
+            lang: country
         }).then((response) => {
             removeClientToken();
             console.log(response.data);
             return response.data;
         });
     },
-    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment, deliveryPrice, phone, fullName) {
+    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment, deliveryPrice, phone, fullName, country) {
         !isEmpty(token) && setClientToken(token);
 
         var totalPrice = 0;
@@ -190,7 +191,8 @@ const FoodService = {
             totalPrice,
             finalPrice,
             phone,
-            fullName
+            fullName,
+            lang: country
         }).then((response) => {
             !isEmpty(token) && removeClientToken(token);
             console.log(response.data);

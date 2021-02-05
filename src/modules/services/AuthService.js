@@ -21,18 +21,20 @@ const AuthService = {
             return response.data;
         });
     },
-    verification: function (email) {
+    verification: function (email, country) {
         return axios.post(`/auth/verification`, {
-            email
+            email,
+            lang: country
         }).then((response) => {
             return response.data;
         });
     },
-    reset: function (email, password, code) {
+    reset: function (email, password, code, country) {
         return axios.post(`/auth/change-password`, {
             email,
             newPassword: password,
-            code
+            code,
+            lang: country
         }).then((response) => {
             return response.data;
         });

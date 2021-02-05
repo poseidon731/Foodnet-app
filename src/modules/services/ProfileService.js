@@ -59,12 +59,14 @@ const ProfileService = {
             return response.data;
         });
     },
-    modifyProfilePassword: function (token, oldPassword, newPassword, newPasswordAgain) {
+    modifyProfilePassword: function (token, oldPassword, newPassword, newPasswordAgain, country) {
+        console.log(oldPassword, newPassword, newPasswordAgain, country);
         setClientToken(token);
         return axios.post(`/profile/change-password`, {
             oldPassword,
             newPassword,
-            newPasswordAgain
+            newPasswordAgain,
+            lang: country
         }).then((response) => {
             removeClientToken();
             return response.data;

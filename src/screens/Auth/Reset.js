@@ -15,7 +15,7 @@ import { TextField } from 'react-native-material-textfield';
 
 export default SignIn = (props) => {
     const dispatch = useDispatch();
-    const { user } = useSelector(state => state.auth);
+    const { user, country } = useSelector(state => state.auth);
 
     const [password, setPassword] = useState('');
     const [visitPassword, setVisitPassword] = useState(false);
@@ -35,7 +35,7 @@ export default SignIn = (props) => {
 
     const onReset = () => {
         dispatch(setLoading(true));
-        AuthService.reset(props.route.params.email, password, props.route.params.code)
+        AuthService.reset(props.route.params.email, password, props.route.params.code, country)
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {
@@ -97,7 +97,7 @@ export default SignIn = (props) => {
                 )}
                 <View style={styles.inputView}>
                     <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
-                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('6+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='next'
@@ -125,7 +125,7 @@ export default SignIn = (props) => {
                 </View>
                 <View style={[styles.inputView, common.marginTop15]}>
                     <Text style={[styles.labelText, !isEmpty(errorConfirm) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
-                    <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
+                    <Text style={styles.characterText}>{i18n.translate('6+ characters')}</Text>
                     <TextField
                         autoCapitalize='none'
                         returnKeyType='done'

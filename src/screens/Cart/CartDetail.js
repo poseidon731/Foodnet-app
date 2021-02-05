@@ -445,7 +445,8 @@ export default CartDetail = (props) => {
           comment,
           deliveryPrice,
           phone, 
-          userName
+          userName,
+          country
         )
           .then((response) => {
             dispatch(setLoading(false));
@@ -472,7 +473,8 @@ export default CartDetail = (props) => {
         cutlery,
         cartProducts,
         comment,
-        deliveryPrice
+        deliveryPrice,
+        country
       )
         .then((response) => {
           dispatch(setLoading(false));
