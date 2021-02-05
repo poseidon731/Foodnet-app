@@ -30,7 +30,7 @@ import {
   setCartBadge,
 } from "@modules/reducers/food/actions";
 import { ProfileService, FoodService, AuthService } from "@modules/services";
-import { isEmpty, validateBetween, validateName, validateMobile } from "@utils/functions";
+import { isEmpty, validateBetween, validateName, validateMobile, validateEmail } from "@utils/functions";
 import { common, colors } from "@constants/themes";
 import { RES_URL } from "@constants/configs";
 import {
@@ -190,6 +190,9 @@ export default CartDetail = (props) => {
   const [visitPhone, setVisitPhone] = useState(false);
   const [phone, setPhone] = useState('');
   const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [errorEmail, setErrorEmail] = useState('');
+  const [visitEmail, setVisitEmail] = useState(false);
   const [addressId] = useState(0);
   const [errorCity, setErrorCity] = useState("");
   const [addressStreet, setAddressStreet] = useState("");
@@ -321,7 +324,8 @@ export default CartDetail = (props) => {
       : setErrorHouseNumber("");
     (visitName && isEmpty(userName)) || (visitName && !validateName(userName)) ? setErrorName(i18n.translate('The name must be at least 3 characters long')) : setErrorName('');
     (visitPhone && isEmpty(phone)) || (visitPhone && !validateMobile(phone)) ? setErrorPhone(i18n.translate('Mobile is not valid')) : setErrorPhone('');
-  }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber, visitPhone, phone, visitName, userName]);
+    (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');
+  }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber, visitPhone, phone, visitName, userName, visitEmail, email]);
 
   useEffect(() => {
     if (success) {
@@ -446,6 +450,7 @@ export default CartDetail = (props) => {
           deliveryPrice,
           phone, 
           userName,
+          email,
           country
         )
           .then((response) => {
@@ -605,6 +610,55 @@ export default CartDetail = (props) => {
               </View>
             {/* )} */}
 
+            {!logged && (
+              <View style={styles.PhoneAndName}>
+                <View style={common.flexRow}>
+                  <Text
+                    style={[
+                      styles.labelText1,
+                      !isEmpty(errorEmail)
+                        ? common.fontColorRed
+                        : common.fontColorBlack,
+                    ]}
+                  >
+                    {i18n.translate("E-mail")}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.labelTextNormal1,
+                      !isEmpty(errorEmail)
+                        ? common.fontColorRed
+                        : common.fontColorBlack,
+                    ]}
+                  >
+                    {" "}
+                    ({i18n.translate("Required")})
+                  </Text>
+                </View>
+                <TextField
+                  keyboardType="default"
+                  returnKeyType="next"
+                  fontSize={16}
+                  autoCorrect={false}
+                  enablesReturnKeyAutomatically={true}
+                  value={email}
+                  containerStyle={[
+                    styles.textContainer1,
+                    !isEmpty(errorEmail)
+                      ? common.borderColorRed
+                      : common.borderColorGrey,
+                  ]}
+                  inputContainerStyle={styles.inputContainer1}
+                  lineWidth={0}
+                  activeLineWidth={0}
+                  onChangeText={(value) => {
+                    setEmail(value);
+                    setVisitEmail(true);
+                  }}
+                />
+                <Text style={common.errorText}>{errorEmail}</Text>
+              </View>
+            )}
             {!logged && (
               <View style={styles.PhoneAndName}>
                 <View style={common.flexRow}>
@@ -1161,7 +1215,7 @@ export default CartDetail = (props) => {
                     styles.button,
                     ((isEmpty(deliveryList) &&
                     (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName))
+                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
                     ? common.backColorGrey
                     : common.backColorYellow,
                   ]}
@@ -1169,7 +1223,7 @@ export default CartDetail = (props) => {
                     disabled ||
                     ((isEmpty(deliveryList) &&
                     (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName))
+                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
                   }
                   onPress={() => onOrder()}
                 >

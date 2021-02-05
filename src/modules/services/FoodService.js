@@ -159,7 +159,7 @@ const FoodService = {
             return response.data;
         });
     },
-    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment, deliveryPrice, phone, fullName, country) {
+    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment, deliveryPrice, phone, fullName, email, country) {
         !isEmpty(token) && setClientToken(token);
 
         var totalPrice = 0;
@@ -192,6 +192,7 @@ const FoodService = {
             finalPrice,
             phone,
             fullName,
+            email,
             lang: country
         }).then((response) => {
             !isEmpty(token) && removeClientToken(token);

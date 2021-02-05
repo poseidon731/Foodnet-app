@@ -62,8 +62,8 @@ export default DeliveryAdd = (props) => {
     }, []);
 
     useEffect(() => {
-        (visitStreet && isEmpty(addressStreet)) || (visitStreet && !validateBetween(addressStreet, 2, 100)) ? setErrorStreet('The text length must be between 2 ~ 100 characters') : setErrorStreet('');
-        (visitHouseNumber && isEmpty(addressHouseNumber)) || (visitHouseNumber && !validateBetween(addressHouseNumber, 1, 20)) ? setErrorHouseNumber('The text must be less more than 20 characters') : setErrorHouseNumber('');
+        (visitStreet && isEmpty(addressStreet)) || (visitStreet && !validateBetween(addressStreet, 2, 100)) ? setErrorStreet(i18n.translate('The text length must be between 2 ~ 100 characters')) : setErrorStreet('');
+        (visitHouseNumber && isEmpty(addressHouseNumber)) || (visitHouseNumber && !validateBetween(addressHouseNumber, 1, 20)) ? setErrorHouseNumber(i18n.translate('The text must be less more than 20 characters')) : setErrorHouseNumber('');
     }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber]);
 
     const onSave = () => {
