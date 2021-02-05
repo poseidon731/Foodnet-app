@@ -1,0 +1,362 @@
+{
+    "comment": "",
+    "optionals": [],
+    "product": {
+        "allergens_name": [
+            [Object
+            ]
+        ],
+        "product_description": "pizza prosciutto party",
+        "product_id": 9,
+        "product_imageUrl": "images/2020-12-15T18:53:16.864Z-cheesburger.png",
+        "product_name": "pizza prosciutto party",
+        "product_price": 33,
+        "variant_id": 8
+    },
+    "productCount": 1,
+    "requireds": [
+        {
+            "allergens_name": [Array
+            ],
+            "extra_dash": 1,
+            "extra_id": 8,
+            "extra_maxQuantity": 5,
+            "extra_minQuantity": 1,
+            "extra_name": "Soup ciorba",
+            "extra_price": 5
+        },
+        {
+            "allergens_name": [Array
+            ],
+            "extra_dash": 2,
+            "extra_id": 9,
+            "extra_maxQuantity": 2,
+            "extra_minQuantity": 1,
+            "extra_name": "Gordon bleu en",
+            "extra_price": 3
+        }
+    ],
+    "restaurant": {
+        "restaurant_close": "23:55",
+        "restaurant_coverImage": "images/2020-12-08T15:17:23.044Z-cover4.jpg",
+        "restaurant_description": "We are the best company in Romania Please order now!!! Lorem ispum dolor sit amet",
+        "restaurant_discount": 0,
+        "restaurant_id": 2,
+        "restaurant_name": "La Diavolo Home Delivery",
+        "restaurant_new": 1,
+        "restaurant_open": "08:00",
+        "restaurant_profileImage": "images/2020-12-08T15:17:34.464Z-logo2.png",
+        "restaurant_rating": 3
+    }
+}
+
+[
+    {
+        "cartId": "2020-12-22T07:04:54.922Z",
+        "comment": "",
+        "optionals": [],
+        "product": {
+            "allergens_name": [Array
+            ],
+            "product_description": "Pizza Hawai ",
+            "product_id": 8,
+            "product_imageUrl": "images/2020-12-15T18:29:04.087Z-crispy-ham.png",
+            "product_name": "Pizza Hawai ",
+            "product_price": 55,
+            "variant_id": 7
+        },
+        "productCount": 1,
+        "requireds": [],
+        "restaurant": {
+            "restaurant_close": "23:55",
+            "restaurant_coverImage": "images/2020-12-08T15:17:23.044Z-cover4.jpg",
+            "restaurant_description": "We are the best company in Romania Please order now!!! Lorem ispum dolor sit amet",
+            "restaurant_discount": 0,
+            "restaurant_id": 2,
+            "restaurant_name": "La Diavolo Home Delivery",
+            "restaurant_new": 1,
+            "restaurant_open": "08:00",
+            "restaurant_profileImage": "images/2020-12-08T15:17:34.464Z-logo2.png",
+            "restaurant_rating": 3
+        }
+    }
+]
+
+[
+    {
+        "cartId": "2020-12-22T07:04:54.922Z",
+        "comment": "",
+        "optionals": [],
+        "product": {
+            "allergens_name": [Array
+            ],
+            "product_description": "Pizza Hawai ",
+            "product_id": 8,
+            "product_imageUrl": "images/2020-12-15T18:29:04.087Z-crispy-ham.png",
+            "product_name": "Pizza Hawai ",
+            "product_price": 55,
+            "variant_id": 7
+        },
+        "productCount": 1,
+        "requireds": [],
+        "restaurant": {
+            "restaurant_close": "23:55",
+            "restaurant_coverImage": "images/2020-12-08T15:17:23.044Z-cover4.jpg",
+            "restaurant_description": "We are the best company in Romania Please order now!!! Lorem ispum dolor sit amet",
+            "restaurant_discount": 0,
+            "restaurant_id": 2,
+            "restaurant_name": "La Diavolo Home Delivery",
+            "restaurant_new": 1,
+            "restaurant_open": "08:00",
+            "restaurant_profileImage": "images/2020-12-08T15:17:34.464Z-logo2.png",
+            "restaurant_rating": 3
+        }
+    }
+]
+
+{
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "product_id": 9,
+            "variant_id": 9,
+            "product_name": "Daily Menu -vega +",
+            "product_description": "Daily Menu -vega + description en",
+            "product_price": 17.99,
+            "product_imageUrl": "images/2020-12-22T20:11:19.655Z-hamburger.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        },
+        {
+            "product_id": 11,
+            "variant_id": 11,
+            "box_id": 1,
+            "box_price": 1.5,
+            "box_name": "Small",
+            "product_name": "napi menu +++",
+            "product_description": "napi menu +++",
+            "product_price": 22.99,
+            "product_imageUrl": "images/2020-12-23T09:07:33.574Z-18353558-377f-11ea-aa49-0a5864709f2b_shutterstock_1340313734.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        }
+    ]
+}
+
+{
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "product_id": 9,
+            "variant_id": 9,
+            "product_name": "Daily Menu -vega +",
+            "product_description": "Daily Menu -vega + description en",
+            "product_price": 17.99,
+            "product_imageUrl": "images/2020-12-22T20:11:19.655Z-hamburger.jpg",
+            "startTime": "12/22/2020, 7:41:31 PM",
+            "endTime": "12/22/2020, 7:41:31 PM",
+            "soldOut": 1,
+            "allergens_name": [
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        },
+        {
+            "product_id": 11,
+            "variant_id": 11,
+            "box_id": 1,
+            "box_price": 1.5,
+            "box_name": "Small",
+            "product_name": "napi menu +++",
+            "product_description": "napi menu +++",
+            "product_price": 22.99,
+            "product_imageUrl": "images/2020-12-23T09:07:33.574Z-18353558-377f-11ea-aa49-0a5864709f2b_shutterstock_1340313734.jpg",
+            "startTime": "12/22/2020, 7:41:31 PM",
+            "endTime": "12/22/2020, 7:41:31 PM",
+            "soldOut": 1,
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        }
+    ]
+}
+
+[Wed Dec 23 2020 14: 10: 50.884
+]  LOG      {
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "product_id": 4,
+            "variant_id": 4,
+            "product_name": "Chicken Hamburger",
+            "product_description": "Chicken Hamburger description en",
+            "product_price": 22.99,
+            "product_imageUrl": "images/2020-12-22T19:42:20.466Z-hamburger.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        }
+    ]
+}
+[Wed Dec 23 2020 14: 10: 55.200
+]  LOG      {
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "product_id": 3,
+            "variant_id": 3,
+            "box_id": 1,
+            "box_price": 1.5,
+            "box_name": "Small",
+            "product_name": "Pizza Proscuito",
+            "product_description": "Pizza Proscuito description en",
+            "product_price": 18.99,
+            "product_imageUrl": "images/2020-12-22T19:41:31.919Z-americana.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                }
+            ]
+        },
+        {
+            "product_id": 12,
+            "variant_id": 12,
+            "product_name": "Mama Mia",
+            "product_description": "Mama Mia",
+            "product_price": 22,
+            "product_imageUrl": "images/2020-12-23T09:18:15.135Z-americana.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Egg"
+                },
+                {
+                    "allergen_name": "Fish"
+                }
+            ]
+        }
+    ]
+}
+
+{
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "daily_"
+            "product_id": 9,
+            "variant_id": 9,
+            "product_name": "Daily Menu -vega +",
+            "product_description": "Daily Menu -vega + description en",
+            "product_price": 17.99,
+            "product_imageUrl": "images/2020-12-22T20:11:19.655Z-hamburger.jpg",
+            "startTime": "12/22/2020, 9:41:31 AM",
+            "endTime": "12/22/2020, 7:41:31 PM",
+            "soldOut": 1,
+            "allergens_name": [
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        },
+        {
+            "product_id": 11,
+            "variant_id": 11,
+            "box_id": 1,
+            "box_price": 1.5,
+            "box_name": "Small",
+            "product_name": "napi menu +++",
+            "product_description": "napi menu +++",
+            "product_price": 22.99,
+            "product_imageUrl": "images/2020-12-23T09:07:33.574Z-18353558-377f-11ea-aa49-0a5864709f2b_shutterstock_1340313734.jpg",
+            "startTime": "12/22/2020, 8:41:31 AM",
+            "endTime": "12/22/2020, 12:41:31 PM",
+            "soldOut": 1,
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        }
+    ]
+}
+
+
+{
+    "token": null,
+    "restaurantId": 1,
+    "take": 1,
+    "cutlery": 1,
+    "products": [
+        {
+            "cartId": 1609385373941,
+            "variantId": 3,
+            "productId": 3,
+            "productName": "Pizza Proscuito",
+            "productDescription": "Pizza Proscuito description en",
+            "allergens": [
+                {
+                    "allergen_name": "Gluten"
+                }
+            ],
+            "productPrice": 18.99,
+            "boxPrice": 1.5,
+            "quantity": 1,
+            "message": "",
+            "extras": [
+                {
+                    "id": 7,
+                    "quantity": 2,
+                    "extraName": "Leves 1",
+                    "extraPrice": 1
+                },
+                {
+                    "id": 2,
+                    "quantity": 3,
+                    "extraName": "Mushroom",
+                    "extraPrice": 2
+                },
+                {
+                    "id": 1,
+                    "quantity": 1,
+                    "extraName": "Pizza sauce",
+                    "extraPrice": 2.5
+                }
+            ]
+        }
+    ],
+    "street": "Street",
+    "houseNumber": "House",
+    "floor": "Floor",
+    "doorNumber": "Door",
+    "locationId": 1
+}
