@@ -881,7 +881,7 @@ export default CartDetail = (props) => {
                   {/* <Text style={common.errorText}>{errorCity}</Text> */}
                 </View>
                 {active ? (
-                  <ScrollView style={styles.listView1}>
+                  <ScrollView style={!isEmpty(citys) && citys.length > 5 ? styles.listView1height : styles.listView1}>
                     {!isEmpty(citys) &&
                       citys.map((cityOne, key) => (
                         <TouchableOpacity
@@ -1948,6 +1948,18 @@ const styles = StyleSheet.create({
   listView1: {
     width: "100%",
     // height: 250,
+    paddingHorizontal: 10,
+    backgroundColor: colors.WHITE,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.GREY.PRIMARY,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+  },
+  listView1height: {
+    width: "100%",
+    height: 250,
     paddingHorizontal: 10,
     backgroundColor: colors.WHITE,
     borderLeftWidth: 1,

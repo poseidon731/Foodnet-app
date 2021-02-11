@@ -143,7 +143,7 @@ export default Languages = (props) => {
           </TouchableOpacity>
         </View>
         {active ? (
-          <View style={styles.listView}>
+          <View style={!isEmpty(languages) && languages.length > 5 ? styles.listViewheight : styles.listView}>
             {languages.map((languageOne, key) => (
               <TouchableOpacity
                 key={key}
@@ -184,6 +184,17 @@ const styles = StyleSheet.create({
   listView: {
     width: "100%",
     // height: 145,
+    backgroundColor: colors.WHITE,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.GREY.PRIMARY,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+  },
+  listViewheight: {
+    width: "100%",
+    height: 145,
     backgroundColor: colors.WHITE,
     borderLeftWidth: 1,
     borderRightWidth: 1,

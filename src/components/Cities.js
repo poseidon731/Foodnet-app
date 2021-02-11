@@ -88,7 +88,7 @@ export default Cities = (props) => {
           </View>
           {active ? (
             <ScrollView
-              style={styles.listView}
+              style={!isEmpty(citys) && citys.length > 5 ? styles.listViewheight : styles.listView}
               keyboardShouldPersistTaps="handled"
             >
               {!isEmpty(citys) &&
@@ -266,6 +266,18 @@ const styles = StyleSheet.create({
   listView: {
     width: "100%",
     // height: 250,
+    paddingHorizontal: 10,
+    backgroundColor: colors.WHITE,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.GREY.PRIMARY,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+  },
+  listViewheight: {
+    width: "100%",
+    height: 250,
     paddingHorizontal: 10,
     backgroundColor: colors.WHITE,
     borderLeftWidth: 1,
