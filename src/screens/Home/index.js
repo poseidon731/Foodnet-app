@@ -39,16 +39,16 @@ export default Home = (props) => {
             .catch((error) => {
                 setRefresh(false);
             });
-        FoodService.popular(country, logged ? user.city.name : city.name)
-            .then((response) => {
-                setRefresh(false);
-                if (response.status == 200) {
-                    setPopular(response.result);
-                }
-            })
-            .catch((error) => {
-                setRefresh(false);
-            });
+        // FoodService.popular(country, logged ? user.city.name : city.name)
+        //     .then((response) => {
+        //         setRefresh(false);
+        //         if (response.status == 200) {
+        //             setPopular(response.result);
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         setRefresh(false);
+        //     });
         FoodService.all(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
                 dispatch(setLoading(false));
@@ -75,6 +75,54 @@ export default Home = (props) => {
                 setRefresh(false);
             });
     }, [search]);
+
+    useEffect(() => {
+        function getRestaurantList() {
+            console.log((new Date()).getMinutes() + " : " + (new Date()).getSeconds(), "  ==  get restaurant status");
+            FoodService.promotion(country, logged ? user.city.name : city.name)
+                .then((response) => {
+                    setRefresh(false);
+                    if (response.status == 200) {
+                        console.log(response.result[0].restaurant_open);
+                        setPromotion(response.result);
+                    }
+                })
+                .catch((error) => {
+                    setRefresh(false);
+                });
+
+            if (search == '') {
+                FoodService.all(country, logged ? user.city.name : city.name, search, filters)
+                    .then((response) => {
+                        dispatch(setLoading(false));
+                        setRefresh(false);
+                        if (response.status == 200) {
+                            setResult(response.result);
+                        }
+                    })
+                    .catch((error) => {
+                        dispatch(setLoading(false));
+                        setRefresh(false);
+                    });
+            } else {
+                FoodService.result(country, logged ? user.city.name : city.name, search, filters)
+                    .then((response) => {
+                        setRefresh(false);
+                        if (response.status == 200) {
+                            setResult(response.result);
+                        }
+                    })
+                    .catch((error) => {
+                        setRefresh(false);
+                    });
+            }
+        }
+
+        const interval = setInterval(() => getRestaurantList(), 45000)
+        return () => {
+            clearInterval(interval);
+        }
+    }, [])
 
     return (
         <Container style={common.container}>
