@@ -125,6 +125,7 @@
   <com.android.tools.build.jetifier/>
   <com.android.tools.chunkio/>
   <com.android.tools.ddms/>
+  <com.android.tools.emulator/>
   <com.android.tools.external.com-intellij/>
   <com.android.tools.external.org-jetbrains/>
   <com.android.tools.fakeadbserver/>
