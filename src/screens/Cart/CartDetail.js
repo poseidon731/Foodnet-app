@@ -82,17 +82,17 @@ const CartItem = ({
       ) : null}
       {!isEmpty(cartProduct.extras)
         ? // <Text style={styles.extraList}>+{cartProduct.extras.map((extra, key) => (
-          //     <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
-          // ))}</Text>
-          cartProduct.extras.map((extra, key) => (
-            <Text style={styles.extraList} key={`extra${key}`}>
-              +
-              <Text style={styles.extra}>
-                {extra.quantity}*{extra.extraName} :{" "}
-                {extra.quantity * extra.extraPrice} {i18n.translate("lei")}
-              </Text>
+        //     <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
+        // ))}</Text>
+        cartProduct.extras.map((extra, key) => (
+          <Text style={styles.extraList} key={`extra${key}`}>
+            +
+            <Text style={styles.extra}>
+              {extra.quantity}*{extra.extraName} :{" "}
+              {extra.quantity * extra.extraPrice} {i18n.translate("lei")}
             </Text>
-          ))
+          </Text>
+        ))
         : null}
       <View style={styles.cartBottom}>
         <View style={styles.cartLeft}>
@@ -203,6 +203,11 @@ export default CartDetail = (props) => {
   const [errorHouseNumber, setErrorHouseNumber] = useState("");
   const [addressFloor, setAddressFloor] = useState("");
   const [addressDoorNumber, setAddressDoorNumber] = useState("");
+  const [couponCode, setCouponCode] = useState('');
+  const [visitCouponCode, setVisitCouponCode] = useState(false);
+  const [errorCouponCode, setErrorCouponCode] = useState('');
+  const [couponActive, setCouponActive] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
 
   const [active, setActive] = useState(false);
   const [citys, setCitys] = useState([]);
@@ -315,11 +320,11 @@ export default CartDetail = (props) => {
 
   useEffect(() => {
     (visitStreet && isEmpty(addressStreet)) ||
-    (visitStreet && !validateBetween(addressStreet, 2, 100))
+      (visitStreet && !validateBetween(addressStreet, 2, 100))
       ? setErrorStreet(i18n.translate("The text length must be between 2 ~ 100 characters"))
       : setErrorStreet("");
     (visitHouseNumber && isEmpty(addressHouseNumber)) ||
-    (visitHouseNumber && !validateBetween(addressHouseNumber, 1, 20))
+      (visitHouseNumber && !validateBetween(addressHouseNumber, 1, 20))
       ? setErrorHouseNumber(i18n.translate("The text must be less more than 20 characters"))
       : setErrorHouseNumber("");
     (visitName && isEmpty(userName)) || (visitName && !validateName(userName)) ? setErrorName(i18n.translate('The name must be at least 3 characters long')) : setErrorName('');
@@ -352,12 +357,12 @@ export default CartDetail = (props) => {
       setNavi(false);
       props.navigation.pop();
     }
-    if(isEmpty(cartProducts) && navi) {
+    if (isEmpty(cartProducts) && navi) {
       console.log("empty cartproducts");
       setTimeout(() => {
         props.navigation.goBack(null);
       }, 50);
-      
+
     }
   });
 
@@ -448,7 +453,7 @@ export default CartDetail = (props) => {
           cartProducts,
           comment,
           deliveryPrice,
-          phone, 
+          phone,
           userName,
           email,
           country
@@ -552,6 +557,44 @@ export default CartDetail = (props) => {
     });
   };
 
+  const setCouponCodeHandle = () => {
+    dispatch(setLoading(true));
+
+    FoodService.setCouponCodeHandle(
+      user.token,
+      cartRestaurant.restaurant_id,
+      couponCode
+    )
+      .then((response) => {
+        dispatch(setLoading(false));
+        console.log(response);
+        if (response.status == 200) {
+          if(response.result[0].active == 0 || response.result[0].active == 2) {
+            setErrorCouponCode(response.msg);
+          } else if(response.result[0].active == 1) {
+            setCouponActive(1);
+            let final_price = total + deliveryPrice;
+
+            if(response.result[0].type == 1)  //fixed
+            {
+              final_price = finalPrice - response.result[0].value;
+            }
+            else if (response.result[0].type == 2) //percentage
+            {
+              let reducePrice = (final_price * response.result[0].value / 100).toFixed(2);
+              final_price = final_price - reducePrice;
+            }
+
+            setFinalPrice(final_price);
+          }
+        }
+      })
+      .catch((error) => {
+        dispatch(setLoading(false));
+        console.log(error);
+      });
+  }
+
   return (
     <SafeAreaView style={styles.saveArea}>
       <Animated.ScrollView
@@ -594,20 +637,27 @@ export default CartDetail = (props) => {
               </Text>
             </View>
             {/* {deliveryPrice != 0 && ( */}
-              <View>
-                <View style={styles.amount1}>
-                  <Text style={styles.priceGrey}>
-                    {i18n.translate("Delivery")}: {deliveryPrice.toFixed(2)}{" "}
-                    {i18n.translate("lei")}
-                  </Text>
-                </View>
-                <View style={styles.amount1}>
-                  <Text style={styles.price}>
-                    {i18n.translate("Final")}:{" "}
+            <View>
+              <View style={styles.amount1}>
+                <Text style={styles.priceGrey}>
+                  {i18n.translate("Delivery")}: {deliveryPrice.toFixed(2)}{" "}
+                  {i18n.translate("lei")}
+                </Text>
+              </View>
+              <View style={styles.amount1}>
+                <Text style={styles.price}>
+                  {i18n.translate("Final")}:{" "}
+                  <Text style={couponActive == 1 ? styles.couponPrice : styles.price}>
                     {(total + deliveryPrice).toFixed(2)} {i18n.translate("lei")}
                   </Text>
-                </View>
+                  {(couponActive == 1) && (
+                    <Text style={styles.price}>
+                      {"  "}{finalPrice.toFixed(2)} {i18n.translate("lei")}
+                    </Text>
+                  )}
+                </Text>
               </View>
+            </View>
             {/* )} */}
 
             {!logged && (
@@ -704,25 +754,25 @@ export default CartDetail = (props) => {
                     this.textInput = input;
                   }}
                   onChangeText={(value) => {
-                    if(value.length >= 9) {
-                        if(value.substr(0, 1) == '0') {
-                          setPhone('+4' + value);
-                          this.textInput.setValue('+4' + value);
-                        }
-                        else if(value.substr(0, 2) != '40' && value.substr(0, 3) != '+40' && value.substr(0, 1) != '+') {
-                          setPhone('+40' + value);
-                          this.textInput.setValue('+40' + value);
-                        } 
-                        else if(value.substr(0, 2) == '40') {
-                          setPhone('+' + value);
-                          this.textInput.setValue('+' + value);
-                        }
-                        else 
-                          setPhone(value);
+                    if (value.length >= 9) {
+                      if (value.substr(0, 1) == '0') {
+                        setPhone('+4' + value);
+                        this.textInput.setValue('+4' + value);
+                      }
+                      else if (value.substr(0, 2) != '40' && value.substr(0, 3) != '+40' && value.substr(0, 1) != '+') {
+                        setPhone('+40' + value);
+                        this.textInput.setValue('+40' + value);
+                      }
+                      else if (value.substr(0, 2) == '40') {
+                        setPhone('+' + value);
+                        this.textInput.setValue('+' + value);
+                      }
+                      else
+                        setPhone(value);
                     }
                     else
                       setPhone(value);
-                      
+
                     setVisitPhone(true);
                   }}
                 />
@@ -1070,6 +1120,72 @@ export default CartDetail = (props) => {
               </View>
             )}
             <View style={{ height: 20 }} />
+            <View style={styles.PhoneAndName}>
+              <View style={common.flexRow}>
+                <Text
+                  style={[
+                    styles.labelText1,
+                    !isEmpty(errorCouponCode)
+                      ? common.fontColorRed
+                      : common.fontColorBlack,
+                  ]}
+                >
+                  {i18n.translate("Coupon Codes")}
+                </Text>
+                <Text
+                  style={[
+                    styles.labelTextNormal1,
+                    !isEmpty(errorCouponCode)
+                      ? common.fontColorRed
+                      : common.fontColorBlack,
+                  ]}
+                >
+                  {" "}
+                    ({i18n.translate("If exist")})
+                  </Text>
+              </View>
+              <View style={styles.couponCodeContainer}>
+                <TextField
+                  keyboardType="default"
+                  returnKeyType="next"
+                  fontSize={16}
+                  autoCorrect={false}
+                  enablesReturnKeyAutomatically={true}
+                  value={couponCode}
+                  containerStyle={[
+                    styles.couponCodeInput,
+                    !isEmpty(errorCouponCode)
+                      ? common.borderColorRed
+                      : common.borderColorGrey,
+                  ]}
+                  inputContainerStyle={styles.inputContainer1}
+                  lineWidth={0}
+                  activeLineWidth={0}
+                  onChangeText={(value) => {
+                    setCouponCode(value);
+                    setVisitCouponCode(true);
+                  }}
+                />
+                <TouchableOpacity
+                  style={[
+                    styles.couponCodeButton,
+                    (errorCouponCode || isEmpty(couponCode))
+                      ? common.backColorGrey
+                      : common.backColorYellow,
+                  ]}
+                  disabled={
+                    disabled || (errorCouponCode || isEmpty(couponCode))
+                  }
+                  onPress={() => setCouponCodeHandle()}
+                >
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("Activate")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={common.errorText}>{errorCouponCode}</Text>
+            </View>
+            <View style={{ height: 20 }} />
             <TouchableOpacity
               style={styles.radioButton}
               onPress={() => setTake(!take)}
@@ -1152,30 +1268,30 @@ export default CartDetail = (props) => {
                             <Text style={styles.radioText} numberOfLines={1}>{i18n.translate('Credit card')}</Text>
                         </TouchableOpacity> */}
             {!logged && (
-                <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
-                    <Icon
-                        type='material-community'
-                        name={termOfService ? 'check-box-outline' : 'checkbox-blank-outline'}
-                        size={25}
-                        color={termOfService ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
-                    />
-                    <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
-                        <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/terms')}>{i18n.translate('Terms and Conditions')}</Text>
-                    </Text>
-                </TouchableOpacity>
+              <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
+                <Icon
+                  type='material-community'
+                  name={termOfService ? 'check-box-outline' : 'checkbox-blank-outline'}
+                  size={25}
+                  color={termOfService ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
+                />
+                <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
+                  <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/terms')}>{i18n.translate('Terms and Conditions')}</Text>
+                </Text>
+              </TouchableOpacity>
             )}
             {!logged && (
-                <TouchableOpacity style={styles.rememberMe} onPress={() => setPrivacy(!privacy)}>
-                    <Icon
-                        type='material-community'
-                        name={privacy ? 'check-box-outline' : 'checkbox-blank-outline'}
-                        size={25}
-                        color={privacy ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
-                    />
-                    <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
-                        <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/privacy')}>{i18n.translate('Privacy')}</Text>
-                    </Text>
-                </TouchableOpacity>
+              <TouchableOpacity style={styles.rememberMe} onPress={() => setPrivacy(!privacy)}>
+                <Icon
+                  type='material-community'
+                  name={privacy ? 'check-box-outline' : 'checkbox-blank-outline'}
+                  size={25}
+                  color={privacy ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
+                />
+                <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
+                  <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/privacy')}>{i18n.translate('Privacy')}</Text>
+                </Text>
+              </TouchableOpacity>
             )}
 
             <View
@@ -1192,15 +1308,15 @@ export default CartDetail = (props) => {
                   style={[
                     styles.button,
                     (isEmpty(deliveryList) &&
-                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    !validateBetween(comment, 0, 300)
-                    ? common.backColorGrey
-                    : common.backColorYellow,
+                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      !validateBetween(comment, 0, 300)
+                      ? common.backColorGrey
+                      : common.backColorYellow,
                   ]}
                   disabled={
                     disabled ||
                     (isEmpty(deliveryList) &&
-                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
                     !validateBetween(comment, 0, 300)
                   }
                   onPress={() => onOrder()}
@@ -1214,16 +1330,16 @@ export default CartDetail = (props) => {
                   style={[
                     styles.button,
                     ((isEmpty(deliveryList) &&
-                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
-                    ? common.backColorGrey
-                    : common.backColorYellow,
+                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
+                      ? common.backColorGrey
+                      : common.backColorYellow,
                   ]}
                   disabled={
                     disabled ||
                     ((isEmpty(deliveryList) &&
-                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
+                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
                   }
                   onPress={() => onOrder()}
                 >
@@ -1232,7 +1348,7 @@ export default CartDetail = (props) => {
                   </Text>
                 </TouchableOpacity>
               )}
-              
+
             </View>
           </View>
         ) : (
@@ -1297,7 +1413,7 @@ export default CartDetail = (props) => {
                   styles.statusItem,
                   parseInt(moment().format("HH:mm").replace(":", "")) <=
                     parseInt(restaurant.restaurant_open.replace(":", "")) ||
-                  parseInt(moment().format("HH:mm").replace(":", "")) >=
+                    parseInt(moment().format("HH:mm").replace(":", "")) >=
                     parseInt(restaurant.restaurant_close.replace(":", ""))
                     ? styles.statusRed
                     : styles.statusGreen,
@@ -1306,7 +1422,7 @@ export default CartDetail = (props) => {
                 <Text style={styles.statusText}>
                   {parseInt(moment().format("HH:mm").replace(":", "")) <=
                     parseInt(restaurant.restaurant_open.replace(":", "")) ||
-                  parseInt(moment().format("HH:mm").replace(":", "")) >=
+                    parseInt(moment().format("HH:mm").replace(":", "")) >=
                     parseInt(restaurant.restaurant_close.replace(":", ""))
                     ? i18n.translate("CLOSED")
                     : i18n.translate("OPEN")}
@@ -1396,16 +1512,16 @@ export default CartDetail = (props) => {
 
 const styles = StyleSheet.create({
   rememberMe: {
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-      marginTop: 10,
-      width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginTop: 10,
+    width: '100%',
   },
   rememberText: {
-      marginLeft: 10,
-      fontSize: 16,
-      paddingRight: 30,
+    marginLeft: 10,
+    fontSize: 16,
+    paddingRight: 30,
   },
   notificationView: {
     position: "absolute",
@@ -1451,15 +1567,15 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   headerBackgroundGrey: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      width: null,
-      height: HEADER_MAX_HEIGHT,
-      resizeMode: 'cover',
-      zIndex: 2000,
-      backgroundColor: "#000000D0"
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: null,
+    height: HEADER_MAX_HEIGHT,
+    resizeMode: 'cover',
+    zIndex: 2000,
+    backgroundColor: "#000000D0"
   },
   headerBackground: {
     position: "absolute",
@@ -1623,6 +1739,13 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     fontWeight: "bold",
+    color: colors.YELLOW.PRIMARY,
+  },
+  couponPrice: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textDecorationLine: 'line-through', 
+    textDecorationStyle: 'solid',
     color: colors.YELLOW.PRIMARY,
   },
   subscription: {
@@ -1988,4 +2111,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.BLACK,
   },
+  couponCodeContainer: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  couponCodeInput: {
+    width: "70%",
+    marginTop: 10,
+    height: 50,
+    borderWidth: 1,
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    paddingLeft: 15,
+    paddingRight: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  couponCodeButton: {
+    marginTop: 10,
+    marginBottom: 20,
+    width: "30%",
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8
+  }
 });

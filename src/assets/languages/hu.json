@@ -263,5 +263,7 @@
   "Order ID": "Rendelési azonosító",
   "Order placed": "Rendelés leadva",
   "Place and method of collection": "Szállítási cím",
-  "Food (s) ordered": "Megrendelt étel(ek)"
+  "Food (s) ordered": "Megrendelt étel(ek)",
+  "If exist": "ha léteznek",
+  "Activate": "Aktiválja"
 }

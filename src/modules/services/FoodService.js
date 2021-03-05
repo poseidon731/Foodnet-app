@@ -126,7 +126,7 @@ const FoodService = {
 
     order: function (token, city, deliveryAddressId, restaurantId, take, cutlery, products, comment, deliveryPrice, country) {
         setClientToken(token);
-        
+
         var totalPrice = 0;
 
         products.map((cartProduct, key) => {
@@ -200,6 +200,62 @@ const FoodService = {
             return response.data;
         });
     },
+    setCouponCodeHandle: function (token, restaurantId, couponCode) {
+        !isEmpty(token) && setClientToken(token);
+
+        return axios.post(`/setCouponCode`, {
+            restaurantId,
+            couponCode
+        }).then((response) => {
+            !isEmpty(token) && removeClientToken(token);
+            // console.log(response.data);
+            // return response.data;
+            let data = {
+                "status": 200,
+                "msg": "Available",
+                "result": [{
+                    "id": 1,
+                    "active": 1,
+                    "couponName": "RED10",
+                    "restaurantId": 1,
+                    "type": 2,
+                    "value": 3.5
+                }]
+            };
+
+            return data;
+        }).catch((error) => {
+            let data = {
+                "status": 200,
+                "msg": "Available",
+                "result": [{
+                    "id": 1,
+                    "active": 1,
+                    "couponName": "RED10",
+                    "restaurantId": 1,
+                    "type": 2,
+                    "value": 3.5
+                }]
+            };
+
+            return data;
+        });
+
+        let data = {
+            "status": 200,
+            "msg": "Available",
+            "result": [{
+                "id": 1,
+                "active": 1,
+                "couponName": "RED10",
+                "restaurantId": 1,
+                "type": 2,
+                "value": 3.5
+            }]
+        };
+
+        return data;
+    }
 }
 
 export default FoodService;
