@@ -307,11 +307,11 @@ export default CartIndex = (props) => {
                 {i18n.translate("lei")}
               </Text>
             </View>
-            {(cartRestaurant.minimumOrderUser > total.toFixed(2)) && (
+            {/* {(cartRestaurant.minimumOrderUser > total.toFixed(2)) && (
               <View>
                 <Text>{i18n.translate('Restaurant minimum order')}{': '}{cartRestaurant.minimumOrderUser}{" "}{i18n.translate("lei")}</Text>
               </View>
-            )}
+            )} */}
             <View
               style={{
                 marginTop: 20,
@@ -324,12 +324,12 @@ export default CartIndex = (props) => {
               <TouchableOpacity
                 style={[
                   styles.button,
-                  disabled || cartRestaurant.minimumOrderUser > total.toFixed(2)
+                  disabled
                     ? common.backColorGrey
                     : common.backColorYellow,
                 ]}
                 disabled={
-                  disabled || cartRestaurant.minimumOrderUser > total.toFixed(2)
+                  disabled
                 }
                 onPress={() => {
                   setDisabled(true);
@@ -337,17 +337,17 @@ export default CartIndex = (props) => {
                   setTimeout(() => setDisabled(false), 1000);
                 }}
               >
-                {cartRestaurant.minimumOrderUser > total.toFixed(2) ? (
+                {/* {cartRestaurant.minimumOrderUser > total.toFixed(2) ? (
                   <Text style={styles.buttonText}>
                     {i18n.translate("More")}{" "}
                     {(cartRestaurant.minimumOrderUser - total).toFixed(2)}{" "}
                     {i18n.translate("lei")}
                   </Text>
-                ) : (
+                ) : ( */}
                   <Text style={styles.buttonText}>
                     {i18n.translate("Send order")}
                   </Text>
-                )}
+                {/* )} */}
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {

@@ -265,5 +265,6 @@
   "Place and method of collection": "Szállítási cím",
   "Food (s) ordered": "Megrendelt étel(ek)",
   "If exist": "ha léteznek",
-  "Activate": "Aktiválja"
+  "Activate": "Aktiválja",
+  "Restaurant does not delivery in here": "Az étterem nem szállít ide"
 }

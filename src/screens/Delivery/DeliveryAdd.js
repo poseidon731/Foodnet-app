@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header } from 'native-base';
-import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Icon } from 'react-native-elements';
+import { Icon, SearchBar } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
 import { setDeliveryStatus } from '@modules/reducers/profile/actions';
 import { AuthService, ProfileService } from '@modules/services';
@@ -32,6 +32,8 @@ export default DeliveryAdd = (props) => {
     const [addressDoorNumber, setAddressDoorNumber] = useState(props.route.params.type === 2 ? props.route.params.item.doorNumber : '');
 
     const [active, setActive] = useState(false);
+    const [filterCitys, setFilterCitys] = useState([]);
+    const [filterText, setFilterText] = useState('');
     const [citys, setCitys] = useState([]);
     const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
 
@@ -46,6 +48,7 @@ export default DeliveryAdd = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
+                        setFilterCitys(response.locations);
                         if (props.route.params.type === 2) {
                             var selectedCity = response.locations.filter(checkCity);
                             setCityObj(selectedCity[0]);
@@ -84,6 +87,48 @@ export default DeliveryAdd = (props) => {
             });
     };
 
+    const searchFilterFunction = (text) => {
+        setFilterText(text);
+
+        const newCitys = citys.filter(item => {
+            const itemData = item.cities.toUpperCase();
+            const textData = text.toUpperCase();
+
+            return itemData.indexOf(textData) > -1;
+        });
+
+        setFilterCitys(newCitys);
+    };
+
+    const renderHeader = () => {
+        return (
+            <View
+                style={{
+                    backgroundColor: '#fff',
+                    padding: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                <TextField
+                    keyboardType='default'
+                    placeholder='search'
+                    returnKeyType='next'
+                    fontSize={16}
+                    autoCorrect={false}
+                    enablesReturnKeyAutomatically={true}
+                    value={filterText}
+                    containerStyle={styles.textContainer}
+                    inputContainerStyle={styles.inputContainer}
+                    lineWidth={0}
+                    activeLineWidth={0}
+                    onChangeText={(value) => {
+                        searchFilterFunction(value);
+                    }}
+                />
+            </View>
+        );
+    };
+
     return (
         <Container style={common.container}>
             <StatusBar />
@@ -118,103 +163,126 @@ export default DeliveryAdd = (props) => {
                     {/* <Text style={common.errorText}>{errorCity}</Text> */}
                 </View>
                 {active ? (
-                    <ScrollView style={!isEmpty(citys) && citys.length > 5 ? styles.listViewheight : styles.listView}>
-                        {!isEmpty(citys) && citys.map((cityOne, key) => (
-                            <TouchableOpacity key={key} style={[styles.itemView, key == citys.length - 1 && styles.noborder]} onPress={() => {
-                                setActive(false);
-                                setCityObj(cityOne);
-                            }}>
-                                <Text style={styles.itemText} numberOfLines={1}>{cityOne.cities}</Text>
+                    // <ScrollView style={!isEmpty(citys) && citys.length > 5 ? styles.listViewheight : styles.listView}>
+                    //     {!isEmpty(citys) && citys.map((cityOne, key) => (
+                    //         <TouchableOpacity key={key} style={[styles.itemView, key == citys.length - 1 && styles.noborder]} onPress={() => {
+                    //             setActive(false);
+                    //             setCityObj(cityOne);
+                    //         }}>
+                    //             <Text style={styles.itemText} numberOfLines={1}>{cityOne.cities}</Text>
+                    //         </TouchableOpacity>
+                    //     ))}
+                    // </ScrollView>
+                    <FlatList
+                        style={!isEmpty(filterCitys) && filterCitys.length > 5 ? styles.listViewheight : styles.listView}
+                        data={filterCitys}
+                        keyExtractor={(cityOne, key) => key.toString()}
+                        renderItem={(cityOne, key) => (
+                            <TouchableOpacity
+                                style={[
+                                    styles.itemView,
+                                    key == filterCitys.length - 1 && styles.noborder,
+                                ]}
+                                onPress={() => {
+                                    setActive(false);
+                                    setCityObj(cityOne.item);
+                                }}
+                            >
+                                <Text style={styles.itemText} numberOfLines={1}>
+                                    {cityOne.item.cities}
+                                </Text>
                             </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                        )}
+                        ListHeaderComponent={renderHeader()}
+                    />
+
                 ) : (
-                        <Fragment>
-                            <View style={styles.streetView}>
-                                <View style={common.flexRow}>
-                                    <Text style={[styles.labelText, !isEmpty(errorStreet) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Street')}</Text>
-                                    <Text style={[styles.labelTextNormal, !isEmpty(errorStreet) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
-                                </View>
+                    <Fragment>
+                        <View style={styles.streetView}>
+                            <View style={common.flexRow}>
+                                <Text style={[styles.labelText, !isEmpty(errorStreet) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Street')}</Text>
+                                <Text style={[styles.labelTextNormal, !isEmpty(errorStreet) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
+                            </View>
+                            <TextField
+                                keyboardType='default'
+                                returnKeyType='next'
+                                fontSize={16}
+                                autoCorrect={false}
+                                enablesReturnKeyAutomatically={true}
+                                value={addressStreet}
+                                containerStyle={[styles.textContainer, !isEmpty(errorStreet) ? common.borderColorRed : common.borderColorGrey]}
+                                inputContainerStyle={styles.inputContainer}
+                                lineWidth={0}
+                                activeLineWidth={0}
+                                onChangeText={(value) => {
+                                    setAddressStreet(value);
+                                    setVisitStreet(true);
+                                }}
+                            />
+                            <Text style={common.errorText}>{errorStreet}</Text>
+                        </View>
+                        <View style={styles.threeView}>
+                            <View style={styles.inputView}>
+                                <Text style={[styles.labelText, !isEmpty(errorHouseNumber) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('House number')}</Text>
+                                <Text style={[styles.labelTextNormal, !isEmpty(errorHouseNumber) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                                 <TextField
                                     keyboardType='default'
                                     returnKeyType='next'
                                     fontSize={16}
                                     autoCorrect={false}
                                     enablesReturnKeyAutomatically={true}
-                                    value={addressStreet}
-                                    containerStyle={[styles.textContainer, !isEmpty(errorStreet) ? common.borderColorRed : common.borderColorGrey]}
+                                    value={addressHouseNumber}
+                                    containerStyle={[styles.textContainer, !isEmpty(errorHouseNumber) ? common.borderColorRed : common.borderColorGrey]}
                                     inputContainerStyle={styles.inputContainer}
                                     lineWidth={0}
                                     activeLineWidth={0}
                                     onChangeText={(value) => {
-                                        setAddressStreet(value);
-                                        setVisitStreet(true);
+                                        setAddressHouseNumber(value);
+                                        setVisitHouseNumber(true);
                                     }}
                                 />
-                                <Text style={common.errorText}>{errorStreet}</Text>
+                                <Text style={common.errorText}>{errorHouseNumber}</Text>
                             </View>
-                            <View style={styles.threeView}>
-                                <View style={styles.inputView}>
-                                    <Text style={[styles.labelText, !isEmpty(errorHouseNumber) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('House number')}</Text>
-                                    <Text style={[styles.labelTextNormal, !isEmpty(errorHouseNumber) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
-                                    <TextField
-                                        keyboardType='default'
-                                        returnKeyType='next'
-                                        fontSize={16}
-                                        autoCorrect={false}
-                                        enablesReturnKeyAutomatically={true}
-                                        value={addressHouseNumber}
-                                        containerStyle={[styles.textContainer, !isEmpty(errorHouseNumber) ? common.borderColorRed : common.borderColorGrey]}
-                                        inputContainerStyle={styles.inputContainer}
-                                        lineWidth={0}
-                                        activeLineWidth={0}
-                                        onChangeText={(value) => {
-                                            setAddressHouseNumber(value);
-                                            setVisitHouseNumber(true);
-                                        }}
-                                    />
-                                    <Text style={common.errorText}>{errorHouseNumber}</Text>
-                                </View>
-                                <View style={styles.inputView}>
-                                    <Text style={[styles.labelText, common.fontColorBlack]}>{i18n.translate('Floor')}</Text>
-                                    <Text style={[styles.labelTextNormal, common.fontColorBlack]}> ({i18n.translate('Optional')})</Text>
-                                    <TextField
-                                        keyboardType='default'
-                                        returnKeyType='next'
-                                        fontSize={16}
-                                        autoCorrect={false}
-                                        enablesReturnKeyAutomatically={true}
-                                        value={addressFloor}
-                                        containerStyle={[styles.textContainer, common.borderColorGrey]}
-                                        inputContainerStyle={styles.inputContainer}
-                                        lineWidth={0}
-                                        activeLineWidth={0}
-                                        onChangeText={(value) => {
-                                            setAddressFloor(value);
-                                        }}
-                                    />
-                                </View>
-                                <View style={styles.inputView}>
-                                    <Text style={[styles.labelText, common.fontColorBlack]}>{i18n.translate('Door')}</Text>
-                                    <Text style={[styles.labelTextNormal, common.fontColorBlack]}> ({i18n.translate('Optional')})</Text>
-                                    <TextField
-                                        keyboardType='default'
-                                        fontSize={16}
-                                        autoCorrect={false}
-                                        enablesReturnKeyAutomatically={true}
-                                        value={addressDoorNumber}
-                                        containerStyle={[styles.textContainer, common.borderColorGrey]}
-                                        inputContainerStyle={styles.inputContainer}
-                                        lineWidth={0}
-                                        activeLineWidth={0}
-                                        onChangeText={(value) => {
-                                            setAddressDoorNumber(value);
-                                        }}
-                                    />
-                                </View>
+                            <View style={styles.inputView}>
+                                <Text style={[styles.labelText, common.fontColorBlack]}>{i18n.translate('Floor')}</Text>
+                                <Text style={[styles.labelTextNormal, common.fontColorBlack]}> ({i18n.translate('Optional')})</Text>
+                                <TextField
+                                    keyboardType='default'
+                                    returnKeyType='next'
+                                    fontSize={16}
+                                    autoCorrect={false}
+                                    enablesReturnKeyAutomatically={true}
+                                    value={addressFloor}
+                                    containerStyle={[styles.textContainer, common.borderColorGrey]}
+                                    inputContainerStyle={styles.inputContainer}
+                                    lineWidth={0}
+                                    activeLineWidth={0}
+                                    onChangeText={(value) => {
+                                        setAddressFloor(value);
+                                    }}
+                                />
                             </View>
-                        </Fragment>
-                    )}
+                            <View style={styles.inputView}>
+                                <Text style={[styles.labelText, common.fontColorBlack]}>{i18n.translate('Door')}</Text>
+                                <Text style={[styles.labelTextNormal, common.fontColorBlack]}> ({i18n.translate('Optional')})</Text>
+                                <TextField
+                                    keyboardType='default'
+                                    fontSize={16}
+                                    autoCorrect={false}
+                                    enablesReturnKeyAutomatically={true}
+                                    value={addressDoorNumber}
+                                    containerStyle={[styles.textContainer, common.borderColorGrey]}
+                                    inputContainerStyle={styles.inputContainer}
+                                    lineWidth={0}
+                                    activeLineWidth={0}
+                                    onChangeText={(value) => {
+                                        setAddressDoorNumber(value);
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </Fragment>
+                )}
             </View>
         </Container>
     );

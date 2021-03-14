@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from "react";
 import { CommonActions } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { Container, Header, Content } from "native-base";
+import { SearchBar } from 'react-native-elements';
 import {
   Platform,
   StatusBar,
@@ -210,6 +211,8 @@ export default CartDetail = (props) => {
   const [finalPrice, setFinalPrice] = useState(0);
 
   const [active, setActive] = useState(false);
+  const [filterCitys, setFilterCitys] = useState([]);
+  const [filterText, setFilterText] = useState('');
   const [citys, setCitys] = useState([]);
   const [cityObj, setCityObj] = useState({
     id: user.city.id,
@@ -224,6 +227,8 @@ export default CartDetail = (props) => {
   const [isExtra, setIsExtra] = useState(0);
 
   const [deliveryPrice, setDeliveryPrice] = useState(0);
+  const [minimumOrderPrice, setMinimumOrderPrice] = useState(0);
+  const [isDelivery, setIsDelivery] = useState(0);
 
   const [termOfService, setTermOfService] = useState(false);
   const [privacy, setPrivacy] = useState(false);
@@ -302,6 +307,7 @@ export default CartDetail = (props) => {
           dispatch(setLoading(false));
           if (response.status == 200) {
             setCitys(response.locations);
+            setFilterCitys(response.locations);
             if (cityObj.id == 0) {
               setCityObj(response.locations[0]);
             }
@@ -352,10 +358,11 @@ export default CartDetail = (props) => {
       });
     });
     setTotal(totalAmount);
-    if (totalAmount < cartRestaurant.minimumOrderUser && navi) {
+    // if (totalAmount < cartRestaurant.minimumOrderUser && navi) {
+    if (totalAmount < minimumOrderPrice && navi) {
       console.log("total amount minimum");
-      setNavi(false);
-      props.navigation.pop();
+      // setNavi(false);
+      // props.navigation.pop();
     }
     if (isEmpty(cartProducts) && navi) {
       console.log("empty cartproducts");
@@ -537,22 +544,40 @@ export default CartDetail = (props) => {
   };
 
   const getDeliveryPrice = (city_id) => {
-    console.log(city_id, "  : ", citys, "  : ==========  ", cartRestaurant);
+    console.log(city_id, "  : ==========  ", cartRestaurant.restaurant_id);
     citys.map((city) => {
       if (city.id == city_id) {
-        if (city.locationType == 0) {
-          setDeliveryPrice(
-            cartRestaurant.delivery_price_city
-              ? cartRestaurant.delivery_price_city
-              : 0
-          );
-        } else if (city.locationType == 1) {
-          setDeliveryPrice(
-            cartRestaurant.delivery_price_village
-              ? cartRestaurant.delivery_price_village
-              : 0
-          );
-        }
+        // if (city.locationType == 0) {
+        //   setDeliveryPrice(
+        //     cartRestaurant.delivery_price_city
+        //       ? cartRestaurant.delivery_price_city
+        //       : 0
+        //   );
+        // } else if (city.locationType == 1) {
+        //   setDeliveryPrice(
+        //     cartRestaurant.delivery_price_village
+        //       ? cartRestaurant.delivery_price_village
+        //       : 0
+        //   );
+        // }
+        dispatch(setLoading(true));
+        ProfileService.getDeliveryPrice(user.token, city_id, cartRestaurant.restaurant_id)
+          .then((response) => {
+            dispatch(setLoading(false));
+            console.log("delivery price ==== ", response);
+            if (response.status == 200) {
+              if (response.result.length > 0) {
+                setDeliveryPrice((total > 30) ? 0 : response.result[0].delivery_price);
+                setMinimumOrderPrice(response.result[0].minimum_order);
+                setIsDelivery(response.result[0].delivery);
+              }
+
+            }
+          })
+          .catch((error) => {
+            dispatch(setLoading(false));
+            console.log(error.message);
+          });
       }
     });
   };
@@ -569,13 +594,13 @@ export default CartDetail = (props) => {
         dispatch(setLoading(false));
         console.log(response);
         if (response.status == 200) {
-          if(response.result[0].active == 0 || response.result[0].active == 2) {
+          if (response.result[0].active == 0 || response.result[0].active == 2) {
             setErrorCouponCode(response.msg);
-          } else if(response.result[0].active == 1) {
+          } else if (response.result[0].active == 1) {
             setCouponActive(1);
             let final_price = total + deliveryPrice;
 
-            if(response.result[0].type == 1)  //fixed
+            if (response.result[0].type == 1)  //fixed
             {
               final_price = finalPrice - response.result[0].value;
             }
@@ -595,11 +620,54 @@ export default CartDetail = (props) => {
       });
   }
 
+  const searchFilterFunction = (text) => {
+    setFilterText(text);
+
+    const newCitys = citys.filter(item => {
+      const itemData = item.cities.toUpperCase();
+      const textData = text.toUpperCase();
+
+      return itemData.indexOf(textData) > -1;
+    });
+
+    setFilterCitys(newCitys);
+  };
+
+  const renderHeader = () => {
+    return (
+      <View
+        style={{
+          backgroundColor: '#fff',
+          padding: 10,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+        <TextField
+          keyboardType='default'
+          placeholder='search'
+          returnKeyType='next'
+          fontSize={16}
+          autoCorrect={false}
+          enablesReturnKeyAutomatically={true}
+          value={filterText}
+          containerStyle={styles.textContainer1}
+          inputContainerStyle={styles.inputContainer1}
+          lineWidth={0}
+          activeLineWidth={0}
+          onChangeText={(value) => {
+            searchFilterFunction(value);
+          }}
+        />
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.saveArea}>
       <Animated.ScrollView
         contentContainerStyle={styles.content}
         scrollEventThrottle={16}
+        scrollToOverflowEnabled={true}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
@@ -636,7 +704,6 @@ export default CartDetail = (props) => {
                 {i18n.translate("lei")}
               </Text>
             </View>
-            {/* {deliveryPrice != 0 && ( */}
             <View>
               <View style={styles.amount1}>
                 <Text style={styles.priceGrey}>
@@ -658,7 +725,18 @@ export default CartDetail = (props) => {
                 </Text>
               </View>
             </View>
-            {/* )} */}
+            
+            {(minimumOrderPrice > total) && (
+              <View>
+                <Text style={styles.errorMessage}>{i18n.translate('Restaurant minimum order')}{': '}{minimumOrderPrice}{" "}{i18n.translate("lei")}</Text>
+              </View>
+            )}
+
+            {(isDelivery == 0) && (
+              <View>
+                <Text style={styles.errorMessage}>{i18n.translate('Restaurant does not delivery in here')}</Text>
+              </View>
+            )}
 
             {!logged && (
               <View style={styles.PhoneAndName}>
@@ -931,27 +1009,50 @@ export default CartDetail = (props) => {
                   {/* <Text style={common.errorText}>{errorCity}</Text> */}
                 </View>
                 {active ? (
-                  <ScrollView style={!isEmpty(citys) && citys.length > 5 ? styles.listView1height : styles.listView1}>
-                    {!isEmpty(citys) &&
-                      citys.map((cityOne, key) => (
-                        <TouchableOpacity
-                          key={key}
-                          style={[
-                            styles.itemView1,
-                            key == citys.length - 1 && styles.noborder1,
-                          ]}
-                          onPress={() => {
-                            setActive(false);
-                            setCityObj(cityOne);
-                            getDeliveryPrice(cityOne.id);
-                          }}
-                        >
-                          <Text style={styles.itemText1} numberOfLines={1}>
-                            {cityOne.cities}
-                          </Text>
-                        </TouchableOpacity>
-                      ))}
-                  </ScrollView>
+                  // <ScrollView style={!isEmpty(filterCitys) && filterCitys.length > 5 ? styles.listView1height : styles.listView1}>
+                  //   {!isEmpty(filterCitys) &&
+                  //     filterCitys.map((cityOne, key) => (
+                  //       <TouchableOpacity
+                  //         key={key}
+                  //         style={[
+                  //           styles.itemView1,
+                  //           key == filterCitys.length - 1 && styles.noborder1,
+                  //         ]}
+                  //         onPress={() => {
+                  //           setActive(false);
+                  //           setCityObj(cityOne);
+                  //           getDeliveryPrice(cityOne.id);
+                  //         }}
+                  //       >
+                  //         <Text style={styles.itemText1} numberOfLines={1}>
+                  //           {cityOne.cities}
+                  //         </Text>
+                  //       </TouchableOpacity>
+                  //     ))}
+                  // </ScrollView>
+                  <FlatList
+                    style={!isEmpty(filterCitys) && filterCitys.length > 5 ? styles.listView1height : styles.listView1}
+                    ListHeaderComponent={renderHeader()}
+                    data={filterCitys}
+                    keyExtractor={(cityOne, key) => key.toString()}
+                    renderItem={(cityOne, key) => (
+                      <TouchableOpacity
+                        style={[
+                          styles.itemView1,
+                          key == filterCitys.length - 1 && styles.noborder1,
+                        ]}
+                        onPress={() => {
+                          setActive(false);
+                          setCityObj(cityOne.item);
+                          getDeliveryPrice(cityOne.item.id);
+                        }}
+                      >
+                        <Text style={styles.itemText1} numberOfLines={1}>
+                          {cityOne.item.cities}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  />
                 ) : (
                   <Fragment>
                     <View style={styles.streetView1}>
@@ -1263,10 +1364,6 @@ export default CartDetail = (props) => {
                 {i18n.translate("Cash")}
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity style={styles.radioButton} disabled={true}>
-                            <Icon type='material' name={'radio-button-off'} color={colors.BLACK} size={20} />
-                            <Text style={styles.radioText} numberOfLines={1}>{i18n.translate('Credit card')}</Text>
-                        </TouchableOpacity> */}
             {!logged && (
               <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
                 <Icon
@@ -1309,6 +1406,7 @@ export default CartDetail = (props) => {
                     styles.button,
                     (isEmpty(deliveryList) &&
                       (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      (isDelivery == 0 || total < minimumOrderPrice) ||
                       !validateBetween(comment, 0, 300)
                       ? common.backColorGrey
                       : common.backColorYellow,
@@ -1317,13 +1415,22 @@ export default CartDetail = (props) => {
                     disabled ||
                     (isEmpty(deliveryList) &&
                       (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    (isDelivery == 0 || total < minimumOrderPrice) ||
                     !validateBetween(comment, 0, 300)
                   }
                   onPress={() => onOrder()}
                 >
-                  <Text style={styles.buttonText}>
-                    {i18n.translate("Order Now")}
-                  </Text>
+                  {minimumOrderPrice > total ? (
+                    <Text style={styles.buttonText}>
+                      {i18n.translate("More")}{" "}
+                      {(minimumOrderPrice - total).toFixed(2)}{" "}
+                      {i18n.translate("lei")}
+                    </Text>
+                  ) : (
+                    <Text style={styles.buttonText}>
+                      {i18n.translate("Order Now")}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
@@ -1331,6 +1438,7 @@ export default CartDetail = (props) => {
                     styles.button,
                     ((isEmpty(deliveryList) &&
                       (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      (isDelivery == 0 || total < minimumOrderPrice) ||
                       !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
                       ? common.backColorGrey
                       : common.backColorYellow,
@@ -1339,13 +1447,22 @@ export default CartDetail = (props) => {
                     disabled ||
                     ((isEmpty(deliveryList) &&
                       (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      (isDelivery == 0 || total < minimumOrderPrice) ||
                       !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
                   }
                   onPress={() => onOrder()}
                 >
-                  <Text style={styles.buttonText}>
-                    {i18n.translate("Order Now")}
-                  </Text>
+                  {minimumOrderPrice > total ? (
+                    <Text style={styles.buttonText}>
+                      {i18n.translate("More")}{" "}
+                      {(minimumOrderPrice - total).toFixed(2)}{" "}
+                      {i18n.translate("lei")}
+                    </Text>
+                  ) : (
+                    <Text style={styles.buttonText}>
+                      {i18n.translate("Order Now")}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               )}
 
@@ -1744,7 +1861,7 @@ const styles = StyleSheet.create({
   couponPrice: {
     fontSize: 16,
     fontWeight: "bold",
-    textDecorationLine: 'line-through', 
+    textDecorationLine: 'line-through',
     textDecorationStyle: 'solid',
     color: colors.YELLOW.PRIMARY,
   },
@@ -2079,6 +2196,7 @@ const styles = StyleSheet.create({
     borderColor: colors.GREY.PRIMARY,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
+    zIndex: 1
   },
   listView1height: {
     width: "100%",
@@ -2091,6 +2209,7 @@ const styles = StyleSheet.create({
     borderColor: colors.GREY.PRIMARY,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
+    zIndex: 1
   },
   itemView1: {
     width: "100%",
@@ -2098,6 +2217,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: colors.GREY.PRIMARY,
+    zIndex: 1
   },
   noborder1: {
     borderBottomWidth: 0,
@@ -2136,5 +2256,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8
+  }, 
+  errorMessage: {
+    color: '#FF000089'
   }
 });

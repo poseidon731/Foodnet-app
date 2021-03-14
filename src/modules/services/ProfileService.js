@@ -1,6 +1,14 @@
 import axios, { setClientToken, removeClientToken } from '@utils/axios';
 
 const ProfileService = {
+    getDeliveryPrice: function (token, city_id, restaurant_id) {
+        setClientToken(token);
+        return axios.get(`/location/delivery-price/${restaurant_id}/${city_id}`).then((response) => {
+            removeClientToken();
+            console.log("delivery price == ", response.data);
+            return response.data;
+        });
+    },
     getDeliveryList: function (token, country) {
         console.log("country = ", country);
         setClientToken(token);
