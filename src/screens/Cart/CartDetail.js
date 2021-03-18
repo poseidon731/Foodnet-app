@@ -571,7 +571,9 @@ export default CartDetail = (props) => {
                 setMinimumOrderPrice(response.result[0].minimum_order);
                 setIsDelivery(response.result[0].delivery);
               }
-
+              else {
+                setIsDelivery(0);
+              }
             }
           })
           .catch((error) => {
@@ -666,6 +668,7 @@ export default CartDetail = (props) => {
     <SafeAreaView style={styles.saveArea}>
       <Animated.ScrollView
         contentContainerStyle={styles.content}
+        scrollEnabled={active? false: true}
         scrollEventThrottle={16}
         scrollToOverflowEnabled={true}
         onScroll={Animated.event(
@@ -725,16 +728,13 @@ export default CartDetail = (props) => {
                 </Text>
               </View>
             </View>
-            
-            {(minimumOrderPrice > total) && (
-              <View>
-                <Text style={styles.errorMessage}>{i18n.translate('Restaurant minimum order')}{': '}{minimumOrderPrice}{" "}{i18n.translate("lei")}</Text>
-              </View>
-            )}
 
-            {(isDelivery == 0) && (
-              <View>
-                <Text style={styles.errorMessage}>{i18n.translate('Restaurant does not delivery in here')}</Text>
+            {(minimumOrderPrice > total) && (
+              <View style={styles.notDeliveryBack}>
+                <WarningIcon />
+                <Text style={styles.notDelivery}>
+                  {i18n.translate('Restaurant minimum order')}{': '}{minimumOrderPrice}{" "}{i18n.translate("lei")}
+                </Text>
               </View>
             )}
 
@@ -959,6 +959,14 @@ export default CartDetail = (props) => {
                     </Text>
                   </TouchableOpacity>
                 ))}
+                {(isDelivery == 0) && (
+                  <View style={styles.notDeliveryBack}>
+                    <WarningIcon />
+                    <Text style={styles.notDelivery}>
+                      {i18n.translate("Restaurant does not delivery in here")}
+                    </Text>
+                  </View>
+                )}
               </View>
             ) : (
               <View style={styles.content1}>
@@ -1035,6 +1043,7 @@ export default CartDetail = (props) => {
                     ListHeaderComponent={renderHeader()}
                     data={filterCitys}
                     keyExtractor={(cityOne, key) => key.toString()}
+                    stickyHeaderIndices={[0]}
                     renderItem={(cityOne, key) => (
                       <TouchableOpacity
                         style={[
@@ -1055,6 +1064,14 @@ export default CartDetail = (props) => {
                   />
                 ) : (
                   <Fragment>
+                    {(isDelivery == 0) && (
+                      <View style={styles.notDeliveryBack}>
+                        <WarningIcon />
+                        <Text style={styles.notDelivery}>
+                          {i18n.translate("Restaurant does not delivery in here")}
+                        </Text>
+                      </View>
+                    )}
                     <View style={styles.streetView1}>
                       <View style={common.flexRow}>
                         <Text
@@ -1628,6 +1645,25 @@ export default CartDetail = (props) => {
 };
 
 const styles = StyleSheet.create({
+  notDeliveryBack: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 5,
+    marginBottom: 5,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#F05050',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    width: "100%",
+    justifyContent: "flex-start",
+    backgroundColor: "#F0505022",
+  },
+  notDelivery: {
+    fontSize: 16,
+    marginLeft: 3,
+    color: colors.YELLOW.PRIMARY,
+  },
   rememberMe: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -2209,7 +2245,7 @@ const styles = StyleSheet.create({
     borderColor: colors.GREY.PRIMARY,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
-    zIndex: 1
+    zIndex: 2002
   },
   itemView1: {
     width: "100%",
@@ -2217,7 +2253,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: colors.GREY.PRIMARY,
-    zIndex: 1
+    zIndex: 2002
   },
   noborder1: {
     borderBottomWidth: 0,
@@ -2256,7 +2292,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8
-  }, 
+  },
   errorMessage: {
     color: '#FF000089'
   }
