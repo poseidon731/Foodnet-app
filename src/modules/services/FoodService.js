@@ -203,7 +203,7 @@ const FoodService = {
     setCouponCodeHandle: function (token, restaurantId, couponCode) {
         !isEmpty(token) && setClientToken(token);
 
-        return axios.post(`/setCouponCode`, {
+        return axios.post(`/coupon`, {
             restaurantId,
             couponCode
         }).then((response) => {

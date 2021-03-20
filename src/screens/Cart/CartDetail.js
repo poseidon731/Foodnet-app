@@ -615,6 +615,9 @@ export default CartDetail = (props) => {
             setFinalPrice(final_price);
           }
         }
+        else if (response.status == 404) {
+          setErrorCouponCode(response.msg);
+        }
       })
       .catch((error) => {
         dispatch(setLoading(false));
