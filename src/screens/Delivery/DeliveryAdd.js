@@ -9,7 +9,7 @@ import { setDeliveryStatus } from '@modules/reducers/profile/actions';
 import { AuthService, ProfileService } from '@modules/services';
 import { isEmpty, validateBetween } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { MapPinIcon } from '@constants/svgs';
+import { MapPinIcon, SearchIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 import { TextField } from 'react-native-material-textfield';
@@ -111,18 +111,23 @@ export default DeliveryAdd = (props) => {
                 }}>
                 <TextField
                     keyboardType='default'
-                    placeholder='search'
-                    returnKeyType='next'
+                    placeholder={i18n.translate('Search for a place')}
+                    placeholderTextColor="#666"
+                    returnKeyType='done'
                     fontSize={16}
+                    autoCapitalize="none"
                     autoCorrect={false}
                     enablesReturnKeyAutomatically={true}
                     value={filterText}
-                    containerStyle={styles.textContainer}
-                    inputContainerStyle={styles.inputContainer}
+                    containerStyle={styles.textContainer2}
+                    inputContainerStyle={styles.inputContainer2}
                     lineWidth={0}
                     activeLineWidth={0}
+                    renderLeftAccessory={() => {
+                      return <SearchIcon style={{ marginRight: 10 }} />;
+                    }}
                     onChangeText={(value) => {
-                        searchFilterFunction(value);
+                      searchFilterFunction(value);
                     }}
                 />
             </View>
@@ -176,6 +181,7 @@ export default DeliveryAdd = (props) => {
                     <FlatList
                         style={!isEmpty(filterCitys) && filterCitys.length > 5 ? styles.listViewheight : styles.listView}
                         data={filterCitys}
+                        stickyHeaderIndices={[0]}
                         keyExtractor={(cityOne, key) => key.toString()}
                         renderItem={(cityOne, key) => (
                             <TouchableOpacity
@@ -334,6 +340,22 @@ const styles = StyleSheet.create({
         marginTop: -20,
         borderWidth: 0
     },
+    textContainer2: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        height: 50,
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        borderColor: colors.GREY.PRIMARY,
+      },
+      inputContainer2: {
+        width: '100%',
+        marginTop: -20,
+        borderWidth: 0,
+      },
     itemText: {
         width: '75%',
         fontSize: 16,

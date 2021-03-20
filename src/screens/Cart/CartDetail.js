@@ -40,7 +40,9 @@ import {
   SuccessIcon,
   MapPinIcon,
   WarningIcon,
-  CheckIcon
+  CheckIcon,
+  SearchIcon,
+  ErrorIcon
 } from "@constants/svgs";
 import i18n from "@utils/i18n";
 
@@ -210,6 +212,8 @@ export default CartDetail = (props) => {
   const [errorCouponCode, setErrorCouponCode] = useState('');
   const [successCouponCode, setSuccessCouponCode] = useState('');
   const [couponActive, setCouponActive] = useState(0);
+  const [couponType, setCouponType] = useState(1);
+  const [couponValue, setCouponValue] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
 
   const [active, setActive] = useState(false);
@@ -586,6 +590,22 @@ export default CartDetail = (props) => {
     });
   };
 
+  useEffect(() => {
+    let final_price = total + deliveryPrice;
+
+    if (couponType == 1)  //fixed
+    {
+      final_price = final_price - couponValue;
+    }
+    else if (couponType == 2) //percentage
+    {
+      let reducePrice = (final_price * couponValue / 100).toFixed(2);
+      final_price = final_price - reducePrice;
+    }
+
+    setFinalPrice(final_price);
+  }, [total, deliveryPrice, couponType, couponValue])
+
   const setCouponCodeHandle = () => {
     dispatch(setLoading(true));
 
@@ -600,26 +620,23 @@ export default CartDetail = (props) => {
         if (response.status == 200) {
           if (response.result[0].active == 0 || response.result[0].active == 2 || response.result[0].active == 3) {
             setErrorCouponCode(response.msg);
+            setTimeout(() => {setErrorCouponCode('')}, 5000);
+
+            setCouponActive(0);
           } else if (response.result[0].active == 1) {
             setSuccessCouponCode(response.msg);
+            setTimeout(() => {setSuccessCouponCode('')}, 5000);
+
             setCouponActive(1);
-            let final_price = total + deliveryPrice;
-
-            if (response.result[0].type == 1)  //fixed
-            {
-              final_price = final_price - response.result[0].value;
-            }
-            else if (response.result[0].type == 2) //percentage
-            {
-              let reducePrice = (final_price * response.result[0].value / 100).toFixed(2);
-              final_price = final_price - reducePrice;
-            }
-
-            setFinalPrice(final_price);
+            setCouponType(response.result[0].type);
+            setCouponValue(response.result[0].value);
           }
         }
         else if (response.status == 404) {
           setErrorCouponCode(response.msg);
+          setTimeout(() => {setErrorCouponCode('')}, 5000);
+
+          setCouponActive(0);
         }
       })
       .catch((error) => {
@@ -647,21 +664,27 @@ export default CartDetail = (props) => {
         style={{
           backgroundColor: '#fff',
           padding: 10,
+          // height: 50,
           alignItems: 'center',
           justifyContent: 'center'
         }}>
         <TextField
           keyboardType='default'
-          placeholder='search'
-          returnKeyType='next'
+          placeholder={i18n.translate('Search for a place')}
+          placeholderTextColor="#666"
+          returnKeyType='done'
           fontSize={16}
+          autoCapitalize="none"
           autoCorrect={false}
           enablesReturnKeyAutomatically={true}
           value={filterText}
-          containerStyle={styles.textContainer1}
-          inputContainerStyle={styles.inputContainer1}
+          containerStyle={styles.textContainer2}
+          inputContainerStyle={styles.inputContainer2}
           lineWidth={0}
           activeLineWidth={0}
+          renderLeftAccessory={() => {
+            return <SearchIcon style={{ marginRight: 10 }} />;
+          }}
           onChangeText={(value) => {
             searchFilterFunction(value);
           }}
@@ -737,7 +760,7 @@ export default CartDetail = (props) => {
 
             {(minimumOrderPrice > total) && (
               <View style={styles.notDeliveryBack}>
-                <WarningIcon />
+                <ErrorIcon />
                 <Text style={styles.notDelivery}>
                   {i18n.translate('Restaurant minimum order')}{': '}{minimumOrderPrice}{" "}{i18n.translate("lei")}
                 </Text>
@@ -967,7 +990,7 @@ export default CartDetail = (props) => {
                 ))}
                 {(isDelivery == 0) && (
                   <View style={styles.notDeliveryBack}>
-                    <WarningIcon />
+                    <ErrorIcon />
                     <Text style={styles.notDelivery}>
                       {i18n.translate("Restaurant does not delivery in here")}
                     </Text>
@@ -1023,27 +1046,6 @@ export default CartDetail = (props) => {
                   {/* <Text style={common.errorText}>{errorCity}</Text> */}
                 </View>
                 {active ? (
-                  // <ScrollView style={!isEmpty(filterCitys) && filterCitys.length > 5 ? styles.listView1height : styles.listView1}>
-                  //   {!isEmpty(filterCitys) &&
-                  //     filterCitys.map((cityOne, key) => (
-                  //       <TouchableOpacity
-                  //         key={key}
-                  //         style={[
-                  //           styles.itemView1,
-                  //           key == filterCitys.length - 1 && styles.noborder1,
-                  //         ]}
-                  //         onPress={() => {
-                  //           setActive(false);
-                  //           setCityObj(cityOne);
-                  //           getDeliveryPrice(cityOne.id);
-                  //         }}
-                  //       >
-                  //         <Text style={styles.itemText1} numberOfLines={1}>
-                  //           {cityOne.cities}
-                  //         </Text>
-                  //       </TouchableOpacity>
-                  //     ))}
-                  // </ScrollView>
                   <FlatList
                     style={!isEmpty(filterCitys) && filterCitys.length > 5 ? styles.listView1height : styles.listView1}
                     ListHeaderComponent={renderHeader()}
@@ -1072,7 +1074,7 @@ export default CartDetail = (props) => {
                   <Fragment>
                     {(isDelivery == 0) && (
                       <View style={styles.notDeliveryBack}>
-                        <WarningIcon />
+                        <ErrorIcon />
                         <Text style={styles.notDelivery}>
                           {i18n.translate("Restaurant does not delivery in here")}
                         </Text>
@@ -1309,9 +1311,9 @@ export default CartDetail = (props) => {
                 </TouchableOpacity>
               </View>
               {(errorCouponCode != '') && (
-                <View style={styles.notDeliveryBack}>
-                  <WarningIcon />
-                  <Text style={styles.notDelivery}>
+                <View style={styles.errorCouponCodeBack}>
+                  <ErrorIcon />
+                  <Text style={styles.errorCouponCode}>
                     {errorCouponCode}
                   </Text>
                 </View>
@@ -1680,13 +1682,15 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     backgroundColor: "#4ACC4F22",
+    alignItems: 'center'
   },
   successCouponCode: {
     fontSize: 16,
     marginLeft: 3,
-    color: colors.YELLOW.PRIMARY,
+    fontWeight: "bold",
+    color: '#4ACC4F',
   },
-  notDeliveryBack: {
+  errorCouponCodeBack: {
     display: "flex",
     flexDirection: "row",
     marginTop: 5,
@@ -1699,11 +1703,34 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     backgroundColor: "#F0505022",
+    alignItems: 'center'
+  },
+  errorCouponCode: {
+    fontSize: 16,
+    marginLeft: 3,
+    fontWeight: "bold",
+    color: colors.RED.PRIMARY,
+  },
+  notDeliveryBack: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 25,
+    marginBottom: 5,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#F05050',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    width: "100%",
+    justifyContent: "flex-start",
+    backgroundColor: "#F0505022",
+    alignItems: 'center'
   },
   notDelivery: {
     fontSize: 16,
     marginLeft: 3,
-    color: colors.YELLOW.PRIMARY,
+    fontWeight: "bold",
+    color: colors.RED.PRIMARY,
   },
   rememberMe: {
     flexDirection: 'row',
@@ -2254,6 +2281,22 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   inputContainer1: {
+    marginTop: -20,
+    borderWidth: 0,
+  },
+  textContainer2: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    borderColor: colors.GREY.PRIMARY,
+  },
+  inputContainer2: {
+    width: '100%',
     marginTop: -20,
     borderWidth: 0,
   },
