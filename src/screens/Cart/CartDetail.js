@@ -40,6 +40,7 @@ import {
   SuccessIcon,
   MapPinIcon,
   WarningIcon,
+  CheckIcon
 } from "@constants/svgs";
 import i18n from "@utils/i18n";
 
@@ -207,6 +208,7 @@ export default CartDetail = (props) => {
   const [couponCode, setCouponCode] = useState('');
   const [visitCouponCode, setVisitCouponCode] = useState(false);
   const [errorCouponCode, setErrorCouponCode] = useState('');
+  const [successCouponCode, setSuccessCouponCode] = useState('');
   const [couponActive, setCouponActive] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
 
@@ -596,15 +598,16 @@ export default CartDetail = (props) => {
         dispatch(setLoading(false));
         console.log(response);
         if (response.status == 200) {
-          if (response.result[0].active == 0 || response.result[0].active == 2) {
+          if (response.result[0].active == 0 || response.result[0].active == 2 || response.result[0].active == 3) {
             setErrorCouponCode(response.msg);
           } else if (response.result[0].active == 1) {
+            setSuccessCouponCode(response.msg);
             setCouponActive(1);
             let final_price = total + deliveryPrice;
 
             if (response.result[0].type == 1)  //fixed
             {
-              final_price = finalPrice - response.result[0].value;
+              final_price = final_price - response.result[0].value;
             }
             else if (response.result[0].type == 2) //percentage
             {
@@ -671,7 +674,7 @@ export default CartDetail = (props) => {
     <SafeAreaView style={styles.saveArea}>
       <Animated.ScrollView
         contentContainerStyle={styles.content}
-        scrollEnabled={active? false: true}
+        scrollEnabled={active ? false : true}
         scrollEventThrottle={16}
         scrollToOverflowEnabled={true}
         onScroll={Animated.event(
@@ -1285,6 +1288,7 @@ export default CartDetail = (props) => {
                   onChangeText={(value) => {
                     setCouponCode(value);
                     setVisitCouponCode(true);
+                    setErrorCouponCode('');
                   }}
                 />
                 <TouchableOpacity
@@ -1304,7 +1308,22 @@ export default CartDetail = (props) => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <Text style={common.errorText}>{errorCouponCode}</Text>
+              {(errorCouponCode != '') && (
+                <View style={styles.notDeliveryBack}>
+                  <WarningIcon />
+                  <Text style={styles.notDelivery}>
+                    {errorCouponCode}
+                  </Text>
+                </View>
+              )}
+              {(successCouponCode != '') && (
+                <View style={styles.successCouponCodeBack}>
+                  <CheckIcon />
+                  <Text style={styles.successCouponCode}>
+                    {successCouponCode}
+                  </Text>
+                </View>
+              )}
             </View>
             <View style={{ height: 20 }} />
             <TouchableOpacity
@@ -1648,6 +1667,25 @@ export default CartDetail = (props) => {
 };
 
 const styles = StyleSheet.create({
+  successCouponCodeBack: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 5,
+    marginBottom: 5,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#4ACC4F',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    width: "100%",
+    justifyContent: "flex-start",
+    backgroundColor: "#4ACC4F22",
+  },
+  successCouponCode: {
+    fontSize: 16,
+    marginLeft: 3,
+    color: colors.YELLOW.PRIMARY,
+  },
   notDeliveryBack: {
     display: "flex",
     flexDirection: "row",

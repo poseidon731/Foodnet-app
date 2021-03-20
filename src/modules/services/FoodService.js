@@ -205,7 +205,7 @@ const FoodService = {
 
         return axios.post(`/coupon`, {
             restaurantId,
-            couponCode
+            couponName: couponCode
         }).then((response) => {
             !isEmpty(token) && removeClientToken(token);
             // console.log(response.data);
