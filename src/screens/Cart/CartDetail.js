@@ -599,7 +599,7 @@ export default CartDetail = (props) => {
 
     if (couponType == 1)  //fixed
     {
-      final_price = final_price - couponValue;
+      final_price = ((final_price < couponValue) ? 0 : final_price - couponValue);
     }
     else if (couponType == 2) //percentage
     {
