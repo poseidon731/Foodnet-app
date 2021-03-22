@@ -233,6 +233,7 @@ export default CartDetail = (props) => {
   const [isExtra, setIsExtra] = useState(0);
 
   const [deliveryPrice, setDeliveryPrice] = useState(0);
+  const [freeDelivery, setFreeDelivery] = useState(0);
   const [minimumOrderPrice, setMinimumOrderPrice] = useState(0);
   const [isDelivery, setIsDelivery] = useState(0);
 
@@ -465,7 +466,7 @@ export default CartDetail = (props) => {
           cutlery,
           cartProducts,
           comment,
-          deliveryPrice,
+          (total > freeDelivery ? 0 : deliveryPrice),
           phone,
           userName,
           email,
@@ -496,7 +497,7 @@ export default CartDetail = (props) => {
         cutlery,
         cartProducts,
         comment,
-        deliveryPrice,
+        (total > freeDelivery ? 0 : deliveryPrice),
         country
       )
         .then((response) => {
@@ -573,7 +574,9 @@ export default CartDetail = (props) => {
             console.log("delivery price ==== ", response);
             if (response.status == 200) {
               if (response.result.length > 0) {
-                setDeliveryPrice((total > 30) ? 0 : response.result[0].delivery_price);
+                let free_delivery = (response.result[0].free_delivery == null ? 0 : response.result[0].free_delivery);
+                setFreeDelivery(free_delivery);
+                setDeliveryPrice(response.result[0].delivery_price);
                 setMinimumOrderPrice(response.result[0].minimum_order);
                 setIsDelivery(response.result[0].delivery);
               }
@@ -591,7 +594,8 @@ export default CartDetail = (props) => {
   };
 
   useEffect(() => {
-    let final_price = total + deliveryPrice;
+    let delivery_price = (total > freeDelivery ? 0 : deliveryPrice);
+    let final_price = total + delivery_price;
 
     if (couponType == 1)  //fixed
     {
@@ -619,12 +623,14 @@ export default CartDetail = (props) => {
         console.log(response);
         if (response.status == 200) {
           if (response.result[0].active == 0 || response.result[0].active == 2 || response.result[0].active == 3) {
-            setErrorCouponCode(response.msg);
+            // setErrorCouponCode(response.msg);
+            setErrorCouponCode(i18n.translate('Invalid coupon code'));
             setTimeout(() => {setErrorCouponCode('')}, 5000);
 
             setCouponActive(0);
           } else if (response.result[0].active == 1) {
-            setSuccessCouponCode(response.msg);
+            // setSuccessCouponCode(response.msg);
+            setSuccessCouponCode(i18n.translate('Coupon code used successfully'));
             setTimeout(() => {setSuccessCouponCode('')}, 5000);
 
             setCouponActive(1);
@@ -633,7 +639,8 @@ export default CartDetail = (props) => {
           }
         }
         else if (response.status == 404) {
-          setErrorCouponCode(response.msg);
+          // setErrorCouponCode(response.msg);
+          setErrorCouponCode(i18n.translate('Invalid coupon code'));
           setTimeout(() => {setErrorCouponCode('')}, 5000);
 
           setCouponActive(0);
@@ -739,7 +746,7 @@ export default CartDetail = (props) => {
             <View>
               <View style={styles.amount1}>
                 <Text style={styles.priceGrey}>
-                  {i18n.translate("Delivery")}: {deliveryPrice.toFixed(2)}{" "}
+                  {i18n.translate("Delivery")}: {(total > freeDelivery ? 0 : deliveryPrice).toFixed(2)}{" "}
                   {i18n.translate("lei")}
                 </Text>
               </View>
@@ -747,7 +754,7 @@ export default CartDetail = (props) => {
                 <Text style={styles.price}>
                   {i18n.translate("Final")}:{" "}
                   <Text style={couponActive == 1 ? styles.couponPrice : styles.price}>
-                    {(total + deliveryPrice).toFixed(2)} {i18n.translate("lei")}
+                    {(total + (total > freeDelivery ? 0 : deliveryPrice)).toFixed(2)} {i18n.translate("lei")}
                   </Text>
                   {(couponActive == 1) && (
                     <Text style={styles.price}>
@@ -758,7 +765,7 @@ export default CartDetail = (props) => {
               </View>
             </View>
 
-            {(minimumOrderPrice > total) && (
+            {(minimumOrderPrice > finalPrice) && (
               <View style={styles.notDeliveryBack}>
                 <ErrorIcon />
                 <Text style={styles.notDelivery}>
@@ -1447,7 +1454,7 @@ export default CartDetail = (props) => {
                     styles.button,
                     (isEmpty(deliveryList) &&
                       (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || total < minimumOrderPrice) ||
+                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
                       !validateBetween(comment, 0, 300)
                       ? common.backColorGrey
                       : common.backColorYellow,
@@ -1456,15 +1463,15 @@ export default CartDetail = (props) => {
                     disabled ||
                     (isEmpty(deliveryList) &&
                       (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    (isDelivery == 0 || total < minimumOrderPrice) ||
+                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
                     !validateBetween(comment, 0, 300)
                   }
                   onPress={() => onOrder()}
                 >
-                  {minimumOrderPrice > total ? (
+                  {minimumOrderPrice > finalPrice ? (
                     <Text style={styles.buttonText}>
                       {i18n.translate("More")}{" "}
-                      {(minimumOrderPrice - total).toFixed(2)}{" "}
+                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
                       {i18n.translate("lei")}
                     </Text>
                   ) : (
@@ -1479,7 +1486,7 @@ export default CartDetail = (props) => {
                     styles.button,
                     ((isEmpty(deliveryList) &&
                       (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || total < minimumOrderPrice) ||
+                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
                       !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
                       ? common.backColorGrey
                       : common.backColorYellow,
@@ -1488,15 +1495,15 @@ export default CartDetail = (props) => {
                     disabled ||
                     ((isEmpty(deliveryList) &&
                       (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || total < minimumOrderPrice) ||
+                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
                       !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
                   }
                   onPress={() => onOrder()}
                 >
-                  {minimumOrderPrice > total ? (
+                  {minimumOrderPrice > finalPrice ? (
                     <Text style={styles.buttonText}>
                       {i18n.translate("More")}{" "}
-                      {(minimumOrderPrice - total).toFixed(2)}{" "}
+                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
                       {i18n.translate("lei")}
                     </Text>
                   ) : (

@@ -60,7 +60,6 @@
   "Navigation": "Navigáció",
   "My orders": "Rendeléseim",
   "Profile": "Profilom",
-  "Coupon codes": "Kuponkódok",
   "My addresses": "Címeim",
   "Language selector": "Nyelv",
   "Customer service": "Ügyfélszolgálat",
@@ -181,7 +180,7 @@
   "Delete profile data": "Biztos, hogy törlöd a profilod?",
   "delete profile desc": "Ezáltal minden adatod törlésre kerül",
   "Delete review": "Vélemény törlése",
-  "Coupon Codes": "Kuponkódok",
+  "Coupon Codes": "Kuponkód",
   "Fennmaradt egyenleged": "Fennmaradt egyenleged",
   "Your current subscription": "Jelenlegi előfizetésed",
   "Package name": "Csomag név",
@@ -265,7 +264,9 @@
   "Place and method of collection": "Szállítási cím",
   "Food (s) ordered": "Megrendelt étel(ek)",
   "If exist": "ha léteznek",
-  "Activate": "Aktiválja",
+  "Activate": "Aktiválás",
   "Restaurant does not delivery in here": "Az étterem nem szállít ide",
-  "Search for a place": "Helység keresése"
+  "Search for a place": "Helység keresése",
+  "Coupon code used successfully": "Kuponkód sikeresen felhasználva",
+  "Invalid coupon code": "Hibás kuponkód"
 }
