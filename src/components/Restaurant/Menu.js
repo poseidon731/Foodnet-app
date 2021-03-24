@@ -397,9 +397,6 @@ export default Menu = (props) => {
       </Card>
       <View style={{ height: 10 }} />
       <Card key="food" style={styles.card}>
-        {/* <Text style={[styles.cardTitle, { fontSize: 14 }]}>
-          {i18n.translate("Find food")}
-        </Text> */}
         <TextField
           placeholder={i18n.translate("Name of food")}
           placeholderTextColor="#666"
