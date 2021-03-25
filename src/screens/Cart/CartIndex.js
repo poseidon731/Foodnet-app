@@ -47,7 +47,7 @@ const CartItem = ({
           <TrustIcon />
         </TouchableOpacity>
       </View>
-      <Text style={styles.allergen}>
+      {/* <Text style={styles.allergen}>
         {cartProduct.productDescription}
       </Text>
       {!isEmpty(cartProduct.allergens) ? (
@@ -61,21 +61,18 @@ const CartItem = ({
           ))}
           )
         </Text>
-      ) : null}
+      ) : null} */}
       {!isEmpty(cartProduct.extras)
         ? cartProduct.extras.map((extra, key) => (
-            <Text style={styles.extraList} key={`extra${key}`}>
-              +
-              <Text style={styles.extra}>
-                {extra.quantity}*{extra.extraName} :{" "}
-                {extra.quantity * extra.extraPrice} {i18n.translate("lei")}
-              </Text>
+          <Text style={styles.extraList} key={`extra${key}`}>
+            +
+            <Text style={styles.extra}>
+              {extra.quantity}*{extra.extraName} :{" "}
+              {extra.quantity * extra.extraPrice} {i18n.translate("lei")}
             </Text>
-          ))
-        : // <Text style={styles.extraList}>+ {
-
-          // </Text>
-          null}
+          </Text>
+        ))
+        : null}
       <View style={styles.cartBottom}>
         <View style={styles.cartLeft}>
           <Text style={styles.price}>
@@ -163,8 +160,6 @@ export default CartIndex = (props) => {
       });
     });
     setTotal(totalAmount);
-    // console.log(cartRestaurant);
-    // if(isEmpty(cartProducts)) props.navigation.pop();
   });
 
   const onDelete = (check, item, count) => {
@@ -213,7 +208,7 @@ export default CartIndex = (props) => {
       dispatch(setCartBadge(totalBadge));
       dispatch(setCartProducts(result));
       // dispatch(setCartBadge(cartBadge - 1));
-      if(isEmpty(result)) props.navigation.goBack();
+      if (isEmpty(result)) props.navigation.goBack();
     }
     setVisible(false);
   };
@@ -241,12 +236,16 @@ export default CartIndex = (props) => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={common.headerTitle}>
-          <Text style={common.headerTitleText} numberOfLines={1}>
-            {i18n.translate("Basket")}
-          </Text>
+          <View style={{ display: 'flex', flexDirection: 'column' }}>
+            <Text style={common.headerTitleText} numberOfLines={1}>
+              {i18n.translate("Basket")}
+            </Text>
+            <Text>{cartRestaurant.restaurant_name}</Text>
+          </View>
         </TouchableOpacity>
+
         <View style={common.headerRight}>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             {cartBadge > 0 ? (
               <Fragment>
                 <CartYellowIcon />
@@ -260,7 +259,7 @@ export default CartIndex = (props) => {
                 <View style={styles.badgeEmpty} />
               </Fragment>
             )}
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </Header>
       <Content style={{ flex: 1, padding: 20 }}>
@@ -307,11 +306,6 @@ export default CartIndex = (props) => {
                 {i18n.translate("lei")}
               </Text>
             </View>
-            {/* {(cartRestaurant.minimumOrderUser > total.toFixed(2)) && (
-              <View>
-                <Text>{i18n.translate('Restaurant minimum order')}{': '}{cartRestaurant.minimumOrderUser}{" "}{i18n.translate("lei")}</Text>
-              </View>
-            )} */}
             <View
               style={{
                 marginTop: 20,
@@ -337,19 +331,11 @@ export default CartIndex = (props) => {
                   setTimeout(() => setDisabled(false), 1000);
                 }}
               >
-                {/* {cartRestaurant.minimumOrderUser > total.toFixed(2) ? (
-                  <Text style={styles.buttonText}>
-                    {i18n.translate("More")}{" "}
-                    {(cartRestaurant.minimumOrderUser - total).toFixed(2)}{" "}
-                    {i18n.translate("lei")}
-                  </Text>
-                ) : ( */}
-                  <Text style={styles.buttonText}>
-                    {i18n.translate("Send order")}
-                  </Text>
-                {/* )} */}
+                <Text style={styles.buttonText}>
+                  {i18n.translate("Send order")}
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   setType(true);
                   setVisible(true);
@@ -358,37 +344,10 @@ export default CartIndex = (props) => {
                 <Text style={styles.price}>
                   {i18n.translate("Delete cart items")}
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </Fragment>
-        ) 
-        // : 
-        // (
-        //   <View style={styles.emptyView}>
-        //     <Text style={styles.emptyText1}>
-        //       {i18n.translate("Your cart is currently empty")}
-        //     </Text>
-        //     <Text style={styles.emptyText2}>
-        //       {i18n.translate(
-        //         "But tomorrow versatile and mass I hate football and a valuable asset to free macro as an integer"
-        //       )}
-        //     </Text>
-        //     <TouchableOpacity
-        //       style={[
-        //         common.button,
-        //         common.backColorYellow,
-        //         common.marginTop35,
-        //       ]}
-        //       onPress={() => props.navigation.goBack()}
-        //     >
-        //       <Text style={[common.buttonText, common.fontColorWhite]}>
-        //         {i18n.translate("Minimum")} {cartRestaurant.minimumOrderUser}{" "}
-        //         {i18n.translate("lei")}
-        //       </Text>
-        //     </TouchableOpacity>
-        //   </View>
-        // )
-      }
+        )}
       </Content>
       {visible && (
         <View style={styles.modalContainer}>

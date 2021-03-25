@@ -91,6 +91,7 @@
     "Within 1 hour": "Within 1 hour",
     "Payment options": "Payment options",
     "Cash": "Cash",
+    "Credit card at the courier": "Credit card at the courier",
     "Search": "Search",
     "No restaurant found": "No restaurant found",
     "All results": "All results",
@@ -262,5 +263,8 @@
     "Restaurant does not delivery in here": "Restaurant does not delivery in here",
     "Search for a place": "Search for a place",
     "Coupon code used successfully": "Coupon code used successfully",
-    "Invalid coupon code": "Invalid coupon code"
+    "Invalid coupon code": "Invalid coupon code",
+    "Go to cart": "Go to cart",
+    "SHOW MORE": "SHOW MORE",
+    "HIDE": "HIDE"
 }

@@ -470,7 +470,8 @@ export default CartDetail = (props) => {
           phone,
           userName,
           email,
-          country
+          country,
+          payment
         )
           .then((response) => {
             dispatch(setLoading(false));
@@ -498,7 +499,8 @@ export default CartDetail = (props) => {
         cartProducts,
         comment,
         (total > freeDelivery ? 0 : deliveryPrice),
-        country
+        country,
+        payment
       )
         .then((response) => {
           dispatch(setLoading(false));
@@ -1401,15 +1403,42 @@ export default CartDetail = (props) => {
             >
               {i18n.translate("Payment method")}
             </Text>
-            <TouchableOpacity style={styles.radioButton} disabled={true}>
+            <TouchableOpacity style={styles.radioButton} onPress={() => setPayment(1)}>
               <Icon
                 type="material"
-                name={"radio-button-on"}
-                color={colors.YELLOW.PRIMARY}
+                name={
+                  payment == 1
+                    ? "radio-button-on"
+                    : "radio-button-off"
+                }
+                color={
+                  payment == 1
+                    ? colors.YELLOW.PRIMARY
+                    : colors.BLACK
+                }
                 size={20}
               />
               <Text style={styles.radioText} numberOfLines={1}>
                 {i18n.translate("Cash")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.radioButton} onPress={() => setPayment(2)}>
+              <Icon
+                type="material"
+                name={
+                  payment == 2
+                    ? "radio-button-on"
+                    : "radio-button-off"
+                }
+                color={
+                  payment == 2
+                    ? colors.YELLOW.PRIMARY
+                    : colors.BLACK
+                }
+                size={20}
+              />
+              <Text style={styles.radioText} numberOfLines={1}>
+                {i18n.translate("Credit card at the courier")}
               </Text>
             </TouchableOpacity>
             {!logged && (

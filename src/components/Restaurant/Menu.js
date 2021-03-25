@@ -88,9 +88,32 @@ const Product = ({
         loading={loader}
         containerStyles={styles.loader}
       />
-      <View key={index} style={loader ? styles.default : styles.product}>
-        {/* // (!isEmpty(product.startTime) && moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A') > moment().format('MM/DD/YYYY, h:mm:ss A')) ||
-                    // (!isEmpty(product.endTime) && moment().format('MM/DD/YYYY, h:mm:ss A') > moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A')) || */}
+      <TouchableOpacity key={index} style={loader ? styles.default : styles.product}
+        disabled={
+          parseInt(moment().format("HH:mm").replace(":", "")) <=
+          parseInt(restaurant.restaurant_open.replace(":", "")) ||
+          parseInt(moment().format("HH:mm").replace(":", "")) >=
+          parseInt(restaurant.restaurant_close.replace(":", "")) ||
+          (!isEmpty(product.startTime) &&
+            product.startTime > moment().format("HH:mm")) ||
+          (!isEmpty(product.endTime) &&
+            moment().format("HH:mm") > product.endTime) ||
+          (product.isDailyMenu == 1 && product.soldOut == 1) ||
+          (product.isDailyMenu == 1 && isToday == 0) ||
+          (product.isDailyMenu == 0 && product.soldOut == 0)
+        }
+        onPress={() => {
+          if (
+            !isEmpty(cartProducts) &&
+            cartRestaurant.restaurant_id != restaurant.restaurant_id
+          ) {
+            onModal();
+          } else {
+            flag ? onCart() : onExtra(product, count);
+            // checkExtr(cartProducts, restaurant, product, count);
+          }
+        }}
+      >
         {((!isEmpty(product.startTime) &&
           product.startTime > moment().format("HH:mm")) ||
           (!isEmpty(product.endTime) &&
@@ -98,75 +121,45 @@ const Product = ({
           (product.isDailyMenu == 1 && product.soldOut == 1) ||
           (product.isDailyMenu == 1 && isToday == 0) ||
           (product.isDailyMenu == 0 && product.soldOut == 0)) && (
-          <View style={styles.productImageSold}>
-            <Text style={styles.productImageSoldText}>
-              {i18n.translate("Sold Out")}
+            <View style={styles.productImageSold}>
+              <Text style={styles.productImageSoldText}>
+                {i18n.translate("Sold Out")}
+              </Text>
+            </View>
+          )}
+
+        <View style={styles.productItem} >
+          <View style={styles.productItemText}>
+            <Text style={styles.productTitle}>
+              {product.product_name}
+            </Text>
+            <Text style={styles.productDescription}>
+              {product.product_description}
             </Text>
           </View>
-        )}
+          <View style={styles.productItemBottom}>
+            <Text style={styles.price}>
+              {product.product_price.toFixed(2)} {i18n.translate("lei")}
+            </Text>
+            {!isEmpty(product.soldOut) && (
+              !isEmpty(product.startTime) && !isEmpty(product.endTime) && (
+                <Text style={styles.dailyWrapperText} numberOfLines={1}>
+                  {i18n.translate("Order time")}
+                  {": "}{product.startTime}-{product.endTime}
+                </Text>
+              )
+            )}
+          </View>
+
+        </View>
         <FastImage
           style={styles.productImage}
           source={{ uri: RES_URL + product.product_imageUrl }}
           resizeMode="cover"
           onLoadEnd={(e) => setLoader(false)}
         />
-        <Text style={styles.productTitle}>
-          {product.product_name}
-        </Text>
-        {/* {!isEmpty(product.soldOut) && ( */}
-        <Text style={styles.productDescription}>
-          {product.product_description}
-        </Text>
-        {/* )} */}
-        {!isEmpty(product.allergens_name) ? (
-          <Text style={styles.allergenList}>
-            ({i18n.translate("Allergens")}:{" "}
-            {product.allergens_name.map((allergen, key) => (
-              <Text key={key} style={styles.allergen}>
-                {allergen.allergen_name}
-                {key != product.allergens_name.length - 1 ? ", " : ""}
-              </Text>
-            ))}
-            )
-          </Text>
-        ) : null}
-        {!isEmpty(product.soldOut) && (
-          <View style={styles.dailyWrapper}>
-            {/* <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Soup')}: </Text>{'Product name'}</Text>
-                        {!isEmpty(product.allergens_name) ? (
-                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
-                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
-                            ))})</Text>
-                        ) : null}
-                        <View style={{ height: 20 }} />
-                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Main course')}: </Text>{'Product name'}</Text>
-                        {!isEmpty(product.allergens_name) ? (
-                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
-                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
-                            ))})</Text>
-                        ) : null}
-                        <View style={{ height: 20 }} />
-                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Dessert')}: </Text>{'Product name'}</Text>
-                        {!isEmpty(product.allergens_name) ? (
-                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
-                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
-                            ))})</Text>
-                        ) : null}
-                        <View style={{ height: 20 }} /> */}
-            {!isEmpty(product.startTime) && !isEmpty(product.endTime) && (
-              <Text style={styles.extrasText} numberOfLines={1}>
-                <Text style={{ fontWeight: "bold" }} numberOfLines={1}>
-                  {i18n.translate("Order time")}:{" "}
-                </Text>
-                {product.startTime}-{product.endTime}
-              </Text>
-            )}
-          </View>
-        )}
-        <View style={styles.productCart}>
-          <Text style={styles.price}>
-            {product.product_price.toFixed(2)} {i18n.translate("lei")}
-          </Text>
+        {/* <View style={styles.productCart}>
+
           <View style={styles.cart}>
             <TouchableOpacity
               style={styles.countButton1}
@@ -253,8 +246,8 @@ const Product = ({
               )}
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
+        </View> */}
+      </TouchableOpacity>
     </Fragment>
   );
 };
@@ -279,7 +272,7 @@ export default Menu = (props) => {
     if (!isEmpty(props.categories) && !isEmpty(props.subCategories)) {
       dispatch(setLoading(true));
     }
-    if(props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
+    if (props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
       console.log(props.category.category_id, "sub = ", props.subCategory);
       setSubCategoryIndex(props.subCategory.index);
       setProducts([]);
@@ -305,12 +298,12 @@ export default Menu = (props) => {
           setProducts([]);
         });
     }
-    
+
   }, [props.subCategory, cartRestaurant, cartProducts]);
 
   useEffect(() => {
     setProducts([]);
-    if(props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
+    if (props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
       console.log(props.category.category_id, "search = ", props.subCategory);
       FoodService.products(
         country,
@@ -381,7 +374,7 @@ export default Menu = (props) => {
               style={[
                 styles.category,
                 props.subCategory.propertyValTransId ==
-                item.item.propertyValTransId
+                  item.item.propertyValTransId
                   ? common.borderColorYellow
                   : common.borderColorGrey,
               ]}
@@ -509,30 +502,41 @@ const styles = StyleSheet.create({
     height: 0,
   },
   product: {
-    marginBottom: 24,
+    marginBottom: 10,
     width: wp("100%") - 40,
-    padding: 16,
-    borderWidth: 1,
+    paddingBottom: 10,
+    padding: 5,
+    borderBottomWidth: 1,
     borderColor: "rgba(0, 0, 0, 0.15)",
-    backgroundColor: colors.WHITE,
-    shadowColor: "rgba(0, 0, 0, 0.4)",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
-    shadowRadius: 5,
-    elevation: 5,
-    borderRadius: 6,
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    display: 'flex'
+  },
+  productItem: {
+    paddingRight: 5,
+    width: '70%',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-start',
+    alignContent: 'space-between'
+  },
+  productItemText: {
+    width: '100%'
   },
   productImage: {
-    width: "100%",
-    height: 200,
+    width: "30%",
+    height: 100,
     borderRadius: 6,
+    marginTop: 10
   },
   productImageSold: {
     position: "absolute",
-    top: 16,
-    left: 16,
-    width: "100%",
-    height: 200,
+    top: 15,
+    right: 5,
+    width: "30%",
+    height: 100,
     borderRadius: 6,
     zIndex: 2000,
     backgroundColor: "#000000D0",
@@ -540,23 +544,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   productImageSoldText: {
-    fontSize: 32,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "700",
     color: colors.WHITE,
     textAlign: "center",
   },
   productTitle: {
     width: "100%",
-    marginTop: 16,
-    fontSize: 18,
-    fontWeight: "bold",
+    // marginTop: 16,
+    fontSize: 16,
+    fontWeight: "700",
     color: "#111",
   },
   productDescription: {
     marginTop: 8,
     width: "100%",
     fontSize: 16,
-    lineHeight: 24,
+    fontWeight: '400',
+    lineHeight: 18.2,
     color: "#666",
   },
   allergenList: {
@@ -577,10 +582,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  productItemBottom: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignSelf: 'flex-start'
+  },
   price: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "700",
     color: colors.YELLOW.PRIMARY,
+    // width: '45%',
+    textAlign: 'left'
   },
   cart: {
     flexDirection: "row",
@@ -623,9 +637,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#C4C4C4",
   },
-  dailyWrapper: {
-    marginTop: 10,
-    width: "100%",
+  dailyWrapperText: {
+    fontSize: 13,
+    color: "#333",
+    fontWeight: '700',
+    // width: '55%',
+    textAlign: 'right'
   },
   extrasText: {
     width: "100%",
@@ -640,5 +657,5 @@ const styles = StyleSheet.create({
     left: 16,
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     zIndex: 2000,
-  },
+  }
 });

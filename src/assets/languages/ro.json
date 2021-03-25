@@ -99,6 +99,7 @@
     "Within 1 hour": "1 órán belül",
     "Payment options": "Fizetési lehetőségek",
     "Cash": "Készpénz",
+    "Credit card at the courier": "Card de credit la curier",
     "Search": "Keresés",
     "No restaurant found": "Nem található étterem",
     "All results": "Toate găsite találat",
@@ -267,5 +268,8 @@
     "Restaurant does not delivery in here": "În această localitate restaurantul nu livrează",
     "Search for a place": "Căutați un loc",
     "Coupon code used successfully": "Voucher a fost adăugat",
-    "Invalid coupon code": "Voucher nu există"
+    "Invalid coupon code": "Voucher nu există",
+    "Go to cart": "Du-te la coș",
+    "SHOW MORE": "AFIȘAȚI MAI MULTE",
+    "HIDE": "ASCUNDE"
 }
