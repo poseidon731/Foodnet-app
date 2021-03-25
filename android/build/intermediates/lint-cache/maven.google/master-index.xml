@@ -19,6 +19,7 @@
   <androidx.browser/>
   <androidx.camera/>
   <androidx.car/>
+  <androidx.car.app/>
   <androidx.cardview/>
   <androidx.collection/>
   <androidx.compose/>
@@ -68,6 +69,7 @@
   <androidx.recommendation/>
   <androidx.recyclerview/>
   <androidx.remotecallback/>
+  <androidx.resourceinspection/>
   <androidx.room/>
   <androidx.savedstate/>
   <androidx.security/>
@@ -135,6 +137,7 @@
   <com.android.tools.metalava/>
   <com.android.tools.pixelprobe/>
   <com.android.tools.utp/>
+  <com.android.volley/>
   <com.crashlytics.sdk.android/>
   <com.google.ads.afsn/>
   <com.google.ads.interactivemedia.v3/>
@@ -142,6 +145,7 @@
   <com.google.android.ads.consent/>
   <com.google.android.apps.common.testing.accessibility.framework/>
   <com.google.android.datatransport/>
+  <com.google.android.fhir/>
   <com.google.android.games/>
   <com.google.android.gms/>
   <com.google.android.instantapps/>
