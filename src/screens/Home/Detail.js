@@ -318,14 +318,16 @@ export default Detail = (props) => {
                 </Header>
             </Animated.View>
             {cartBadge > 0 && (
-                <TouchableOpacity
-                    style={styles.goToCart}
-                    onPress={() => props.navigation.navigate('Cart')}
-                >
-                    <View style={styles.cartBadgeView}><Text style={styles.cartBadgeText}>{cartBadge}</Text></View>
-                    <Text style={styles.goToCartText}>{i18n.translate('Go to cart')}</Text>
-                    <Text style={styles.priceText}>{total} {i18n.translate("lei")}</Text>
-                </TouchableOpacity>
+                <View style={styles.gotToCartView}>
+                    <TouchableOpacity
+                        style={styles.goToCart}
+                        onPress={() => props.navigation.navigate('Cart')}
+                    >
+                        <View style={styles.cartBadgeView}><Text style={styles.cartBadgeText}>{cartBadge}</Text></View>
+                        <Text style={styles.goToCartText}>{i18n.translate('Go to cart')}</Text>
+                        <Text style={styles.priceText}>{total.toFixed(2)} {i18n.translate("lei")}</Text>
+                    </TouchableOpacity>
+                </View>
             )}
             {visible && (
                 <TouchableOpacity style={styles.toast} onPress={() => setVisible(false)}>
@@ -651,9 +653,16 @@ const styles = StyleSheet.create({
         color: '#F05050',
         textAlign: 'center'
     },
-    goToCart: {
+    gotToCartView: {
         position: 'absolute',
-        bottom: 10,
+        bottom: 0,
+        paddingBottom: 26,
+        paddingTop: 14,
+        paddingHorizontal: 14,
+        width: wp('100%'),
+        backgroundColor: colors.WHITE
+    },
+    goToCart: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: "space-between",
@@ -662,8 +671,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 6,
         backgroundColor: "#F78F1E",
-        width: wp('90%'),
-        marginLeft: '5%',
+        width: wp('100%') - 30,
         shadowColor: colors.BLACK,
         shadowOffset: { width: 4, height: 10 },
         shadowOpacity: 0.5,
@@ -682,14 +690,17 @@ const styles = StyleSheet.create({
     cartBadgeText: {
         color: colors.WHITE,
         fontSize: 11,
+        fontWeight: '700',
         textAlign: 'center'
     },
     goToCartText: {
         color: colors.WHITE,
         fontSize: 13,
+        fontWeight: '600'
     },
     priceText: {
         color: colors.WHITE,
         fontSize: 12,
+        fontWeight: '700'
     }
 });

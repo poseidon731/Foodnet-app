@@ -367,44 +367,6 @@ export default Extra = (props) => {
                             onChangeText={(value) => setComment(value)}
                         />
                     </Card>
-                    <View style={styles.productCart}>
-                        <View style={styles.cart}>
-                            <TouchableOpacity
-                                style={styles.countButton1}
-                                disabled={quantity == 1}
-                                onPress={() => quantity > 1 && setQuantity(quantity - 1)}
-                            >
-                                <Icon
-                                    type="material-community"
-                                    name="minus"
-                                    color={colors.WHITE}
-                                    size={25}
-                                />
-                            </TouchableOpacity>
-                            <View style={styles.count}>
-                                <Text >{quantity} db</Text>
-                            </View>
-                            <TouchableOpacity
-                                style={styles.countButton2}
-                                onPress={() => setQuantity(quantity + 1)}
-                            >
-                                <Icon
-                                    type="material-community"
-                                    name="plus"
-                                    color={colors.WHITE}
-                                    size={25}
-                                />
-                            </TouchableOpacity>
-
-                        </View>
-                        <TouchableOpacity
-                            disabled={minRequired != requiredList.length}
-                            style={[styles.button, { backgroundColor: minRequired != requiredList.length ? '#AAA' : colors.YELLOW.PRIMARY }]}
-                            onPress={() => onAdd()}
-                        >
-                            <Text style={styles.buttonText}>{i18n.translate('Add to the cart')}</Text>
-                        </TouchableOpacity>
-                    </View>
 
                 </View>
             </Animated.ScrollView>
@@ -420,6 +382,45 @@ export default Extra = (props) => {
                     </View>
                 </Header>
             </Animated.View>
+
+            <View style={styles.productCart}>
+                <View style={styles.cart}>
+                    <TouchableOpacity
+                        style={styles.countButton1}
+                        disabled={quantity == 1}
+                        onPress={() => quantity > 1 && setQuantity(quantity - 1)}
+                    >
+                        <Icon
+                            type="material-community"
+                            name="minus"
+                            color={colors.WHITE}
+                            size={25}
+                        />
+                    </TouchableOpacity>
+                    <View style={styles.count}>
+                        <Text style={styles.countText}>{quantity} db</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.countButton2}
+                        onPress={() => setQuantity(quantity + 1)}
+                    >
+                        <Icon
+                            type="material-community"
+                            name="plus"
+                            color={colors.WHITE}
+                            size={25}
+                        />
+                    </TouchableOpacity>
+
+                </View>
+                <TouchableOpacity
+                    disabled={minRequired != requiredList.length}
+                    style={[styles.button, { backgroundColor: minRequired != requiredList.length ? '#AAA' : colors.YELLOW.PRIMARY }]}
+                    onPress={() => onAdd()}
+                >
+                    <Text style={styles.buttonText}>{i18n.translate('Add to the cart')}</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 }
@@ -568,11 +569,17 @@ const styles = StyleSheet.create({
         width: wp('100%') - 70,
     },
     productCart: {
-        width: '100%',
+        width: wp('100%'),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 25
+        marginTop: 25,
+        position: 'absolute',
+        bottom: 0,
+        paddingBottom: 26,
+        paddingTop: 14,
+        paddingHorizontal: '5%',
+        backgroundColor: colors.WHITE
     },
     price: {
         fontSize: 18,
@@ -590,7 +597,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 10,
         height: 30,
-        fontWeight: 'bold'
+    },
+    countText: {
+        fontWeight: '700',
+        fontSize: 15
     },
     countButton1: {
         justifyContent: 'center',
@@ -634,6 +644,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingLeft: 15,
         paddingRight: 20,
+        marginBottom: 100
     },
     inputContainer: {
         marginTop: -20,
@@ -652,10 +663,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: colors.WHITE
     },
-    showHideExtras: { 
+    showHideExtras: {
         textAlign: 'center',
-        marginTop: 10, 
-        fontSize: 18, 
+        marginTop: 10,
+        fontSize: 18,
         fontWeight: 'bold',
         color: colors.YELLOW.PRIMARY,
         borderTopWidth: 1,

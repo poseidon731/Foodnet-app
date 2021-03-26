@@ -627,13 +627,13 @@ export default CartDetail = (props) => {
           if (response.result[0].active == 0 || response.result[0].active == 2 || response.result[0].active == 3) {
             // setErrorCouponCode(response.msg);
             setErrorCouponCode(i18n.translate('Invalid coupon code'));
-            setTimeout(() => {setErrorCouponCode('')}, 5000);
+            setTimeout(() => { setErrorCouponCode('') }, 5000);
 
             setCouponActive(0);
           } else if (response.result[0].active == 1) {
             // setSuccessCouponCode(response.msg);
             setSuccessCouponCode(i18n.translate('Coupon code used successfully'));
-            setTimeout(() => {setSuccessCouponCode('')}, 5000);
+            setTimeout(() => { setSuccessCouponCode('') }, 5000);
 
             setCouponActive(1);
             setCouponType(response.result[0].type);
@@ -643,7 +643,7 @@ export default CartDetail = (props) => {
         else if (response.status == 404) {
           // setErrorCouponCode(response.msg);
           setErrorCouponCode(i18n.translate('Invalid coupon code'));
-          setTimeout(() => {setErrorCouponCode('')}, 5000);
+          setTimeout(() => { setErrorCouponCode('') }, 5000);
 
           setCouponActive(0);
         }
@@ -1467,83 +1467,7 @@ export default CartDetail = (props) => {
                 </Text>
               </TouchableOpacity>
             )}
-
-            <View
-              style={{
-                marginTop: 30,
-                marginBottom: 50,
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {logged ? (
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    (isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)
-                      ? common.backColorGrey
-                      : common.backColorYellow,
-                  ]}
-                  disabled={
-                    disabled ||
-                    (isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                    !validateBetween(comment, 0, 300)
-                  }
-                  onPress={() => onOrder()}
-                >
-                  {minimumOrderPrice > finalPrice ? (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("More")}{" "}
-                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
-                      {i18n.translate("lei")}
-                    </Text>
-                  ) : (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("Order Now")}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    ((isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
-                      ? common.backColorGrey
-                      : common.backColorYellow,
-                  ]}
-                  disabled={
-                    disabled ||
-                    ((isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
-                  }
-                  onPress={() => onOrder()}
-                >
-                  {minimumOrderPrice > finalPrice ? (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("More")}{" "}
-                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
-                      {i18n.translate("lei")}
-                    </Text>
-                  ) : (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("Order Now")}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              )}
-
-            </View>
+            <View style={{height: 140}}></View>
           </View>
         ) : (
           <View style={styles.success}>
@@ -1671,6 +1595,88 @@ export default CartDetail = (props) => {
           <View style={common.headerRight} />
         </Header>
       </Animated.View>
+      {!success && (
+        <View style={styles.goToOrder}>
+          <View style={styles.orderAmount}>
+            <Text style={styles.orderPrice}>
+              {i18n.translate("Final")}
+            </Text>
+            <Text style={styles.orderPrice}>
+              {(couponActive == 0) ? (total + (total > freeDelivery ? 0 : deliveryPrice)).toFixed(2) : finalPrice.toFixedF(2)}{" "}{i18n.translate("lei")}
+            </Text>
+          </View>
+          <View
+              style={styles.orderButtonView}
+            >
+              {logged ? (
+                <TouchableOpacity
+                  style={[
+                    styles.orderButton,
+                    (isEmpty(deliveryList) &&
+                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                      !validateBetween(comment, 0, 300)
+                      ? common.backColorGrey
+                      : common.backColorYellow,
+                  ]}
+                  disabled={
+                    disabled ||
+                    (isEmpty(deliveryList) &&
+                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                    !validateBetween(comment, 0, 300)
+                  }
+                  onPress={() => onOrder()}
+                >
+                  {minimumOrderPrice > finalPrice ? (
+                    <Text style={styles.buttonText}>
+                      {i18n.translate("More")}{" "}
+                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
+                      {i18n.translate("lei")}
+                    </Text>
+                  ) : (
+                    <Text style={styles.buttonText}>
+                      {i18n.translate("Order Now")}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={[
+                    styles.orderButton,
+                    ((isEmpty(deliveryList) &&
+                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
+                      ? common.backColorGrey
+                      : common.backColorYellow,
+                  ]}
+                  disabled={
+                    disabled ||
+                    ((isEmpty(deliveryList) &&
+                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
+                  }
+                  onPress={() => onOrder()}
+                >
+                  {minimumOrderPrice > finalPrice ? (
+                    <Text style={styles.buttonText}>
+                      {i18n.translate("More")}{" "}
+                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
+                      {i18n.translate("lei")}
+                    </Text>
+                  ) : (
+                    <Text style={styles.buttonText}>
+                      {i18n.translate("Order Now")}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              )}
+
+            </View>
+        </View>
+      )}
       {visible && (
         <View style={styles.modalContainer}>
           <View style={styles.overlay} />
@@ -2010,6 +2016,39 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#6D6D6D",
+  },
+  goToOrder: {
+    width: wp('100%'),
+    position: 'absolute',
+    bottom: 0,
+    paddingBottom: 26,
+    paddingTop: 9,
+    paddingHorizontal: '5%',
+    backgroundColor: colors.WHITE
+  },
+  orderAmount: {
+    width: "100%",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 9,
+  },
+  orderPrice: {
+    fontSize: 15,
+    fontWeight: '700'
+  },
+  orderButtonView: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  orderButton: {
+    width: "100%",
+    height: 38,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: colors.YELLOW.PRIMARY,
   },
   button: {
     marginBottom: 20,

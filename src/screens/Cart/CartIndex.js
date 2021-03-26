@@ -223,7 +223,7 @@ export default CartIndex = (props) => {
 
   return (
     <Container style={common.container}>
-      <StatusBar />
+      {/* <StatusBar /> */}
       <Header style={common.header}>
         <View style={common.headerLeft}>
           <TouchableOpacity onPress={() => props.navigation.goBack()}>
@@ -262,7 +262,7 @@ export default CartIndex = (props) => {
           </TouchableOpacity> */}
         </View>
       </Header>
-      <Content style={{ flex: 1, padding: 20 }}>
+      <Content style={styles.cartItemContent}>
         {isExtra == 1 && visibleNotiPlus == 1 && (
           <View style={styles.notificationBack}>
             <WarningIcon />
@@ -300,42 +300,43 @@ export default CartIndex = (props) => {
                 />
               )}
             />
-            <View style={styles.amount}>
-              <Text style={styles.price}>
-                {i18n.translate("Total")}: {total.toFixed(2)}{" "}
-                {i18n.translate("lei")}
-              </Text>
-            </View>
-            <View
-              style={{
-                marginTop: 20,
-                marginBottom: 50,
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  disabled
-                    ? common.backColorGrey
-                    : common.backColorYellow,
-                ]}
-                disabled={
-                  disabled
-                }
-                onPress={() => {
-                  setDisabled(true);
-                  props.navigation.push("CartDetail");
-                  setTimeout(() => setDisabled(false), 1000);
-                }}
-              >
-                <Text style={styles.buttonText}>
-                  {i18n.translate("Send order")}
-                </Text>
-              </TouchableOpacity>
-              {/* <TouchableOpacity
+            <View style={styles.cartItemtContentBottom}></View>
+          </Fragment>
+        )}
+      </Content>
+      <View style={styles.goToOrder}>
+        <View style={styles.amount}>
+          <Text style={styles.orderPrice}>
+            {i18n.translate("Total")}
+          </Text>
+          <Text style={styles.orderPrice}>
+            {total.toFixed(2)}{" "}{i18n.translate("lei")}
+          </Text>
+        </View>
+        <View
+          style={styles.orderButtonView}
+        >
+          <TouchableOpacity
+            style={[
+              styles.button,
+              disabled
+                ? common.backColorGrey
+                : common.backColorYellow,
+            ]}
+            disabled={
+              disabled
+            }
+            onPress={() => {
+              setDisabled(true);
+              props.navigation.push("CartDetail");
+              setTimeout(() => setDisabled(false), 1000);
+            }}
+          >
+            <Text style={styles.buttonText}>
+              {i18n.translate("Send order")}
+            </Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity
                 onPress={() => {
                   setType(true);
                   setVisible(true);
@@ -345,10 +346,8 @@ export default CartIndex = (props) => {
                   {i18n.translate("Delete cart items")}
                 </Text>
               </TouchableOpacity> */}
-            </View>
-          </Fragment>
-        )}
-      </Content>
+        </View>
+      </View>
       {visible && (
         <View style={styles.modalContainer}>
           <View style={styles.overlay} />
@@ -408,6 +407,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 3,
     color: colors.YELLOW.PRIMARY,
+  },
+  cartItemContent: { 
+    flex: 1, 
+    padding: 20
+  },
+  cartItemtContentBottom: {
+    height: 140,
   },
   descriptionText: {
     width: "100%",
@@ -521,10 +527,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
   },
+  goToOrder: {
+    width: wp('100%'),
+    position: 'absolute',
+    bottom: 0,
+    paddingBottom: 26,
+    paddingTop: 9,
+    paddingHorizontal: '5%',
+    backgroundColor: colors.WHITE
+  },
   amount: {
     width: "100%",
-    paddingTop: 20,
-    paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 9,
+  },
+  orderPrice: {
+    fontSize: 15,
+    fontWeight: '700'
   },
   mimimumAlert: {
     paddingTop: 10,
@@ -537,18 +558,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#6D6D6D",
   },
+  orderButtonView: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   button: {
-    marginBottom: 20,
-    width: "80%",
-    height: 50,
+    width: "100%",
+    height: 38,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
     backgroundColor: colors.YELLOW.PRIMARY,
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 15,
+    fontWeight: "600",
     color: colors.WHITE,
   },
   emptyView: {
