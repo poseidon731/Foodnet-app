@@ -104,6 +104,7 @@ export default Extra = (props) => {
     });
 
     useEffect(() => {
+        console.log(product);
         const getRequired = () => {
             dispatch(setLoading(true));
             FoodService.required(country, restaurant.restaurant_id, product.variant_id)
@@ -283,7 +284,7 @@ export default Extra = (props) => {
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
 
                 <View style={{ width: wp('100%'), padding: 15 }}>
-                    <Text style={{ marginTop: 20, fontSize: 18, fontWeight: 'bold' }}>{product.product_name}</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{product.product_name}</Text>
                     <Text style={{ marginTop: 10, fontSize: 14 }}>{product.product_description}</Text>
                     {!isEmpty(product.allergens_name) ? (
                         <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
@@ -536,7 +537,7 @@ const styles = StyleSheet.create({
         width: 90,
     },
     content: {
-        paddingTop: HEADER_MAX_HEIGHT - 32
+        paddingTop: HEADER_MAX_HEIGHT - 5
     },
     allergenList: {
         marginTop: 12,
@@ -579,7 +580,12 @@ const styles = StyleSheet.create({
         paddingBottom: 26,
         paddingTop: 14,
         paddingHorizontal: '5%',
-        backgroundColor: colors.WHITE
+        backgroundColor: colors.WHITE,
+        shadowColor: colors.BLACK,
+        shadowOffset: { width: 4, height: 10 },
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
+        elevation: 10,
     },
     price: {
         fontSize: 18,

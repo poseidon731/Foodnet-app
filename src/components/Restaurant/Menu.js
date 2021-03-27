@@ -114,50 +114,54 @@ const Product = ({
           }
         }}
       >
-        {((!isEmpty(product.startTime) &&
-          product.startTime > moment().format("HH:mm")) ||
-          (!isEmpty(product.endTime) &&
-            moment().format("HH:mm") > product.endTime) ||
-          (product.isDailyMenu == 1 && product.soldOut == 1) ||
-          (product.isDailyMenu == 1 && isToday == 0) ||
-          (product.isDailyMenu == 0 && product.soldOut == 0)) && (
-            <View style={styles.productImageSold}>
-              <Text style={styles.productImageSoldText}>
-                {i18n.translate("Sold Out")}
+
+        <Text style={styles.productTitle}>
+          {product.product_name}
+        </Text>
+
+        <View style={styles.productItemGroup}>
+          <View style={styles.productItem} >
+            <View style={styles.productItemText}>
+              <Text style={styles.productDescription}>
+                {product.product_description}
               </Text>
             </View>
-          )}
+            <View style={styles.productItemBottom}>
+              <Text style={styles.price}>
+                {product.product_price.toFixed(2)} {i18n.translate("lei")}
+              </Text>
+              {!isEmpty(product.soldOut) && (
+                !isEmpty(product.startTime) && !isEmpty(product.endTime) && (
+                  <Text style={styles.dailyWrapperText} numberOfLines={1}>
+                    {i18n.translate("Order time")}
+                    {": "}{product.startTime}-{product.endTime}
+                  </Text>
+                )
+              )}
+            </View>
 
-        <View style={styles.productItem} >
-          <View style={styles.productItemText}>
-            <Text style={styles.productTitle}>
-              {product.product_name}
-            </Text>
-            <Text style={styles.productDescription}>
-              {product.product_description}
-            </Text>
           </View>
-          <View style={styles.productItemBottom}>
-            <Text style={styles.price}>
-              {product.product_price.toFixed(2)} {i18n.translate("lei")}
-            </Text>
-            {!isEmpty(product.soldOut) && (
-              !isEmpty(product.startTime) && !isEmpty(product.endTime) && (
-                <Text style={styles.dailyWrapperText} numberOfLines={1}>
-                  {i18n.translate("Order time")}
-                  {": "}{product.startTime}-{product.endTime}
+          <FastImage
+            style={styles.productImage}
+            source={{ uri: RES_URL + product.product_imageUrl }}
+            resizeMode="cover"
+            onLoadEnd={(e) => setLoader(false)}
+          />
+
+          {((!isEmpty(product.startTime) &&
+            product.startTime > moment().format("HH:mm")) ||
+            (!isEmpty(product.endTime) &&
+              moment().format("HH:mm") > product.endTime) ||
+            (product.isDailyMenu == 1 && product.soldOut == 1) ||
+            (product.isDailyMenu == 1 && isToday == 0) ||
+            (product.isDailyMenu == 0 && product.soldOut == 0)) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("Sold Out")}
                 </Text>
-              )
+              </View>
             )}
-          </View>
-
         </View>
-        <FastImage
-          style={styles.productImage}
-          source={{ uri: RES_URL + product.product_imageUrl }}
-          resizeMode="cover"
-          onLoadEnd={(e) => setLoader(false)}
-        />
         {/* <View style={styles.productCart}>
 
           <View style={styles.cart}>
@@ -507,20 +511,22 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     padding: 5,
     borderBottomWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.15)",
+    borderColor: "rgba(0, 0, 0, 0.15)"
+  },
+  productItemGroup: {
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     flexDirection: 'row',
     display: 'flex'
   },
   productItem: {
     paddingRight: 5,
     width: '70%',
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignSelf: 'flex-start',
-    alignContent: 'space-between'
+    // display: 'flex',
+    // flexDirection: 'row',
+    // flexWrap: 'wrap',
+    // alignSelf: 'flex-start',
+    // alignContent: 'space-between'
   },
   productItemText: {
     width: '100%'
@@ -533,8 +539,8 @@ const styles = StyleSheet.create({
   },
   productImageSold: {
     position: "absolute",
-    top: 15,
-    right: 5,
+    top: 10,
+    right: 0,
     width: "30%",
     height: 100,
     borderRadius: 6,
@@ -587,7 +593,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
+    marginTop: 10
   },
   price: {
     fontSize: 16,

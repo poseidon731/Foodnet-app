@@ -2024,7 +2024,12 @@ const styles = StyleSheet.create({
     paddingBottom: 26,
     paddingTop: 9,
     paddingHorizontal: '5%',
-    backgroundColor: colors.WHITE
+    backgroundColor: colors.WHITE,
+    shadowColor: colors.BLACK,
+    shadowOffset: { width: 4, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 10,
   },
   orderAmount: {
     width: "100%",

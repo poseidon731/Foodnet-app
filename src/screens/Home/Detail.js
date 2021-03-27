@@ -264,7 +264,12 @@ export default Detail = (props) => {
                     }}
                     onIndexChange={setIndex}
                 />
-                <View style={{ height: 50 }} />
+                {(cartBadge > 0) ? (
+                    <View style={{ height: 100 }} />
+                ) : (
+                    <View style={{ height: 20 }} />
+                )}
+                
             </Animated.ScrollView>
 
             <Animated.View style={[styles.header, { transform: [{ translateY: headerTranslateY }] }]}>
@@ -660,7 +665,12 @@ const styles = StyleSheet.create({
         paddingTop: 14,
         paddingHorizontal: 14,
         width: wp('100%'),
-        backgroundColor: colors.WHITE
+        backgroundColor: colors.WHITE,
+        shadowColor: colors.BLACK,
+        shadowOffset: { width: 4, height: 10 },
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
+        elevation: 10,
     },
     goToCart: {
         display: 'flex',
