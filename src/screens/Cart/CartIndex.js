@@ -27,6 +27,8 @@ import {
 } from "@constants/svgs";
 import i18n from "@utils/i18n";
 
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 35 : 26;
+
 const CartItem = ({
   cartRestaurant,
   cartProduct,
@@ -413,7 +415,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   cartItemtContentBottom: {
-    height: 140,
+    height: 160,
   },
   descriptionText: {
     width: "100%",
@@ -531,7 +533,7 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     position: 'absolute',
     bottom: 0,
-    paddingBottom: 26,
+    paddingBottom: BOTTOM_BUTTON_DISTANCE,
     paddingTop: 9,
     paddingHorizontal: '5%',
     backgroundColor: colors.WHITE,

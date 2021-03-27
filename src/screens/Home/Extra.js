@@ -18,6 +18,8 @@ const HEADER_MAX_HEIGHT = Platform.OS === 'ios' ? 300 : 260;
 const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 110 : 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 35 : 26;
+
 const Required = ({ required, index, quantity, onSelect }) => {
     const [check, setCheck] = useState(false);
 
@@ -577,7 +579,7 @@ const styles = StyleSheet.create({
         marginTop: 25,
         position: 'absolute',
         bottom: 0,
-        paddingBottom: 26,
+        paddingBottom: BOTTOM_BUTTON_DISTANCE,
         paddingTop: 14,
         paddingHorizontal: '5%',
         backgroundColor: colors.WHITE,

@@ -160,6 +160,8 @@ const HEADER_MAX_HEIGHT = Platform.OS === "ios" ? 300 : 260;
 const HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 110 : 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 35 : 26;
+
 export default CartDetail = (props) => {
   const dispatch = useDispatch();
   const { logged, country, city, user } = useSelector((state) => state.auth);
@@ -1467,7 +1469,7 @@ export default CartDetail = (props) => {
                 </Text>
               </TouchableOpacity>
             )}
-            <View style={{height: 140}}></View>
+            <View style={{height: 160}}></View>
           </View>
         ) : (
           <View style={styles.success}>
@@ -2021,7 +2023,7 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     position: 'absolute',
     bottom: 0,
-    paddingBottom: 26,
+    paddingBottom: BOTTOM_BUTTON_DISTANCE,
     paddingTop: 9,
     paddingHorizontal: '5%',
     backgroundColor: colors.WHITE,

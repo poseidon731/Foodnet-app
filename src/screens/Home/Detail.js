@@ -21,6 +21,8 @@ const HEADER_MAX_HEIGHT = Platform.OS === 'ios' ? 300 : 260;
 const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 110 : 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 35 : 26;
+
 export default Detail = (props) => {
     const dispatch = useDispatch();
     const { country } = useSelector(state => state.auth);
@@ -661,7 +663,7 @@ const styles = StyleSheet.create({
     gotToCartView: {
         position: 'absolute',
         bottom: 0,
-        paddingBottom: 26,
+        paddingBottom: BOTTOM_BUTTON_DISTANCE,
         paddingTop: 14,
         paddingHorizontal: 14,
         width: wp('100%'),
