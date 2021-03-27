@@ -18,7 +18,7 @@ const HEADER_MAX_HEIGHT = Platform.OS === 'ios' ? 300 : 260;
 const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 110 : 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 35 : 26;
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 40 : 26;
 
 const Required = ({ required, index, quantity, onSelect }) => {
     const [check, setCheck] = useState(false);
@@ -115,6 +115,7 @@ export default Extra = (props) => {
                     if (response.status == 200) {
                         setMinRequired(response.minRequired);
                         setRequireds(response.result);
+                        console.log("requireds length - ", response.result.length, response.result);
 
                         if (response.result.length <= 5) setRequiredsAll(response.result);
                         else {
@@ -158,7 +159,7 @@ export default Extra = (props) => {
     }, []);
 
     useEffect(() => {
-        if (isShowOptionals) {
+        if (isShowRequireds) {
             setRequiredsAll(requireds);
         } else {
             if (requireds.length <= 5) setRequiredsAll(requireds);
@@ -285,7 +286,7 @@ export default Extra = (props) => {
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
 
-                <View style={{ width: wp('100%'), padding: 15 }}>
+                <View style={{ width: wp('100%'), paddingHorizontal: 15, paddingBottom: 15, paddingTop: Platform.OS === 'ios' ? 0 : 15, marginTop: Platform.OS === 'ios' ? -20 : 0 }}>
                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{product.product_name}</Text>
                     <Text style={{ marginTop: 10, fontSize: 14 }}>{product.product_description}</Text>
                     {!isEmpty(product.allergens_name) ? (
@@ -310,13 +311,13 @@ export default Extra = (props) => {
                             />
                         )}
                     />
-                    {!isEmpty(requiredsAll) && (!isShowRequireds ? (
-                        <TouchableOpacity onPress={() => setIsShowRequireds(true)}>
-                            <Text style={styles.showHideExtras}>{i18n.translate('SHOW MORE')}</Text>
+                    {!isEmpty(requiredsAll) && (requireds.length > 5) && (!isShowRequireds ? (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowRequireds(true)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('SHOW MORE')}</Text>
                         </TouchableOpacity>
                     ) : (
-                        <TouchableOpacity onPress={() => setIsShowRequireds(false)}>
-                            <Text style={styles.showHideExtras}>{i18n.translate('HIDE')}</Text>
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowRequireds(false)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('HIDE')}</Text>
                         </TouchableOpacity>
                     ))}
 
@@ -337,13 +338,13 @@ export default Extra = (props) => {
                             />
                         )}
                     />
-                    {!isEmpty(optionalsAll) && (!isShowOptionals ? (
-                        <TouchableOpacity onPress={() => setIsShowOptionals(true)}>
-                            <Text style={styles.showHideExtras}>{i18n.translate('SHOW MORE')}</Text>
+                    {!isEmpty(optionalsAll) && (optionals.length > 5) && (!isShowOptionals ? (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowOptionals(true)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('SHOW MORE')}</Text>
                         </TouchableOpacity>
                     ) : (
-                        <TouchableOpacity onPress={() => setIsShowOptionals(false)}>
-                            <Text style={styles.showHideExtras}>{i18n.translate('HIDE')}</Text>
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowOptionals(false)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('HIDE')}</Text>
                         </TouchableOpacity>
                     ))}
 
@@ -672,14 +673,16 @@ const styles = StyleSheet.create({
         color: colors.WHITE
     },
     showHideExtras: {
-        textAlign: 'center',
         marginTop: 10,
+        borderTopWidth: 1,
+        borderColor: "#C4C4C4",
+        marginHorizontal: -20
+    },
+    showHideExtrasText: {
+        textAlign: 'center',
         fontSize: 18,
         fontWeight: 'bold',
         color: colors.YELLOW.PRIMARY,
-        borderTopWidth: 1,
-        borderColor: "#C4C4C4",
-        marginHorizontal: -15,
-        paddingTop: 8
+        padding: 8
     }
 });

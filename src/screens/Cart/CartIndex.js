@@ -27,7 +27,7 @@ import {
 } from "@constants/svgs";
 import i18n from "@utils/i18n";
 
-const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 35 : 26;
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 40 : 26;
 
 const CartItem = ({
   cartRestaurant,
