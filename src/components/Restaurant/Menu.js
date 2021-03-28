@@ -115,13 +115,14 @@ const Product = ({
         }}
       >
 
-        <Text style={styles.productTitle}>
-          {product.product_name}
-        </Text>
+
 
         <View style={styles.productItemGroup}>
           <View style={styles.productItem} >
             <View style={styles.productItemText}>
+              <Text style={styles.productTitle}>
+                {product.product_name}
+              </Text>
               <Text style={styles.productDescription}>
                 {product.product_description}
               </Text>
@@ -446,11 +447,11 @@ const styles = StyleSheet.create({
     width: "30%",
     height: 100,
     borderRadius: 6,
-    marginTop: -10
+    marginTop: 13
   },
   productImageSold: {
     position: "absolute",
-    top: -10,
+    top: 13,
     right: 0,
     width: "30%",
     height: 100,
