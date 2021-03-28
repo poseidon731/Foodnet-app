@@ -162,95 +162,6 @@ const Product = ({
               </View>
             )}
         </View>
-        {/* <View style={styles.productCart}>
-
-          <View style={styles.cart}>
-            <TouchableOpacity
-              style={styles.countButton1}
-              disabled={count == 1 || flag}
-              onPress={() => count > 1 && setCount(count - 1)}
-            >
-              <Icon
-                type="material-community"
-                name="minus"
-                color="#333"
-                size={25}
-              />
-            </TouchableOpacity>
-            <View style={styles.count}>
-              <Text style={{ color: "#333" }}>{count} db</Text>
-            </View>
-            <TouchableOpacity
-              style={styles.countButton2}
-              disabled={flag}
-              onPress={() => setCount(count + 1)}
-            >
-              <Icon
-                type="material-community"
-                name="plus"
-                color="#333"
-                size={25}
-              />
-            </TouchableOpacity>
-            <View style={{ width: 10 }} />
-            <TouchableOpacity
-              style={[
-                styles.check,
-                {
-                  backgroundColor:
-                    parseInt(moment().format("HH:mm").replace(":", "")) <=
-                      parseInt(restaurant.restaurant_open.replace(":", "")) ||
-                    parseInt(moment().format("HH:mm").replace(":", "")) >=
-                      parseInt(restaurant.restaurant_close.replace(":", "")) ||
-                    (!isEmpty(product.startTime) &&
-                      product.startTime > moment().format("HH:mm")) ||
-                    (!isEmpty(product.endTime) &&
-                      moment().format("HH:mm") > product.endTime) ||
-                    (product.isDailyMenu == 1 && product.soldOut == 1) ||
-                    (product.isDailyMenu == 1 && isToday == 0) ||
-                    (product.isDailyMenu == 0 && product.soldOut == 0)
-                      ? "#F78F1E80"
-                      : colors.YELLOW.PRIMARY,
-                },
-              ]}
-              disabled={
-                parseInt(moment().format("HH:mm").replace(":", "")) <=
-                  parseInt(restaurant.restaurant_open.replace(":", "")) ||
-                parseInt(moment().format("HH:mm").replace(":", "")) >=
-                  parseInt(restaurant.restaurant_close.replace(":", "")) ||
-                (!isEmpty(product.startTime) &&
-                  product.startTime > moment().format("HH:mm")) ||
-                (!isEmpty(product.endTime) &&
-                  moment().format("HH:mm") > product.endTime) ||
-                (product.isDailyMenu == 1 && product.soldOut == 1) ||
-                (product.isDailyMenu == 1 && isToday == 0) ||
-                (product.isDailyMenu == 0 && product.soldOut == 0)
-              }
-              onPress={() => {
-                if (
-                  !isEmpty(cartProducts) &&
-                  cartRestaurant.restaurant_id != restaurant.restaurant_id
-                ) {
-                  onModal();
-                } else {
-                  flag ? onCart() : onExtra(product, count);
-                  // checkExtr(cartProducts, restaurant, product, count);
-                }
-              }}
-            >
-              {flag ? (
-                <Icon
-                  type="material"
-                  name="check"
-                  color={colors.WHITE}
-                  size={25}
-                />
-              ) : (
-                <CartWhiteIcon />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View> */}
       </TouchableOpacity>
     </Fragment>
   );
@@ -522,11 +433,11 @@ const styles = StyleSheet.create({
   productItem: {
     paddingRight: 5,
     width: '70%',
-    // display: 'flex',
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
-    // alignSelf: 'flex-start',
-    // alignContent: 'space-between'
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-start',
+    alignContent: 'space-between'
   },
   productItemText: {
     width: '100%'
@@ -535,11 +446,11 @@ const styles = StyleSheet.create({
     width: "30%",
     height: 100,
     borderRadius: 6,
-    marginTop: 10
+    marginTop: -10
   },
   productImageSold: {
     position: "absolute",
-    top: 10,
+    top: -10,
     right: 0,
     width: "30%",
     height: 100,

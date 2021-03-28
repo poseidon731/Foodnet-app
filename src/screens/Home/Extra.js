@@ -30,7 +30,7 @@ const Required = ({ required, index, quantity, onSelect }) => {
                 onSelect(!check, required, quantity);
             }}>
                 <View style={styles.check}>
-                    <Icon type='material-community' name={check ? 'check-box-outline' : 'checkbox-blank-outline'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
+                    <Icon type='material' name={check ? 'radio-button-on' : 'radio-button-off'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
                     <Text style={{ fontSize: 16 }} numberOfLines={1}>{required.extra_name}</Text>
                     {/* {!isEmpty(required.allergens_name) ? (
                         <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {required.allergens_name.map((allergen, key) => (
@@ -286,7 +286,7 @@ export default Extra = (props) => {
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
 
-                <View style={{ width: wp('100%'), paddingHorizontal: 15, paddingBottom: 15, paddingTop: Platform.OS === 'ios' ? 0 : 15, marginTop: Platform.OS === 'ios' ? -20 : 0 }}>
+                <View style={{ width: wp('100%'), paddingHorizontal: 15, paddingBottom: 15, paddingTop: Platform.OS === 'ios' ? 0 : 10, marginTop: Platform.OS === 'ios' ? -15 : 0 }}>
                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{product.product_name}</Text>
                     <Text style={{ marginTop: 10, fontSize: 14 }}>{product.product_description}</Text>
                     {!isEmpty(product.allergens_name) ? (
@@ -419,7 +419,7 @@ export default Extra = (props) => {
                 </View>
                 <TouchableOpacity
                     disabled={minRequired != requiredList.length}
-                    style={[styles.button, { backgroundColor: minRequired != requiredList.length ? '#AAA' : colors.YELLOW.PRIMARY }]}
+                    style={[styles.button, { backgroundColor: minRequired != requiredList.length ? '#AAA' : '#F78F1E' }]}
                     onPress={() => onAdd()}
                 >
                     <Text style={styles.buttonText}>{i18n.translate('Add to the cart')}</Text>
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
         width: 90,
     },
     content: {
-        paddingTop: HEADER_MAX_HEIGHT - 5
+        paddingTop: HEADER_MAX_HEIGHT
     },
     allergenList: {
         marginTop: 12,
@@ -662,14 +662,14 @@ const styles = StyleSheet.create({
     },
     button: {
         width: '60%',
-        padding: 8,
+        height: 42,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 8
+        borderRadius: 6
     },
     buttonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 13,
+        fontWeight: '600',
         color: colors.WHITE
     },
     showHideExtras: {

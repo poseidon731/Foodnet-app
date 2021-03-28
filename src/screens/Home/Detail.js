@@ -7,7 +7,7 @@ import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
 import { setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
-import { isEmpty } from '@utils/functions';
+import { isEmpty, callOnceInInterval } from '@utils/functions';
 import { Menu, Information, Reviews } from '@components';
 import { common, colors } from '@constants/themes';
 import { RES_URL } from '@constants/configs';
@@ -254,7 +254,7 @@ export default Detail = (props) => {
                                     onSubCategory={(value) => setSubCategory(value)}
                                     // onSubCategory={(value) => console.log(value)}
                                     onSearch={(value) => { setSearch(value); console.log("set search - ", value); }}
-                                    onExtra={(product, count) => props.navigation.push('Extra', { restaurant, product, count })}
+                                    onExtra={(product, count) => callOnceInInterval(() => props.navigation.push('Extra', { restaurant, product, count }))}
                                     onCart={() => props.navigation.navigate('Cart')}
                                     onModal={() => setModal(true)}
                                 />;
@@ -336,12 +336,12 @@ export default Detail = (props) => {
                     </TouchableOpacity>
                 </View>
             )}
-            {visible && (
+            {/* {visible && (
                 <TouchableOpacity style={styles.toast} onPress={() => setVisible(false)}>
                     <CheckIcon />
                     <Text style={styles.toastText}>{i18n.translate('Product in the cart')}</Text>
                 </TouchableOpacity>
-            )}
+            )} */}
             {modal && (
                 <View style={styles.modalContainer}>
                     <View style={styles.overlay} />
@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         paddingHorizontal: 10,
-        paddingVertical: 10,
+        height: 42,
         borderRadius: 6,
         backgroundColor: "#F78F1E",
         width: wp('100%') - 30,

@@ -2051,11 +2051,11 @@ const styles = StyleSheet.create({
   },
   orderButton: {
     width: "100%",
-    height: 38,
+    height: 42,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
-    backgroundColor: colors.YELLOW.PRIMARY,
+    backgroundColor: '#F78F1E',
   },
   button: {
     marginBottom: 20,

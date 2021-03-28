@@ -323,7 +323,7 @@ export default CartIndex = (props) => {
               styles.button,
               disabled
                 ? common.backColorGrey
-                : common.backColorYellow,
+                : '#F78F1E',
             ]}
             disabled={
               disabled
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    height: 38,
+    height: 42,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,

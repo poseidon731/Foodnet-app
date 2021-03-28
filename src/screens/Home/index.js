@@ -11,6 +11,7 @@ import { Cities, Dashboard, Filters } from '@components';
 import { common, colors } from '@constants/themes';
 import { CartYellowIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
+import { callOnceInInterval } from '@utils/functions';
 
 export default Home = (props) => {
     const dispatch = useDispatch();
@@ -173,7 +174,7 @@ export default Home = (props) => {
                         onFilter={() => setFilterStatus(!filterStatus)}
                         onRefresh={() => setRefresh(true)}
                         onSearch={(value) => setSearch(value)}
-                        onDetail={(item) => props.navigation.push('Detail', { restaurant: item })}
+                        onDetail={(item) => callOnceInInterval(() => props.navigation.push('Detail', { restaurant: item }))}
                     /> :
                     <Filters
                         filters={filters}
