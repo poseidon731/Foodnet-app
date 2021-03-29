@@ -707,12 +707,12 @@ const styles = StyleSheet.create({
     },
     goToCartText: {
         color: colors.WHITE,
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: '600'
     },
     priceText: {
         color: colors.WHITE,
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: '700'
     }
 });
