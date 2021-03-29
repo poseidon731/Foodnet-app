@@ -30,6 +30,7 @@ export default Home = (props) => {
         setCityStatus(false);
         setFilterStatus(false);
         dispatch(setLoading(true));
+        console.log("index home = ", logged ? user.city.name : city.name);
         FoodService.promotion(country, logged ? user.city.name : city.name)
             .then((response) => {
                 setRefresh(false);
@@ -78,9 +79,9 @@ export default Home = (props) => {
     }, [search]);
 
     useEffect(() => {
-        function getRestaurantList() {
-            console.log((new Date()).getMinutes() + " : " + (new Date()).getSeconds(), "  ==  get restaurant status");
-            FoodService.promotion(country, logged ? user.city.name : city.name)
+        function getRestaurantList(country, cityName, search, filters) {
+            console.log((new Date()).getMinutes() + " : " + (new Date()).getSeconds(), "  ==  get restaurant status", cityName);
+            FoodService.promotion(country, cityName)
                 .then((response) => {
                     setRefresh(false);
                     if (response.status == 200) {
@@ -93,7 +94,7 @@ export default Home = (props) => {
                 });
 
             if (search == '') {
-                FoodService.all(country, logged ? user.city.name : city.name, search, filters)
+                FoodService.all(country, cityName, search, filters)
                     .then((response) => {
                         dispatch(setLoading(false));
                         setRefresh(false);
@@ -106,7 +107,7 @@ export default Home = (props) => {
                         setRefresh(false);
                     });
             } else {
-                FoodService.result(country, logged ? user.city.name : city.name, search, filters)
+                FoodService.result(country, cityName, search, filters)
                     .then((response) => {
                         setRefresh(false);
                         if (response.status == 200) {
@@ -119,11 +120,11 @@ export default Home = (props) => {
             }
         }
 
-        const interval = setInterval(() => getRestaurantList(), 45000)
+        const interval = setInterval(() => getRestaurantList(country, logged ? user.city.name : city.name, search, filters), 45000)
         return () => {
             clearInterval(interval);
         }
-    }, [])
+    }, [country, user, city, search, filters])
 
     return (
         <Container style={common.container}>
