@@ -179,6 +179,8 @@ export default Menu = (props) => {
     props.subCategory.index
   );
 
+  let _textInput = null;
+
   useEffect(
     () => LogBox.ignoreLogs(["VirtualizedLists should never be nested"]),
     []
@@ -263,7 +265,7 @@ export default Menu = (props) => {
                   : common.borderColorGrey,
               ]}
               onPress={() => {
-                this.textInput.clear();
+                _textInput.clear();
                 props.onCategory(item.item);
               }}
             >
@@ -295,7 +297,7 @@ export default Menu = (props) => {
                   : common.borderColorGrey,
               ]}
               onPress={() => {
-                this.textInput.clear();
+                _textInput.clear();
                 props.onSubCategory(item.item);
               }}
             >
@@ -314,7 +316,7 @@ export default Menu = (props) => {
           enablesReturnKeyAutomatically={true}
           // value={props.search}
           ref={(input) => {
-            this.textInput = input;
+            _textInput = input;
           }}
           containerStyle={styles.textContainer}
           inputContainerStyle={styles.inputContainer}
