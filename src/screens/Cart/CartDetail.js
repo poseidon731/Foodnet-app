@@ -717,7 +717,7 @@ export default CartDetail = (props) => {
         )}
       >
         {!success ? (
-          <View style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }}>
+          <TouchableOpacity style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }} activeOpacity={1} onPress={() => setActive(false)}>
             <Text
               style={[styles.cartText, { marginTop: 10 }]}
               numberOfLines={1}
@@ -1470,7 +1470,7 @@ export default CartDetail = (props) => {
               </TouchableOpacity>
             )}
             <View style={{height: 160}}></View>
-          </View>
+          </TouchableOpacity>
         ) : (
           <View style={styles.success}>
             <View style={common.height50} />
