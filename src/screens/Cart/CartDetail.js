@@ -383,7 +383,6 @@ export default CartDetail = (props) => {
   });
 
   useEffect(() => {
-    console.log("setCities", logged, cityObj.id, citys);
     if (logged) !isEmpty(citys) && getDeliveryAddress();
     else {
       !isEmpty(citys) && getDeliveryPrice((cityObj.id == 0) ? citys[0].id : cityObj.id);
@@ -1424,25 +1423,27 @@ export default CartDetail = (props) => {
                 {i18n.translate("Cash")}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.radioButton} onPress={() => setPayment(2)}>
-              <Icon
-                type="material"
-                name={
-                  payment == 2
-                    ? "radio-button-on"
-                    : "radio-button-off"
-                }
-                color={
-                  payment == 2
-                    ? colors.YELLOW.PRIMARY
-                    : colors.BLACK
-                }
-                size={20}
-              />
-              <Text style={styles.radioText} numberOfLines={1}>
-                {i18n.translate("Credit card at the courier")}
-              </Text>
-            </TouchableOpacity>
+            {restaurant.card == 1 && (
+              <TouchableOpacity style={styles.radioButton} onPress={() => setPayment(2)}>
+                <Icon
+                  type="material"
+                  name={
+                    payment == 2
+                      ? "radio-button-on"
+                      : "radio-button-off"
+                  }
+                  color={
+                    payment == 2
+                      ? colors.YELLOW.PRIMARY
+                      : colors.BLACK
+                  }
+                  size={20}
+                />
+                <Text style={styles.radioText} numberOfLines={1}>
+                  {i18n.translate("Credit card at the courier")}
+                </Text>
+              </TouchableOpacity>
+            )}
             {!logged && (
               <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
                 <Icon

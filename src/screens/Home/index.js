@@ -85,7 +85,7 @@ export default Home = (props) => {
                 .then((response) => {
                     setRefresh(false);
                     if (response.status == 200) {
-                        console.log(response.result[0].restaurant_open);
+                        console.log("restaurant = ", response.result[0]);
                         setPromotion(response.result);
                     }
                 })
