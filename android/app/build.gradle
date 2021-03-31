@@ -133,7 +133,7 @@ android {
         applicationId "com.foodnet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
+        versionCode 6
         versionName "2.0"
         multiDexEnabled true
     }
