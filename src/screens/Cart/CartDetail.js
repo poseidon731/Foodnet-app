@@ -1269,7 +1269,7 @@ export default CartDetail = (props) => {
                 >
                   {i18n.translate("Coupon Codes")}
                 </Text>
-                <Text
+                {/* <Text
                   style={[
                     styles.labelTextNormal1,
                     !isEmpty(errorCouponCode)
@@ -1279,7 +1279,7 @@ export default CartDetail = (props) => {
                 >
                   {" "}
                     ({i18n.translate("If exist")})
-                  </Text>
+                </Text> */}
               </View>
               <View style={styles.couponCodeContainer}>
                 <TextField
@@ -1456,7 +1456,7 @@ export default CartDetail = (props) => {
                 </Text>
               </TouchableOpacity>
             )}
-            {!logged && (
+            {/* {!logged && (
               <TouchableOpacity style={styles.rememberMe} onPress={() => setPrivacy(!privacy)}>
                 <Icon
                   type='material-community'
@@ -1468,8 +1468,8 @@ export default CartDetail = (props) => {
                   <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/privacy')}>{i18n.translate('Privacy')}</Text>
                 </Text>
               </TouchableOpacity>
-            )}
-            <View style={{height: 160}}></View>
+            )} */}
+            <View style={{ height: 160 }}></View>
           </TouchableOpacity>
         ) : (
           <View style={styles.success}>
@@ -1604,79 +1604,79 @@ export default CartDetail = (props) => {
               {i18n.translate("Final")}
             </Text>
             <Text style={styles.orderPrice}>
-              {(couponActive == 0) ? (total + (total > freeDelivery ? 0 : deliveryPrice)).toFixed(2) : finalPrice.toFixedF(2)}{" "}{i18n.translate("lei")}
+              {(couponActive == 0) ? (total + (total > freeDelivery ? 0 : deliveryPrice)).toFixed(2) : finalPrice.toFixed(2)}{" "}{i18n.translate("lei")}
             </Text>
           </View>
           <View
-              style={styles.orderButtonView}
-            >
-              {logged ? (
-                <TouchableOpacity
-                  style={[
-                    styles.orderButton,
-                    (isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)
-                      ? common.backColorGrey
-                      : common.backColorYellow,
-                  ]}
-                  disabled={
-                    disabled ||
-                    (isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+            style={styles.orderButtonView}
+          >
+            {logged ? (
+              <TouchableOpacity
+                style={[
+                  styles.orderButton,
+                  (isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
                     (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
                     !validateBetween(comment, 0, 300)
-                  }
-                  onPress={() => onOrder()}
-                >
-                  {minimumOrderPrice > finalPrice ? (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("More")}{" "}
-                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
-                      {i18n.translate("lei")}
-                    </Text>
-                  ) : (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("Order Now")}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={[
-                    styles.orderButton,
-                    ((isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
-                      ? common.backColorGrey
-                      : common.backColorYellow,
-                  ]}
-                  disabled={
-                    disabled ||
-                    ((isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
-                  }
-                  onPress={() => onOrder()}
-                >
-                  {minimumOrderPrice > finalPrice ? (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("More")}{" "}
-                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
-                      {i18n.translate("lei")}
-                    </Text>
-                  ) : (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("Order Now")}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              )}
+                    ? common.backColorGrey
+                    : common.backColorYellow,
+                ]}
+                disabled={
+                  disabled ||
+                  (isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                  (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                  !validateBetween(comment, 0, 300)
+                }
+                onPress={() => onOrder()}
+              >
+                {minimumOrderPrice > finalPrice ? (
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("More")}{" "}
+                    {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
+                    {i18n.translate("lei")}
+                  </Text>
+                ) : (
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("Order Now")}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[
+                  styles.orderButton,
+                  ((isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                    !validateBetween(comment, 0, 300)) || (!termOfService || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
+                    ? common.backColorGrey
+                    : common.backColorYellow,
+                ]}
+                disabled={
+                  disabled ||
+                  ((isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                    !validateBetween(comment, 0, 300)) || (!termOfService || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
+                }
+                onPress={() => onOrder()}
+              >
+                {minimumOrderPrice > finalPrice ? (
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("More")}{" "}
+                    {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
+                    {i18n.translate("lei")}
+                  </Text>
+                ) : (
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("Order Now")}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            )}
 
-            </View>
+          </View>
         </View>
       )}
       {visible && (
