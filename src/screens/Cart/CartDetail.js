@@ -574,7 +574,7 @@ export default CartDetail = (props) => {
         ProfileService.getDeliveryPrice(user.token, city_id, cartRestaurant.restaurant_id)
           .then((response) => {
             dispatch(setLoading(false));
-            console.log("delivery price ==== ", response);
+            console.log("******  city id", city_id, " : restaurant id = ", cartRestaurant.restaurant_id, " : delivery price ==== ", response);
             if (response.status == 200) {
               if (response.result.length > 0) {
                 let free_delivery = (response.result[0].free_delivery == null ? 0 : response.result[0].free_delivery);
