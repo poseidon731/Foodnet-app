@@ -227,6 +227,18 @@ const FoodService = {
 
             // return data;
         });
+    },
+    getUpSellProducts: function (restaurant_id, country) {
+
+        return axios.post('/product/upsell', {
+            restaurantId: restaurant_id,
+            lang: country
+        }).then((response) => {
+            return response.data;
+        }).catch((error) => {
+            return {};
+        })
+
     }
 }
 
