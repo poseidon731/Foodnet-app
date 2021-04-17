@@ -183,7 +183,7 @@ const UpSellProductItem = ({
   const [loader, setLoader] = useState(true);
 
   return (
-    <Card key={`product${index}`} style={styles.product}>
+    <TouchableOpacity key={`product${index}`} style={styles.product} activeOpacity={1}>
       <View style={styles.productItemGroup}>
         <FastImage
           style={styles.productImage}
@@ -219,7 +219,7 @@ const UpSellProductItem = ({
 
         </View>
       </View>
-    </Card>
+    </TouchableOpacity>
   );
 };
 
