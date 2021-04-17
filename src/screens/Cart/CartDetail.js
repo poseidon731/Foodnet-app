@@ -877,7 +877,7 @@ export default CartDetail = (props) => {
               )}
             />
             {!isEmpty(upSellProducts) && (
-              <Fragment>
+              <View>
                 <Text style={styles.upsellproduct_title}>{i18n.translate('Popular choices for your order')}</Text>
                 <FlatList
                   showsHorizontalScrollIndicator={false}
@@ -893,7 +893,7 @@ export default CartDetail = (props) => {
                     />
                   )}
                 />
-              </Fragment>
+              </View>
             )}
             <View style={styles.amount}>
               <Text style={styles.priceGrey}>
