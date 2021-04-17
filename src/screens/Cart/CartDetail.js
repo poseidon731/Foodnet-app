@@ -34,6 +34,7 @@ import { ProfileService, FoodService, AuthService } from "@modules/services";
 import { isEmpty, validateBetween, validateName, validateMobile, validateEmail } from "@utils/functions";
 import { common, colors } from "@constants/themes";
 import { RES_URL } from "@constants/configs";
+import FastImage from "react-native-fast-image";
 import {
   BackWhiteIcon,
   TrustIcon,
@@ -58,11 +59,28 @@ const CartItem = ({
   onDelete,
 }) => {
   // const [count, setCount] = useState(cartProduct.quantity);
+  const cartFinalPrice = () => {
+    let final = cartProduct.productPrice;
+
+    cartProduct.extras.map((extra) => {
+      final += extra.extraPrice;
+    })
+
+    if(!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0) {
+      final += cartProduct.boxPrice;
+    }
+
+    final = final * cartProduct.quantity;
+
+    return final;
+  }
+
   return (
     <View key={`cart${index}`} style={styles.cart}>
       <View style={styles.cartMain}>
         <Text style={styles.cartText}>
-          {cartProduct.quantity}*{cartProduct.productName}
+          {cartProduct.quantity}*{cartProduct.productName} - {(cartProduct.productPrice * cartProduct.quantity).toFixed(2)}{" "}
+          {i18n.translate("lei")}
         </Text>
         <TouchableOpacity
           style={{ marginLeft: 20 }}
@@ -100,10 +118,6 @@ const CartItem = ({
         : null}
       <View style={styles.cartBottom}>
         <View style={styles.cartLeft}>
-          <Text style={styles.price}>
-            {(cartProduct.productPrice * cartProduct.quantity).toFixed(2)}{" "}
-            {i18n.translate("lei")}
-          </Text>
           {!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0 && (
             <Text style={styles.boxPrice}>
               {i18n.translate("Box price")}:{" "}
@@ -111,6 +125,11 @@ const CartItem = ({
               {i18n.translate("lei")}
             </Text>
           )}
+          <Text style={styles.price}>
+            {cartFinalPrice().toFixed(2)}{" "}
+            {i18n.translate("lei")}
+          </Text>
+
         </View>
         <View style={styles.cartButton}>
           <TouchableOpacity
@@ -155,6 +174,55 @@ const CartItem = ({
     </View>
   );
 };
+
+const UpSellProductItem = ({
+  upSellProduct,
+  index,
+  onSelectUpSellProduct,
+}) => {
+  const [loader, setLoader] = useState(true);
+
+  return (
+    <Card key={`product${index}`} style={styles.product}>
+      <View style={styles.productItemGroup}>
+        <FastImage
+          style={styles.productImage}
+          source={{ uri: RES_URL + upSellProduct.product_imageUrl }}
+          resizeMode="cover"
+          onLoadEnd={(e) => setLoader(false)}
+        />
+        <View style={styles.productItem} >
+          <View style={styles.productItemText}>
+            <Text style={styles.productTitle}>
+              {upSellProduct.product_name}
+            </Text>
+            <Text style={styles.productDescription} numberOfLines={1}>
+              {upSellProduct.product_description}
+            </Text>
+          </View>
+          <View style={styles.productItemBottom}>
+            <Text style={styles.productPrice}>
+              {upSellProduct.product_price.toFixed(2)} {i18n.translate("lei")}
+            </Text>
+            <TouchableOpacity
+              style={styles.plusButton}
+              onPress={() => onSelectUpSellProduct(upSellProduct)}
+            >
+              <Icon
+                type="material-community"
+                name="plus"
+                color={colors.WHITE}
+                size={22}
+              />
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </View>
+    </Card>
+  );
+};
+
 
 const HEADER_MAX_HEIGHT = Platform.OS === "ios" ? 300 : 260;
 const HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 110 : 60;
@@ -241,6 +309,8 @@ export default CartDetail = (props) => {
 
   const [termOfService, setTermOfService] = useState(false);
   const [privacy, setPrivacy] = useState(false);
+
+  const [upSellProducts, setUpSellProducts] = useState([]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -703,6 +773,72 @@ export default CartDetail = (props) => {
     );
   };
 
+  useEffect(() => {
+    dispatch(setLoading(true));
+    FoodService.getUpSellProducts(cartRestaurant.restaurant_id, country)
+      .then((response) => {
+        dispatch(setLoading(false));
+        if (response.status == 200) {
+          setUpSellProducts(response.result);
+        }
+        else {
+          setUpSellProducts([]);
+        }
+      })
+      .catch(error => {
+        dispatch(setLoading(false));
+        setUpSellProducts([]);
+      })
+
+    // FoodService.products( "en", 1, 1, 1, 1, "")
+    //   .then(async (response) => {
+    //     dispatch(setLoading(false));
+    //     if (response.status == 200) {
+    //       setUpSellProducts(response.result);
+    //     } else {
+    //       setUpSellProducts([]);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     dispatch(setLoading(false));
+    //     setUpSellProducts([]);
+    //   });
+  }, []);
+
+  const onSelectUpSellProduct = (item) => {
+    console.log(item);
+    // if (item.modal == 0) // add cart
+    // {
+    //   var counter = cartProducts.length + 1;
+    //   cartProducts.push({
+    //     cartId: Date.now(),
+    //     variantId: item.variant_id,
+    //     productId: item.product_id,
+    //     productName: item.product_name,
+    //     productDescription: item.product_description,
+    //     allergens: item.allergens_name,
+    //     productPrice: item.product_price,
+    //     boxPrice: isEmpty(item.box_price) ? 0 : item.box_price,
+    //     quantity: 1,
+    //     message: '',
+    //     extras: [],
+    //     counter
+    //   });
+    //   var totalBadge = 0;
+    //   cartProducts.map((cartProduct, key) => {
+    //     totalBadge += cartProduct.quantity;
+    //   });
+
+    //   dispatch(setCartProducts(cartProducts));
+    //   dispatch(setCartBadge(totalBadge));
+    //   // dispatch(setCartToast(!cartToast));
+    // }
+    // else if (item.modal == 1) //go to extra
+    // {
+    props.navigation.push('CartExtra', { restaurant: cartRestaurant, product: item, count: 1 })
+    // }
+  }
+
   return (
     <SafeAreaView style={styles.saveArea}>
       <Animated.ScrollView
@@ -740,6 +876,25 @@ export default CartDetail = (props) => {
                 />
               )}
             />
+            {!isEmpty(upSellProducts) && (
+              <Fragment>
+                <Text style={styles.upsellproduct_title}>{i18n.translate('Popular choices for your order')}</Text>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal={true}
+                  data={upSellProducts}
+                  keyExtractor={(upSellProduct, index) => index.toString()}
+                  renderItem={(upSellProduct, index) => (
+                    <UpSellProductItem
+                      upSellProduct={upSellProduct.item}
+                      onSelectUpSellProduct={(item) =>
+                        onSelectUpSellProduct(item)
+                      }
+                    />
+                  )}
+                />
+              </Fragment>
+            )}
             <View style={styles.amount}>
               <Text style={styles.priceGrey}>
                 {i18n.translate("Total")}: {total.toFixed(2)}{" "}
@@ -2143,7 +2298,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   boxPrice: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#999",
   },
 
@@ -2462,5 +2617,96 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: '#FF000089'
-  }
+  },
+  upsellproduct_title: {
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 24,
+    marginTop: 12,
+    marginBottom: 8
+  },
+  product: {
+    zIndex: 9999,
+    marginBottom: 10,
+    width: wp("80%") - 40,
+    marginRight: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#C4C4C4',
+    backgroundColor: colors.WHITE,
+    shadowColor: "rgba(1, 1, 1, 0.6)",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  productItemGroup: {
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    display: 'flex'
+  },
+  productItem: {
+    width: '70%',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-start',
+    alignContent: 'space-between',
+    paddingTop: 10,
+    paddingRight: 20,
+    paddingBottom: 10
+  },
+  productItemText: {
+    width: '100%'
+  },
+  productImage: {
+    width: "30%",
+    minHeight: 100,
+    height: "100%",
+    borderTopLeftRadius: 6,
+    borderBottomLeftRadius: 6,
+    borderRightWidth: 1,
+    borderRightColor: '#C4C4C4',
+    marginRight: 8
+  },
+  productTitle: {
+    width: "100%",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#111",
+  },
+  productDescription: {
+    marginTop: 8,
+    width: "100%",
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 16,
+    color: "#666",
+  },
+  productItemBottom: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // alignSelf: 'flex-start',
+    marginTop: 10
+  },
+  productPrice: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.YELLOW.PRIMARY,
+  },
+  plusButton: {
+    marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 25,
+    height: 25,
+    borderRadius: 15,
+    borderWidth: 1,
+    backgroundColor: '#F78F1E',
+    borderColor: colors.WHITE,
+  },
 });

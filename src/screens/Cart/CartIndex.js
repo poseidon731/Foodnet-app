@@ -39,11 +39,28 @@ const CartItem = ({
   onSelect,
   onDelete,
 }) => {
+  const cartFinalPrice = () => {
+    let final = cartProduct.productPrice;
+
+    cartProduct.extras.map((extra) => {
+      final += extra.extraPrice;
+    })
+
+    if(!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0) {
+      final += cartProduct.boxPrice;
+    }
+
+    final = final * cartProduct.quantity;
+
+    return final;
+  }
+
   return (
     <View key={`cart${index}`} style={styles.cart}>
       <View style={styles.cartMain}>
         <Text style={styles.cartText}>
-          {cartProduct.quantity}*{cartProduct.productName}
+          {cartProduct.quantity}*{cartProduct.productName} - {(cartProduct.productPrice * cartProduct.quantity).toFixed(2)}{" "}
+          {i18n.translate("lei")}
         </Text>
         <TouchableOpacity
           style={{ marginLeft: 20 }}
@@ -80,10 +97,6 @@ const CartItem = ({
         : null}
       <View style={styles.cartBottom}>
         <View style={styles.cartLeft}>
-          <Text style={styles.price}>
-            {(cartProduct.productPrice * cartProduct.quantity).toFixed(2)}{" "}
-            {i18n.translate("lei")}
-          </Text>
           {!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0 && (
             <Text style={styles.boxPrice}>
               {i18n.translate("Box price")}:{" "}
@@ -91,6 +104,10 @@ const CartItem = ({
               {i18n.translate("lei")}
             </Text>
           )}
+          <Text style={styles.price}>
+            {cartFinalPrice().toFixed(2)}{" "}
+            {i18n.translate("lei")}
+          </Text>
         </View>
         <View style={styles.cartButton}>
           <TouchableOpacity
@@ -291,7 +308,7 @@ export default CartIndex = (props) => {
         dispatch(setLoading(false));
         setUpSellProducts([]);
       })
-    
+
     // FoodService.products( "en", 1, 1, 1, 1, "")
     //   .then(async (response) => {
     //     dispatch(setLoading(false));
@@ -337,7 +354,7 @@ export default CartIndex = (props) => {
     // }
     // else if (item.modal == 1) //go to extra
     // {
-      props.navigation.push('CartExtra', { restaurant: cartRestaurant, product: item, count: 1 })
+    props.navigation.push('CartExtra', { restaurant: cartRestaurant, product: item, count: 1 })
     // }
   }
 
@@ -621,7 +638,7 @@ const styles = StyleSheet.create({
     color: colors.YELLOW.PRIMARY,
   },
   boxPrice: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#999",
   },
 
@@ -830,10 +847,10 @@ const styles = StyleSheet.create({
   },
   product: {
     marginBottom: 10,
-    width: wp("90%") - 40,
+    width: wp("80%") - 40,
     marginRight: 10,
     borderRadius: 6,
-    shadowColor: "rgba(1, 1, 1, 0.8)",
+    shadowColor: "rgba(1, 1, 1, 0.6)",
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
     shadowRadius: 5,
@@ -846,7 +863,6 @@ const styles = StyleSheet.create({
     display: 'flex'
   },
   productItem: {
-    paddingRight: 5,
     width: '70%',
     display: 'flex',
     flexDirection: 'row',
@@ -866,6 +882,8 @@ const styles = StyleSheet.create({
     height: "100%",
     borderTopLeftRadius: 6,
     borderBottomLeftRadius: 6,
+    borderRightWidth: 1,
+    borderRightColor: '#C4C4C4',
     marginRight: 8
   },
   productTitle: {
