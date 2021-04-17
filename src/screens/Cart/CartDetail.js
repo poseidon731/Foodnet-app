@@ -311,7 +311,6 @@ export default CartDetail = (props) => {
   const [privacy, setPrivacy] = useState(false);
 
   const [upSellProducts, setUpSellProducts] = useState([]);
-  const [upSellActive, setUpSellActive] = useState(false);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -844,7 +843,7 @@ export default CartDetail = (props) => {
     <SafeAreaView style={styles.saveArea}>
       <Animated.ScrollView
         contentContainerStyle={styles.content}
-        scrollEnabled={active ? false : upSellActive? false : true}
+        scrollEnabled={active ? false : true}
         scrollEventThrottle={16}
         scrollToOverflowEnabled={true}
         onScroll={Animated.event(
@@ -853,7 +852,7 @@ export default CartDetail = (props) => {
         )}
       >
         {!success ? (
-          <TouchableOpacity style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }} activeOpacity={1} onPress={() => {setActive(false); setUpSellActive(false);}}>
+          <TouchableOpacity style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }} activeOpacity={1} onPress={() => setActive(false)}>
             <Text
               style={[styles.cartText, { marginTop: 10 }]}
               numberOfLines={1}
@@ -878,7 +877,7 @@ export default CartDetail = (props) => {
               )}
             />
             {!isEmpty(upSellProducts) && (
-              <TouchableOpacity opPress={() => setUpSellActive(true)}>
+              <View>
                 <Text style={styles.upsellproduct_title}>{i18n.translate('Popular choices for your order')}</Text>
                 <FlatList
                   showsHorizontalScrollIndicator={false}
@@ -894,7 +893,7 @@ export default CartDetail = (props) => {
                     />
                   )}
                 />
-              </TouchableOpacity>
+              </View>
             )}
             <View style={styles.amount}>
               <Text style={styles.priceGrey}>
