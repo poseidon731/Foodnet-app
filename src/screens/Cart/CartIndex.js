@@ -850,7 +850,7 @@ const styles = StyleSheet.create({
     width: wp("80%") - 40,
     marginRight: 10,
     borderRadius: 6,
-    shadowColor: "rgba(1, 1, 1, 0.6)",
+    shadowColor: "rgba(0, 0, 0, 0.1)",
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
     shadowRadius: 5,
@@ -882,8 +882,8 @@ const styles = StyleSheet.create({
     height: "100%",
     borderTopLeftRadius: 6,
     borderBottomLeftRadius: 6,
-    borderRightWidth: 1,
-    borderRightColor: '#C4C4C4',
+    // borderRightWidth: 1,
+    // borderRightColor: '#C4C4C4',
     marginRight: 8
   },
   productTitle: {
