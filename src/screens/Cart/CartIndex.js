@@ -219,8 +219,10 @@ export default CartIndex = (props) => {
   const [visibleNotiMinus, setVisibleNotiMinus] = useState(0);
   const [isExtra, setIsExtra] = useState(0);
   const [upSellProducts, setUpSellProducts] = useState([]);
+  const [navi, setNavi] = useState(true);
 
   useEffect(() => {
+    console.log("cart index calculating total amount");
     var totalAmount = 0;
     cartProducts.map((cartProduct, key) => {
       totalAmount += cartProduct.quantity * cartProduct.productPrice;
@@ -231,7 +233,18 @@ export default CartIndex = (props) => {
       });
     });
     setTotal(totalAmount);
-  });
+    if (isEmpty(cartProducts) && navi) {
+      console.log("cart screen empty cartproducts");
+      setTimeout(() => {
+        props.navigation.goBack(null);
+      }, 300);
+      setNavi(false);
+
+      setTimeout(() => {
+        setNavi(true);
+      }, 2000);
+    }
+  }, [cartProducts]);
 
   const onDelete = (check, item, count) => {
     setType(false);
@@ -279,7 +292,12 @@ export default CartIndex = (props) => {
       dispatch(setCartBadge(totalBadge));
       dispatch(setCartProducts(result));
       // dispatch(setCartBadge(cartBadge - 1));
-      if (isEmpty(result)) props.navigation.goBack();
+      if (isEmpty(result)) {
+        console.log("cart screen empty cart ");
+        setTimeout(() => {
+          props.navigation.goBack(null);
+        }, 50);
+      }
     }
     setVisible(false);
   };
@@ -567,7 +585,9 @@ const styles = StyleSheet.create({
   },
   cartItemContent: {
     flex: 1,
-    padding: 20
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    paddingBottom: 20
   },
   cartItemtContentBottom: {
     height: 160,
@@ -843,7 +863,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     lineHeight: 24,
-    marginTop: -5,
+    marginTop: 5,
     marginBottom: 8
   },
   product: {

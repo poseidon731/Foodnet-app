@@ -448,9 +448,9 @@ export default CartDetail = (props) => {
       setTimeout(() => {
         props.navigation.goBack(null);
       }, 50);
-
+      setNavi(false);
     }
-  });
+  }, [cartProducts]);
 
   useEffect(() => {
     if (logged) !isEmpty(citys) && getDeliveryAddress();
@@ -775,7 +775,7 @@ export default CartDetail = (props) => {
 
   useEffect(() => {
     dispatch(setLoading(true));
-    FoodService.getUpSellProducts(cartRestaurant.restaurant_id, country)
+    FoodService.getDownSellProducts(cartRestaurant.restaurant_id, country)
       .then((response) => {
         dispatch(setLoading(false));
         if (response.status == 200) {

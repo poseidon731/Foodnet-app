@@ -239,6 +239,18 @@ const FoodService = {
             return {};
         })
 
+    },
+    getDownSellProducts: function (restaurant_id, country) {
+
+        return axios.post('/product/downsell', {
+            restaurantId: restaurant_id,
+            lang: country
+        }).then((response) => {
+            return response.data;
+        }).catch((error) => {
+            return {};
+        })
+
     }
 }
 
