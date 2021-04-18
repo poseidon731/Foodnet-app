@@ -89,7 +89,7 @@ const CartItem = ({
           <TrustIcon />
         </TouchableOpacity>
       </View>
-      <Text style={styles.allergen}>{cartProduct.productDescription}</Text>
+      {/* <Text style={styles.allergen}>{cartProduct.productDescription}</Text>
       {!isEmpty(cartProduct.allergens) ? (
         <Text style={styles.allergenList}>
           ({i18n.translate("Allergens")}:{" "}
@@ -101,7 +101,7 @@ const CartItem = ({
           ))}
           )
         </Text>
-      ) : null}
+      ) : null} */}
       {!isEmpty(cartProduct.extras)
         ? // <Text style={styles.extraList}>+{cartProduct.extras.map((extra, key) => (
         //     <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
@@ -2258,7 +2258,7 @@ const styles = StyleSheet.create({
     width: "100%",
     // height: 30,
     marginTop: 15,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   cartText: {
     width: "70%",
@@ -2278,7 +2278,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   extraList: {
-    marginTop: 10,
+    marginTop: 5,
     width: "100%",
     fontSize: 16,
     color: colors.BLACK,
@@ -2288,11 +2288,12 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
   cartBottom: {
+    marginTop: 7,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    height: 50,
+    // height: 50,
   },
   cartLeft: {
     alignItems: "flex-start",
