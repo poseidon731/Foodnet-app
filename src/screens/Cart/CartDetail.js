@@ -2632,7 +2632,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#C4C4C4',
+    borderColor: colors.WHITE,
     backgroundColor: colors.WHITE,
     shadowColor: "rgba(0, 0, 0, 0.1)",
     shadowOffset: { width: 4, height: 4 },

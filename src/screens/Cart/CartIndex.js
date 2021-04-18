@@ -294,6 +294,7 @@ export default CartIndex = (props) => {
 
   useEffect(() => {
     dispatch(setLoading(true));
+    console.log("++++++++getting upsell list ++++++");
     FoodService.getUpSellProducts(cartRestaurant.restaurant_id, country)
       .then((response) => {
         dispatch(setLoading(false));
@@ -322,7 +323,7 @@ export default CartIndex = (props) => {
     //     dispatch(setLoading(false));
     //     setUpSellProducts([]);
     //   });
-  }, []);
+  }, [cartRestaurant]);
 
   const onSelectUpSellProduct = (item) => {
     console.log(item);
@@ -418,6 +419,25 @@ export default CartIndex = (props) => {
             </Text>
           </View>
         )}
+        {!isEmpty(upSellProducts) && (
+          <Fragment>
+            <Text style={styles.upsellproduct_title}>{i18n.translate('Popular choices for your order')}</Text>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              data={upSellProducts}
+              keyExtractor={(upSellProduct, index) => index.toString()}
+              renderItem={(upSellProduct, index) => (
+                <UpSellProductItem
+                  upSellProduct={upSellProduct.item}
+                  onSelectUpSellProduct={(item) =>
+                    onSelectUpSellProduct(item)
+                  }
+                />
+              )}
+            />
+          </Fragment>
+        )}
         {!isEmpty(cartProducts) && (
           <Fragment>
             <FlatList
@@ -433,25 +453,6 @@ export default CartIndex = (props) => {
                   }
                   onDelete={(check, item, count) =>
                     onDelete(check, item, count)
-                  }
-                />
-              )}
-            />
-          </Fragment>
-        )}
-        {!isEmpty(upSellProducts) && (
-          <Fragment>
-            <Text style={styles.upsellproduct_title}>{i18n.translate('Popular choices for your order')}</Text>
-            <FlatList
-              showsHorizontalScrollIndicator={false}
-              horizontal={true}
-              data={upSellProducts}
-              keyExtractor={(upSellProduct, index) => index.toString()}
-              renderItem={(upSellProduct, index) => (
-                <UpSellProductItem
-                  upSellProduct={upSellProduct.item}
-                  onSelectUpSellProduct={(item) =>
-                    onSelectUpSellProduct(item)
                   }
                 />
               )}
@@ -592,7 +593,7 @@ const styles = StyleSheet.create({
     width: "100%",
     // height: 30,
     marginTop: 15,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   cartText: {
     width: "70%",
@@ -612,7 +613,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   extraList: {
-    marginTop: 15,
+    marginTop: 5,
     width: "100%",
     fontSize: 16,
     color: colors.BLACK,
@@ -622,12 +623,12 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
   cartBottom: {
-    marginTop: 10,
+    marginTop: 7,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    height: 50,
+    // height: 50,
   },
   cartLeft: {
     alignItems: "flex-start",
@@ -842,7 +843,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     lineHeight: 24,
-    marginTop: 12,
+    marginTop: -5,
     marginBottom: 8
   },
   product: {
@@ -850,6 +851,8 @@ const styles = StyleSheet.create({
     width: wp("80%") - 40,
     marginRight: 10,
     borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.WHITE,
     shadowColor: "rgba(0, 0, 0, 0.1)",
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
