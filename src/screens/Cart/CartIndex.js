@@ -221,26 +221,16 @@ export default CartIndex = (props) => {
   const [upSellProducts, setUpSellProducts] = useState([]);
   const [navi, setNavi] = useState(true);
 
-  // useEffect(() => {
-  //   const unsubscribe = props.navigation.addListener('focus', () => {
-  //     console.log("order detail focus ---- ");
-  //     var totalAmount = 0;
-  //     cartProducts.map((cartProduct, key) => {
-  //       totalAmount += cartProduct.quantity * cartProduct.productPrice;
-  //       if (cartProduct.boxPrice)
-  //         totalAmount += cartProduct.quantity * cartProduct.boxPrice;
-  //       cartProduct.extras.map((extra, key) => {
-  //         totalAmount += extra.quantity * extra.extraPrice;
-  //       });
-  //     });
-  //     console.log(totalAmount);
-  //     setTotal(totalAmount);
-  //   });
-  //   return unsubscribe;
-  // }, [props.navigation]);
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      console.log("order detail focus ---- ");
+      setNavi(true);
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   useEffect(() => {
-    console.log("cart index calculating total amount");
+    console.log("cart index calculating total amount -= ", navi);
     var totalAmount = 0;
     cartProducts.map((cartProduct, key) => {
       totalAmount += cartProduct.quantity * cartProduct.productPrice;
@@ -255,17 +245,14 @@ export default CartIndex = (props) => {
 
   useEffect(() => {
     if (isEmpty(cartProducts) && navi) {
-      console.log("cart screen empty cartproducts");
+      console.log("cart screen empty cartproducts === ", navi);
+      setNavi(false);
       setTimeout(() => {
         props.navigation.goBack(null);
       }, 300);
-      setNavi(false);
 
-      setTimeout(() => {
-        setNavi(true);
-      }, 5000);
     }
-  }, [cartProducts]);
+  }, [cartProducts, navi]);
 
   const onDelete = (check, item, count) => {
     setType(false);
@@ -326,9 +313,10 @@ export default CartIndex = (props) => {
       // dispatch(setCartBadge(cartBadge - 1));
       if (isEmpty(result)) {
         console.log("cart screen empty cart ");
+        setNavi(false);
         setTimeout(() => {
           props.navigation.goBack(null);
-        }, 50);
+        }, 300);
       }
     }
     setVisible(false);
@@ -339,6 +327,7 @@ export default CartIndex = (props) => {
     dispatch(setCartProducts([]));
     setVisible(false);
 
+    setNavi(false);
     props.navigation.goBack();
   };
 
@@ -405,6 +394,7 @@ export default CartIndex = (props) => {
     // }
     // else if (item.modal == 1) //go to extra
     // {
+      setNavi(false);
     props.navigation.push('CartExtra', { restaurant: cartRestaurant, product: item, count: 1 })
     // }
   }
@@ -414,7 +404,7 @@ export default CartIndex = (props) => {
       {/* <StatusBar /> */}
       <Header style={common.header}>
         <View style={common.headerLeft}>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <TouchableOpacity onPress={() => {setNavi(false);props.navigation.goBack();}}>
             <Icon
               type="material"
               name="arrow-back"
@@ -535,6 +525,7 @@ export default CartIndex = (props) => {
             }
             onPress={() => {
               setDisabled(true);
+              setNavi(false);
               props.navigation.push("CartDetail");
               setTimeout(() => setDisabled(false), 1000);
             }}

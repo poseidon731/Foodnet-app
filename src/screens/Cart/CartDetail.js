@@ -443,10 +443,13 @@ export default CartDetail = (props) => {
       // setNavi(false);
       // props.navigation.pop();
     }
+  });
+
+  useEffect(() => {
     if (isEmpty(cartProducts) && navi) {
       console.log("empty cartproducts");
       setTimeout(() => {
-        props.navigation.goBack(null);
+        props.navigation.pop();
       }, 50);
       setNavi(false);
     }
