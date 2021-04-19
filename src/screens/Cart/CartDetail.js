@@ -66,7 +66,7 @@ const CartItem = ({
       final += extra.extraPrice;
     })
 
-    if(!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0) {
+    if (!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0) {
       final += cartProduct.boxPrice;
     }
 
@@ -482,6 +482,17 @@ export default CartDetail = (props) => {
       });
       dispatch(setCartProducts(cartProducts));
       dispatch(setCartBadge(totalBadge));
+
+      var totalAmount = 0;
+      cartProducts.map((cartProduct, key) => {
+        totalAmount += cartProduct.quantity * cartProduct.productPrice;
+        if (cartProduct.boxPrice)
+          totalAmount += cartProduct.quantity * cartProduct.boxPrice;
+        cartProduct.extras.map((extra, key) => {
+          totalAmount += extra.quantity * extra.extraPrice;
+        });
+      });
+      setTotal(totalAmount);
 
       if (cartProducts[index].extras.length != 0) setIsExtra(1);
       else setIsExtra(0);

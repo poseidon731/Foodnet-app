@@ -46,7 +46,7 @@ const CartItem = ({
       final += extra.extraPrice;
     })
 
-    if(!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0) {
+    if (!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0) {
       final += cartProduct.boxPrice;
     }
 
@@ -221,6 +221,24 @@ export default CartIndex = (props) => {
   const [upSellProducts, setUpSellProducts] = useState([]);
   const [navi, setNavi] = useState(true);
 
+  // useEffect(() => {
+  //   const unsubscribe = props.navigation.addListener('focus', () => {
+  //     console.log("order detail focus ---- ");
+  //     var totalAmount = 0;
+  //     cartProducts.map((cartProduct, key) => {
+  //       totalAmount += cartProduct.quantity * cartProduct.productPrice;
+  //       if (cartProduct.boxPrice)
+  //         totalAmount += cartProduct.quantity * cartProduct.boxPrice;
+  //       cartProduct.extras.map((extra, key) => {
+  //         totalAmount += extra.quantity * extra.extraPrice;
+  //       });
+  //     });
+  //     console.log(totalAmount);
+  //     setTotal(totalAmount);
+  //   });
+  //   return unsubscribe;
+  // }, [props.navigation]);
+
   useEffect(() => {
     console.log("cart index calculating total amount");
     var totalAmount = 0;
@@ -233,6 +251,9 @@ export default CartIndex = (props) => {
       });
     });
     setTotal(totalAmount);
+  });
+
+  useEffect(() => {
     if (isEmpty(cartProducts) && navi) {
       console.log("cart screen empty cartproducts");
       setTimeout(() => {
@@ -242,7 +263,7 @@ export default CartIndex = (props) => {
 
       setTimeout(() => {
         setNavi(true);
-      }, 2000);
+      }, 5000);
     }
   }, [cartProducts]);
 
@@ -270,6 +291,17 @@ export default CartIndex = (props) => {
       });
       dispatch(setCartBadge(totalBadge));
       dispatch(setCartProducts(cartProducts));
+
+      var totalAmount = 0;
+      cartProducts.map((cartProduct, key) => {
+        totalAmount += cartProduct.quantity * cartProduct.productPrice;
+        if (cartProduct.boxPrice)
+          totalAmount += cartProduct.quantity * cartProduct.boxPrice;
+        cartProduct.extras.map((extra, key) => {
+          totalAmount += extra.quantity * extra.extraPrice;
+        });
+      });
+      setTotal(totalAmount);
 
       if (cartProducts[index].extras.length != 0) setIsExtra(1);
       else setIsExtra(0);
