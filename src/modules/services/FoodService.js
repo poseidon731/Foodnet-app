@@ -34,7 +34,22 @@ const FoodService = {
             return response.data;
         });
     },
-
+    getPromotionHeader: function (country, locationId) {
+        return axios.post('/promotion/header', {
+            locationId: locationId,
+            lang: country
+        }).then(response => {
+            return response.data;
+        });
+    },
+    getDailyMenu: function (country, locationId) {
+        return axios.post('/product/daily-menu', {
+            locationId: locationId,
+            lang: country
+        }).then(response => {
+            return response.data;
+        });
+    },
     categories: function (country, restaurantId) {
         return axios.post(`/product/category`, {
             restaurantId,

@@ -380,6 +380,7 @@ export default CartDetail = (props) => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
     const getCities = () => {
+      console.log("----- getCities ----");
       dispatch(setLoading(true));
       AuthService.cities(country)
         .then((response) => {
@@ -396,12 +397,13 @@ export default CartDetail = (props) => {
           dispatch(setLoading(false));
         });
     };
-    getCities();
 
-    logged && getDeliveryAddress();
+    navi && getCities();
+
+    navi && logged && getDeliveryAddress();
 
     return () => console.log("Unmounted");
-  }, []);
+  }, [navi]);
 
   useEffect(() => {
     (visitStreet && isEmpty(addressStreet)) ||
@@ -448,10 +450,10 @@ export default CartDetail = (props) => {
   useEffect(() => {
     if (isEmpty(cartProducts) && navi) {
       console.log("empty cartproducts");
+      setNavi(false);
       setTimeout(() => {
         props.navigation.pop();
-      }, 50);
-      setNavi(false);
+      }, 1500);
     }
   }, [cartProducts]);
 
@@ -788,36 +790,25 @@ export default CartDetail = (props) => {
   };
 
   useEffect(() => {
-    dispatch(setLoading(true));
-    FoodService.getDownSellProducts(cartRestaurant.restaurant_id, country)
-      .then((response) => {
-        dispatch(setLoading(false));
-        if (response.status == 200) {
-          setUpSellProducts(response.result);
-        }
-        else {
+    if (navi) {
+      dispatch(setLoading(true));
+      FoodService.getDownSellProducts(cartRestaurant.restaurant_id, country)
+        .then((response) => {
+          dispatch(setLoading(false));
+          if (response.status == 200) {
+            setUpSellProducts(response.result);
+          }
+          else {
+            setUpSellProducts([]);
+          }
+        })
+        .catch(error => {
+          dispatch(setLoading(false));
           setUpSellProducts([]);
-        }
-      })
-      .catch(error => {
-        dispatch(setLoading(false));
-        setUpSellProducts([]);
-      })
+        });
+    }
 
-    // FoodService.products( "en", 1, 1, 1, 1, "")
-    //   .then(async (response) => {
-    //     dispatch(setLoading(false));
-    //     if (response.status == 200) {
-    //       setUpSellProducts(response.result);
-    //     } else {
-    //       setUpSellProducts([]);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     dispatch(setLoading(false));
-    //     setUpSellProducts([]);
-    //   });
-  }, []);
+  }, [navi]);
 
   const onSelectUpSellProduct = (item) => {
     console.log(item);

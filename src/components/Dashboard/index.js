@@ -14,9 +14,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { Icon } from "react-native-elements";
-import Featured from "./Featured";
-import Trendy from "./Trendy";
+// import { Icon } from "react-native-elements";
+// import Featured from "./Featured";
+// import Trendy from "./Trendy";
 import Result from "./Result";
 import { isEmpty } from "@utils/functions";
 import { common, colors } from "@constants/themes";
@@ -26,6 +26,8 @@ import i18n from "@utils/i18n";
 
 import { TextField } from "react-native-material-textfield";
 import Grid from "react-native-infinite-scroll-grid";
+import { RES_URL } from '@constants/configs';
+import FastImage from 'react-native-fast-image';
 
 export default Dashboard = (props) => {
   return (
@@ -33,23 +35,42 @@ export default Dashboard = (props) => {
       data={[1]}
       renderItem={(item) => (
         <View style={common.container}>
-          <View style={styles.topView}>
-            <Image source={images.pizzaImage} />
-            <View style={styles.topRight}>
-              <Text style={styles.topTitle}>
-                {i18n.translate("Extra discounts")}
-              </Text>
-              <View style={styles.topSpace} />
-              <View style={common.flexRow}>
-                <TouchableOpacity style={styles.topButton}>
-                  <Text style={styles.topText}>
-                    {i18n.translate("Know more")}
-                  </Text>
-                </TouchableOpacity>
+          {isEmpty(props.promotionHeader) ? (
+            <View style={styles.topView}>
+              <Image source={images.pizzaImage} />
+              <View style={styles.topRight}>
+                <Text style={styles.topTitle}>
+                  {i18n.translate("Extra discounts")}
+                </Text>
+                <View style={styles.topSpace} />
+                <View style={common.flexRow}>
+                  <TouchableOpacity style={styles.topButton}>
+                    <Text style={styles.topText}>
+                      {i18n.translate("Know more")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
+          ) : (
+            <TouchableOpacity style={styles.topPromotionHeaderView} onPress={() => {
+              if(props.promotionHeader[0].type == 2) {
+                props.onDetail(props.promotionHeader[0]);
+              }
+            }}>
+              <FastImage style={styles.image} source={{ uri: RES_URL + (props.promotionHeader[0].type == 1 ? props.promotionHeader[0].profileImage : props.promotionHeader[0].restaurant_coverImage) }} />
+            </TouchableOpacity>
+          )}
+
           <Body style={styles.content}>
+            {!isEmpty(props.dailyMenu) && (
+              <DailyMenu
+                key="dailyMenu"
+                data={props.dailyMenu}
+                onExtra={(item) => props.onExtra(item)}
+                onModal={(restaurant_name) => props.onModal(restaurant_name)}
+              />
+            )}
             <View key="search" style={styles.inputView}>
               <TextField
                 placeholder={i18n.translate("What do you eat")}
@@ -77,7 +98,7 @@ export default Dashboard = (props) => {
                 onChangeText={(value) => props.onSearch(value)}
               />
             </View>
-            {!isEmpty(props.featured) && (
+            {/* {!isEmpty(props.featured) && (
               <Featured
                 key="featured"
                 data={props.featured}
@@ -99,7 +120,7 @@ export default Dashboard = (props) => {
                     : true
                 }
               />
-            )}
+            )} */}
             {/* {!isEmpty(props.trendy) && (
               <Trendy
                 key="trendy"
@@ -134,6 +155,17 @@ const styles = StyleSheet.create({
     width: wp("100%"),
     paddingVertical: 10,
     backgroundColor: "#FEEBD6",
+  },
+  topPromotionHeaderView: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    width: wp("100%"),
+    backgroundColor: "#FEEBD6",
+  },
+  image: {
+    width: wp('100%'),
+    height: 200,
+    resizeMode: 'cover'
   },
   topRight: {
     marginLeft: 22,

@@ -249,7 +249,7 @@ export default CartIndex = (props) => {
       setNavi(false);
       setTimeout(() => {
         props.navigation.goBack(null);
-      }, 300);
+      }, 50);
 
     }
   }, [cartProducts, navi]);
@@ -347,21 +347,7 @@ export default CartIndex = (props) => {
       .catch(error => {
         dispatch(setLoading(false));
         setUpSellProducts([]);
-      })
-
-    // FoodService.products( "en", 1, 1, 1, 1, "")
-    //   .then(async (response) => {
-    //     dispatch(setLoading(false));
-    //     if (response.status == 200) {
-    //       setUpSellProducts(response.result);
-    //     } else {
-    //       setUpSellProducts([]);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     dispatch(setLoading(false));
-    //     setUpSellProducts([]);
-    //   });
+      });
   }, [cartRestaurant]);
 
   const onSelectUpSellProduct = (item) => {

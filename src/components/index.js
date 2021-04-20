@@ -5,6 +5,7 @@ import Card from './Athena/Card';
 import Splash from './Splash';
 import Cities from './Cities';
 import Dashboard from './Dashboard';
+import DailyMenu from './Dashboard/DailyMenu';
 import Featured from './Dashboard/Featured';
 import Trendy from './Dashboard/Trendy';
 import Result from './Dashboard/Result';
@@ -22,6 +23,7 @@ export {
     Splash,
     Cities,
     Dashboard,
+    DailyMenu,
     Featured,
     Trendy,
     Result,

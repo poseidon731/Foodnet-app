@@ -13,6 +13,7 @@ import Cities from '@screens/Auth/Cities';
 import Home from '@screens/Home';
 import Detail from '@screens/Home/Detail';
 import Extra from '@screens/Home/Extra';
+import DailyMenuExtra from '@screens/Home/DailyMenuExtra';
 
 import DeliveryList from '@screens/Delivery/DeliveryList';
 import DeliveryAdd from '@screens/Delivery/DeliveryAdd';
@@ -50,6 +51,7 @@ export {
     Home,
     Detail,
     Extra,
+    DailyMenuExtra,
 
     Profile,
     DeliveryList,
