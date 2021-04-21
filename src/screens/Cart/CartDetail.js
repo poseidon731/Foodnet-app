@@ -340,6 +340,14 @@ export default CartDetail = (props) => {
     extrapolate: "clamp",
   });
 
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      console.log("cart detail focus ---- ");
+      setNavi(true);
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
   const getDeliveryAddress = () => {
     dispatch(setLoading(true));
     console.log("country = ", country);
@@ -370,6 +378,25 @@ export default CartDetail = (props) => {
       });
   };
 
+  const getCities = () => {
+    console.log("----- getCities ----", cartRestaurant.restaurant_id);
+    dispatch(setLoading(true));
+    AuthService.deliveryCities(country, cartRestaurant.restaurant_id)
+      .then((response) => {
+        // dispatch(setLoading(false));
+        if (response.status == 200) {
+          setCitys(response.location);
+          setFilterCitys(response.location);
+          if (cityObj.id == 0) {
+            setCityObj(response.location[0]);
+          }
+        }
+      })
+      .catch((error) => {
+        dispatch(setLoading(false));
+      });
+  };
+
   useEffect(() => {
     visitCommentText && !validateBetween(comment, 0, 200)
       ? setErrorCommentText("The text must be less more than 200 characters")
@@ -379,28 +406,8 @@ export default CartDetail = (props) => {
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
-    const getCities = () => {
-      console.log("----- getCities ----", cartRestaurant.restaurant_id);
-      dispatch(setLoading(true));
-      AuthService.deliveryCities(country, cartRestaurant.restaurant_id)
-        .then((response) => {
-          dispatch(setLoading(false));
-          if (response.status == 200) {
-            setCitys(response.location);
-            setFilterCitys(response.location);
-            if (cityObj.id == 0) {
-              setCityObj(response.location[0]);
-            }
-          }
-        })
-        .catch((error) => {
-          dispatch(setLoading(false));
-        });
-    };
-
-    navi && getCities();
-
     navi && logged && getDeliveryAddress();
+    navi && !logged && getCities();
 
     return () => console.log("Unmounted");
   }, [navi]);
@@ -1158,6 +1165,32 @@ export default CartDetail = (props) => {
                     </Text>
                   </TouchableOpacity>
                 ))}
+                <TouchableOpacity
+                  onPress={() => {
+                    setNavi(false);
+                    props.navigation.push("CartDeliveryAdd", { type: 1, item: null });
+                  }}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    marginTop: 10
+                  }}
+                >
+                  <Icon
+                    type="material-community"
+                    name="plus"
+                    size={20}
+                    color={colors.YELLOW.PRIMARY}
+                  />
+                  <Text style={{
+                    color: colors.YELLOW.PRIMARY,
+                    marginLeft: 10
+                  }}>
+                    {i18n.translate("Add a new shipping address")}
+                  </Text>
+                </TouchableOpacity>
                 {(isDelivery == 0) && (
                   <View style={styles.notDeliveryBack}>
                     <ErrorIcon />

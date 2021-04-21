@@ -26,14 +26,14 @@ const RenderItem = ({ cartRestaurant, cartProducts, dailyMenu, index, onDetail, 
         loading={loader}
         containerStyles={styles.loader}
       />
-      <TouchableOpacity key={index} style={loader ? styles.default : styles.dailyMenu} 
+      <TouchableOpacity key={index} style={loader ? styles.default : styles.dailyMenu}
         disabled={
           parseInt(moment().format("HH:mm").replace(":", "")) <=
           parseInt(dailyMenu.item.restaurant_open.replace(":", "")) ||
           parseInt(moment().format("HH:mm").replace(":", "")) >=
           parseInt(dailyMenu.item.restaurant_close.replace(":", "")) ||
           (!isEmpty(dailyMenu.item.startTime) &&
-          dailyMenu.item.startTime > moment().format("HH:mm")) ||
+            dailyMenu.item.startTime > moment().format("HH:mm")) ||
           (!isEmpty(dailyMenu.item.endTime) &&
             moment().format("HH:mm") > dailyMenu.item.endTime) ||
           (dailyMenu.item.isDailyMenu == 1 && dailyMenu.item.soldOut == 1) ||
@@ -48,42 +48,43 @@ const RenderItem = ({ cartRestaurant, cartProducts, dailyMenu, index, onDetail, 
           } else {
             onDetail(dailyMenu.item);
           }
-      }}>
+        }}>
         <FastImage style={styles.image} source={{ uri: RES_URL + dailyMenu.item.product_imageUrl }} onLoadEnd={(e) => setLoader(false)} />
         {((!isEmpty(dailyMenu.item.startTime) &&
-            dailyMenu.item.startTime > moment().format("HH:mm")) ||
-            (!isEmpty(dailyMenu.item.endTime) &&
-              moment().format("HH:mm") > dailyMenu.item.endTime) ||
-            (dailyMenu.item.isDailyMenu == 1 && dailyMenu.item.soldOut == 1) ||
-            (dailyMenu.item.isDailyMenu == 0 && dailyMenu.item.soldOut == 0)) && (
-              <View style={styles.productImageSold}>
-                <Text style={styles.productImageSoldText}>
-                  {i18n.translate("Sold Out")}
-                </Text>
-              </View>
-            )}
-        <View style={styles.dailyMenuContent}>
-          <Text style={styles.product_description}>
-            {dailyMenu.item.product_description}
-          </Text>
-          {!isEmpty(dailyMenu.item.startTime) && !isEmpty(dailyMenu.item.endTime) && (
-            <Text style={styles.dailyOpenCloseTime} numberOfLines={1}>
-              <Text style={styles.dailyOpenCloseTimeTitle}>{i18n.translate("Order time")}</Text>
-              {": "}{dailyMenu.item.startTime}-{dailyMenu.item.endTime}
-            </Text>
+          dailyMenu.item.startTime > moment().format("HH:mm")) ||
+          (!isEmpty(dailyMenu.item.endTime) &&
+            moment().format("HH:mm") > dailyMenu.item.endTime) ||
+          (dailyMenu.item.isDailyMenu == 1 && dailyMenu.item.soldOut == 1) ||
+          (dailyMenu.item.isDailyMenu == 0 && dailyMenu.item.soldOut == 0)) && (
+            <View style={styles.productImageSold}>
+              <Text style={styles.productImageSoldText}>
+                {i18n.translate("Sold Out")}
+              </Text>
+            </View>
           )}
-          <Text style={styles.product_price}>
-            {dailyMenu.item.product_price} {i18n.translate("lei")}
-          </Text>
-
-          <View style={styles.restaurant_profile_name}>
-            {(dailyMenu.item.restaurant_profileImage != null) && (
-              <FastImage style={styles.restaurant_profileImage} source={{ uri: RES_URL + dailyMenu.item.restaurant_profileImage }} onLoadEnd={(e) => setLoader(false)} />
+        {!loader && (
+          <View style={styles.dailyMenuContent}>
+            <Text style={styles.product_description}>
+              {dailyMenu.item.product_description}
+            </Text>
+            {!isEmpty(dailyMenu.item.startTime) && !isEmpty(dailyMenu.item.endTime) && (
+              <Text style={styles.dailyOpenCloseTime} numberOfLines={1}>
+                <Text style={styles.dailyOpenCloseTimeTitle}>{i18n.translate("Order time")}</Text>
+                {": "}{dailyMenu.item.startTime}-{dailyMenu.item.endTime}
+              </Text>
             )}
-            <Text style={styles.restaurant_name}>{dailyMenu.item.restaurant_name}</Text>
-          </View>
-        </View>
+            <Text style={styles.product_price}>
+              {dailyMenu.item.product_price} {i18n.translate("lei")}
+            </Text>
 
+            <View style={styles.restaurant_profile_name}>
+              {(dailyMenu.item.restaurant_profileImage != null) && (
+                <FastImage style={styles.restaurant_profileImage} source={{ uri: RES_URL + dailyMenu.item.restaurant_profileImage }} onLoadEnd={(e) => setLoader(false)} />
+              )}
+              <Text style={styles.restaurant_name}>{dailyMenu.item.restaurant_name}</Text>
+            </View>
+          </View>
+        )}
 
       </TouchableOpacity>
     </Fragment>

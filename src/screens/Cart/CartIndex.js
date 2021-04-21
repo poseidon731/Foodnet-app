@@ -223,7 +223,7 @@ export default CartIndex = (props) => {
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
-      console.log("order detail focus ---- ");
+      console.log("cart index focus ---- ");
       setNavi(true);
     });
     return unsubscribe;

@@ -30,6 +30,7 @@ import CouponCodes from '@screens/Profile/CouponCodes';
 import CartIndex from '@screens/Cart/CartIndex';
 import CartDetail from '@screens/Cart/CartDetail';
 import CartExtra from '@screens/Cart/CartExtra';
+import CartDeliveryAdd from '@screens/Cart/CartDeliveryAdd';
 
 import OrderIndex from '@screens/Order/OrderIndex';
 import OrderDetail from '@screens/Order/OrderDetail';
@@ -67,6 +68,8 @@ export {
     CartIndex,
     CartDetail,
     CartExtra,
+    CartDeliveryAdd,
+    
     OrderIndex,
     OrderDetail,
     OrderSuccess
