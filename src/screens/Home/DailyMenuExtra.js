@@ -272,7 +272,15 @@ export default DailyMenuExtra = (props) => {
 
             console.log("+++++", product);
 
-            dispatch(setCartRestaurant({restaurant_id: product.restaurant_id, restaurant_name: product.restaurant_name}));
+            dispatch(setCartRestaurant({
+                restaurant_id: product.restaurant_id, 
+                restaurant_name: product.restaurant_name, 
+                restaurant_open: product.restaurant_open,
+                restaurant_close: product.restaurant_close,
+                restaurant_profileImage: product.restaurant_profileImage,
+                restaurant_coverImage: product.restaurant_coverImage,
+                card: product.card
+            }));
             dispatch(setCartProducts(cartProducts));
             dispatch(setCartBadge(totalBadge));
             // dispatch(setCartBadge(cartBadge + 1));

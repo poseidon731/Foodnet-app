@@ -98,7 +98,7 @@ export default Dashboard = (props) => {
                 onChangeText={(value) => props.onSearch(value)}
               />
             </View>
-            {/* {!isEmpty(props.featured) && (
+            {!isEmpty(props.featured) && (
               <Featured
                 key="featured"
                 data={props.featured}
@@ -120,7 +120,7 @@ export default Dashboard = (props) => {
                     : true
                 }
               />
-            )} */}
+            )}
             {/* {!isEmpty(props.trendy) && (
               <Trendy
                 key="trendy"

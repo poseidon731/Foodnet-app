@@ -50,6 +50,13 @@ const RenderItem = ({ cartRestaurant, cartProducts, dailyMenu, index, onDetail, 
           <Text style={styles.product_price}>
             {dailyMenu.item.product_price} {i18n.translate("lei")}
           </Text>
+
+          <View style={styles.restaurant_profile_name}>
+            {(dailyMenu.item.restaurant_profileImage != null) && (
+              <FastImage style={styles.restaurant_profileImage} source={{ uri: RES_URL + dailyMenu.item.restaurant_profileImage }} onLoadEnd={(e) => setLoader(false)} />
+            )}
+            <Text style={styles.restaurant_name}>{dailyMenu.item.restaurant_name}</Text>
+          </View>
         </View>
 
 
@@ -121,7 +128,7 @@ const styles = StyleSheet.create({
   },
   dailyMenu: {
     marginRight: 16,
-    width: 160,
+    width: 220,
     backgroundColor: colors.WHITE,
     borderRadius: 8,
     borderColor: colors.WHITE,
@@ -134,7 +141,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 105,
+    height: 125,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8
   },
@@ -143,20 +150,36 @@ const styles = StyleSheet.create({
     backgroundColor: colors.WHITE
   },
   product_description: {
-    fontSize: 11
+    fontSize: 14
   },
   product_price: {
     textAlign: 'center',
     color: colors.YELLOW.PRIMARY,
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: '700'
   },
   dailyOpenCloseTime: {
-    fontSize: 11,
+    fontSize: 14,
     paddingVertical: 5
   },
   dailyOpenCloseTimeTitle: {
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: '700'
+  },
+  restaurant_profile_name: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%'
+  },
+  restaurant_profileImage: {
+    width: 25,
+    height: 25,
+    marginRight: 8,
+    borderRadius: 13
+  },
+  restaurant_name: {
+    width: 175
   }
 });

@@ -55,16 +55,16 @@ export default Home = (props) => {
             .catch(error => {
                 setRefresh(false);
             })
-        // FoodService.promotion(country, logged ? user.city.name : city.name)
-        //     .then((response) => {
-        //         setRefresh(false);
-        //         if (response.status == 200) {
-        //             setPromotion(response.result);
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         setRefresh(false);
-        //     });
+        FoodService.promotion(country, logged ? user.city.name : city.name)
+            .then((response) => {
+                setRefresh(false);
+                if (response.status == 200) {
+                    setPromotion(response.result);
+                }
+            })
+            .catch((error) => {
+                setRefresh(false);
+            });
         // FoodService.popular(country, logged ? user.city.name : city.name)
         //     .then((response) => {
         //         setRefresh(false);
@@ -115,17 +115,17 @@ export default Home = (props) => {
             .catch(error => {
                 setRefresh(false);
             })
-            // FoodService.promotion(country, cityName)
-            //     .then((response) => {
-            //         setRefresh(false);
-            //         if (response.status == 200) {
-            //             console.log("restaurant = ", response.result[0]);
-            //             setPromotion(response.result);
-            //         }
-            //     })
-            //     .catch((error) => {
-            //         setRefresh(false);
-            //     });
+            FoodService.promotion(country, cityName)
+                .then((response) => {
+                    setRefresh(false);
+                    if (response.status == 200) {
+                        console.log("restaurant = ", response.result[0]);
+                        setPromotion(response.result);
+                    }
+                })
+                .catch((error) => {
+                    setRefresh(false);
+                });
 
             if (search == '') {
                 FoodService.all(country, cityName, search, filters)

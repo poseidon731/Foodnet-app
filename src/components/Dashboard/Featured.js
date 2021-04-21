@@ -52,16 +52,16 @@ export default Featured = (props) => {
   return (
     <Card key='featured' style={styles.card}>
       <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>{i18n.translate('Featured restaurants')}</Text>
+        {/* <Text style={styles.cardTitle}>{i18n.translate('Featured restaurants')}</Text> */}
         {props.shown && (<Text style={styles.cardCount}>{i18n.translate('All results')}: {props.count}</Text>)}
       </View>
-      <FlatList
+      {/* <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         data={props.data}
         keyExtractor={(featured, index) => index.toString()}
         renderItem={(featured, index) => (<RenderItem featured={featured} index={index} onDetail={props.onDetail} />)}
-      />
+      /> */}
     </Card>
   );
 }
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     width: '100%',
   },
