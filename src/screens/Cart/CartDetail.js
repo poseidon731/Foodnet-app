@@ -380,16 +380,16 @@ export default CartDetail = (props) => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
     const getCities = () => {
-      console.log("----- getCities ----");
+      console.log("----- getCities ----", cartRestaurant.restaurant_id);
       dispatch(setLoading(true));
-      AuthService.cities(country)
+      AuthService.deliveryCities(country, cartRestaurant.restaurant_id)
         .then((response) => {
           dispatch(setLoading(false));
           if (response.status == 200) {
-            setCitys(response.locations);
-            setFilterCitys(response.locations);
+            setCitys(response.location);
+            setFilterCitys(response.location);
             if (cityObj.id == 0) {
-              setCityObj(response.locations[0]);
+              setCityObj(response.location[0]);
             }
           }
         })

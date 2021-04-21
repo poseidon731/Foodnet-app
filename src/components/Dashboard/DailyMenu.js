@@ -26,17 +26,42 @@ const RenderItem = ({ cartRestaurant, cartProducts, dailyMenu, index, onDetail, 
         loading={loader}
         containerStyles={styles.loader}
       />
-      <TouchableOpacity key={index} style={loader ? styles.default : styles.dailyMenu} onPress={() => {
-        if (
-          !isEmpty(cartProducts) &&
-          cartRestaurant.restaurant_id != dailyMenu.item.restaurant_id
-        ) {
-          onModal(dailyMenu.item.restaurant_name);
-        } else {
-          onDetail(dailyMenu.item);
+      <TouchableOpacity key={index} style={loader ? styles.default : styles.dailyMenu} 
+        disabled={
+          parseInt(moment().format("HH:mm").replace(":", "")) <=
+          parseInt(dailyMenu.item.restaurant_open.replace(":", "")) ||
+          parseInt(moment().format("HH:mm").replace(":", "")) >=
+          parseInt(dailyMenu.item.restaurant_close.replace(":", "")) ||
+          (!isEmpty(dailyMenu.item.startTime) &&
+          dailyMenu.item.startTime > moment().format("HH:mm")) ||
+          (!isEmpty(dailyMenu.item.endTime) &&
+            moment().format("HH:mm") > dailyMenu.item.endTime) ||
+          (dailyMenu.item.isDailyMenu == 1 && dailyMenu.item.soldOut == 1) ||
+          (dailyMenu.item.isDailyMenu == 0 && dailyMenu.item.soldOut == 0)
         }
+        onPress={() => {
+          if (
+            !isEmpty(cartProducts) &&
+            cartRestaurant.restaurant_id != dailyMenu.item.restaurant_id
+          ) {
+            onModal(dailyMenu.item.restaurant_name);
+          } else {
+            onDetail(dailyMenu.item);
+          }
       }}>
         <FastImage style={styles.image} source={{ uri: RES_URL + dailyMenu.item.product_imageUrl }} onLoadEnd={(e) => setLoader(false)} />
+        {((!isEmpty(dailyMenu.item.startTime) &&
+            dailyMenu.item.startTime > moment().format("HH:mm")) ||
+            (!isEmpty(dailyMenu.item.endTime) &&
+              moment().format("HH:mm") > dailyMenu.item.endTime) ||
+            (dailyMenu.item.isDailyMenu == 1 && dailyMenu.item.soldOut == 1) ||
+            (dailyMenu.item.isDailyMenu == 0 && dailyMenu.item.soldOut == 0)) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("Sold Out")}
+                </Text>
+              </View>
+            )}
         <View style={styles.dailyMenuContent}>
           <Text style={styles.product_description}>
             {dailyMenu.item.product_description}
@@ -144,6 +169,25 @@ const styles = StyleSheet.create({
     height: 125,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8
+  },
+  productImageSold: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: "100%",
+    height: 125,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    zIndex: 2000,
+    backgroundColor: "#000000D0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  productImageSoldText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: colors.WHITE,
+    textAlign: "center",
   },
   dailyMenuContent: {
     padding: 5,

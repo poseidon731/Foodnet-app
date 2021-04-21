@@ -53,10 +53,12 @@ export default Dashboard = (props) => {
               </View>
             </View>
           ) : (
-            <TouchableOpacity style={styles.topPromotionHeaderView} onPress={() => {
-              if(props.promotionHeader[0].type == 2) {
-                props.onDetail(props.promotionHeader[0]);
-              }
+            <TouchableOpacity style={styles.topPromotionHeaderView} 
+              activeOpacity={(props.promotionHeader[0].type == 1) ? 1 : 0}
+              onPress={() => {
+                if(props.promotionHeader[0].type == 2) {
+                  props.onDetail(props.promotionHeader[0]);
+                }
             }}>
               <FastImage style={styles.image} source={{ uri: RES_URL + (props.promotionHeader[0].type == 1 ? props.promotionHeader[0].profileImage : props.promotionHeader[0].restaurant_coverImage) }} />
             </TouchableOpacity>

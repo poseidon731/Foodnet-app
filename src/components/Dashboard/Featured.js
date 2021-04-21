@@ -69,7 +69,7 @@ export default Featured = (props) => {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    marginTop: 20
+    marginTop: 5
   },
   cardHeader: {
     flexDirection: 'row',

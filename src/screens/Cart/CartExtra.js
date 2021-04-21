@@ -31,7 +31,7 @@ const Required = ({ required, index, quantity, onSelect }) => {
             }}>
                 <View style={styles.check}>
                     <Icon type='material' name={check ? 'radio-button-on' : 'radio-button-off'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
-                    <Text style={{ fontSize: 16 }} numberOfLines={1}>{required.extra_name}</Text>
+                    <Text style={{ fontSize: 16 }}>{required.extra_name}</Text>
                     {/* {!isEmpty(required.allergens_name) ? (
                         <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {required.allergens_name.map((allergen, key) => (
                             <Text key={`allergen${key}`} style={styles.allergen}>{allergen.allergen}{key != required.allergens_name.length - 1 ? ', ' : ''}</Text>
@@ -55,7 +55,7 @@ const Optional = ({ optional, index, quantity, onSelect }) => {
             }}>
                 <View style={styles.check}>
                     <Icon type='material-community' name={check ? 'check-box-outline' : 'checkbox-blank-outline'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
-                    <Text style={{ fontSize: 16 }} numberOfLines={1}>{optional.extra_name}</Text>
+                    <Text style={{ fontSize: 16 }}>{optional.extra_name}</Text>
                     {/* {!isEmpty(optional.allergens_name) ? (
                         <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {optional.allergens_name.map((allergen, key) => (
                             <Text key={`allergensop${key}`} style={styles.allergen}>{allergen.allergen}{key != optional.allergens_name.length - 1 ? ', ' : ''}</Text>
