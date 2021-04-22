@@ -1186,7 +1186,8 @@ export default CartDetail = (props) => {
                   />
                   <Text style={{
                     color: colors.YELLOW.PRIMARY,
-                    marginLeft: 10
+                    marginLeft: 10,
+                    fontSize: 16
                   }}>
                     {i18n.translate("Add a new shipping address")}
                   </Text>

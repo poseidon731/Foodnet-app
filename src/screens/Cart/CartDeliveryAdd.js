@@ -18,6 +18,7 @@ export default CartDeliveryAdd = (props) => {
     const dispatch = useDispatch();
     const { country, user } = useSelector(state => state.auth);
     const { deliveryStatus } = useSelector(state => state.profile);
+    const { cartRestaurant } = useSelector((state) => state.food);
 
     const [type] = useState(props.route.params.type);
     const [addressId] = useState(props.route.params.type === 2 ? props.route.params.item.id : 0);
@@ -43,7 +44,7 @@ export default CartDeliveryAdd = (props) => {
         }
         const getCities = () => {
             dispatch(setLoading(true));
-            AuthService.cities(country)
+            AuthService.deliveryCities(country, cartRestaurant.restaurant_id)
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
