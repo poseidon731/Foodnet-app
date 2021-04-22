@@ -415,33 +415,6 @@ export default Extra = (props) => {
                         </TouchableOpacity>
                     ))}
 
-                    {!isEmpty(optionalsAll) && (
-                        <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional extras (Not required)')}</Text>
-                    )}
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        data={optionalsAll}
-                        keyExtractor={(optional, index) => index.toString()}
-                        renderItem={(optional, index) => (
-                            <Optional
-                                optional={optional.item}
-                                index={index}
-                                optionalList={optionalList}
-                                quantity={quantity}
-                                onSelect={(check, optional, count) => onSelect(2, check, optional, count)}
-                            />
-                        )}
-                    />
-                    {!isEmpty(optionalsAll) && (optionals.length > 5) && (!isShowOptionals ? (
-                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowOptionals(true)}>
-                            <Text style={styles.showHideExtrasText}>{i18n.translate('SHOW MORE')}</Text>
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowOptionals(false)}>
-                            <Text style={styles.showHideExtrasText}>{i18n.translate('HIDE')}</Text>
-                        </TouchableOpacity>
-                    ))}
-
                     {!isEmpty(saucesAll) && (
                         <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Sauce extras (Not required)')}</Text>
                     )}
@@ -465,6 +438,33 @@ export default Extra = (props) => {
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowSauces(false)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('HIDE')}</Text>
+                        </TouchableOpacity>
+                    ))}
+
+                    {!isEmpty(optionalsAll) && (
+                        <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional extras (Not required)')}</Text>
+                    )}
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={optionalsAll}
+                        keyExtractor={(optional, index) => index.toString()}
+                        renderItem={(optional, index) => (
+                            <Optional
+                                optional={optional.item}
+                                index={index}
+                                optionalList={optionalList}
+                                quantity={quantity}
+                                onSelect={(check, optional, count) => onSelect(2, check, optional, count)}
+                            />
+                        )}
+                    />
+                    {!isEmpty(optionalsAll) && (optionals.length > 5) && (!isShowOptionals ? (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowOptionals(true)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('SHOW MORE')}</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowOptionals(false)}>
                             <Text style={styles.showHideExtrasText}>{i18n.translate('HIDE')}</Text>
                         </TouchableOpacity>
                     ))}

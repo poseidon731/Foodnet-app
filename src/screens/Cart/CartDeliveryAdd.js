@@ -163,7 +163,7 @@ export default CartDeliveryAdd = (props) => {
                     </View>
                     <TouchableOpacity style={[styles.selectContainer, !isEmpty(errorCity) ? common.borderColorRed : common.borderColorGrey]} onPress={() => setActive(!active)}>
                         <MapPinIcon />
-                        <Text style={styles.itemText} numberOfLines={1}>{cityObj.cities}</Text>
+                        <Text style={styles.itemText} numberOfLines={1}></Text>
                         <Icon type='material' name='keyboard-arrow-down' size={30} color={colors.GREY.PRIMARY} />
                     </TouchableOpacity>
                     {/* <Text style={common.errorText}>{errorCity}</Text> */}

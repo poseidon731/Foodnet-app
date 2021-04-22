@@ -353,7 +353,7 @@ export default CartDetail = (props) => {
     console.log("country = ", country);
     ProfileService.getDeliveryList(user.token, country)
       .then((response) => {
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
         if (response.status == 200) {
           setDeliveryList(response.result);
           if (!isEmpty(response.result)) {
@@ -407,7 +407,7 @@ export default CartDetail = (props) => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
     navi && getCities();
-    
+
     navi && logged && getDeliveryAddress();
 
     return () => console.log("Unmounted");
@@ -1239,7 +1239,7 @@ export default CartDetail = (props) => {
                   >
                     <MapPinIcon />
                     <Text style={styles.itemText1} numberOfLines={1}>
-                      {cityObj.cities}
+                      {/* {cityObj.cities} */}
                     </Text>
                     <Icon
                       type="material"
