@@ -355,18 +355,29 @@ export default CartDetail = (props) => {
       .then((response) => {
         // dispatch(setLoading(false));
         if (response.status == 200) {
-          setDeliveryList(response.result);
-          if (!isEmpty(response.result)) {
-            setDeliveryAddress({
-              value: response.result[0].id,
-              label:
-                response.result[0].city +
-                ", " +
-                response.result[0].street +
-                ", " +
-                response.result[0].houseNumber,
+          let deliveryAddr = [];
+          if(!isEmpty(response.result)) {
+            response.result.map((addr) => {
+              if (citys.filter((c) => { return c.id == addr.city_id;}).length > 0) {
+                deliveryAddr.push(addr);
+              }
             });
-            getDeliveryPrice(response.result[0].city_id);
+
+            setDeliveryList(deliveryAddr);
+            
+          }
+
+          if(!isEmpty(deliveryAddr)) {
+            setDeliveryAddress({
+              value: deliveryAddr[0].id,
+              label:
+                deliveryAddr[0].city +
+                ", " +
+                deliveryAddr[0].street +
+                ", " +
+                deliveryAddr[0].houseNumber,
+            });
+            getDeliveryPrice(deliveryAddr[0].city_id);
           } else {
             getDeliveryPrice(cityObj.id);
           }
