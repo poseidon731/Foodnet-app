@@ -125,10 +125,10 @@ export default CartDeliveryAdd = (props) => {
                     lineWidth={0}
                     activeLineWidth={0}
                     renderLeftAccessory={() => {
-                      return <SearchIcon style={{ marginRight: 10 }} />;
+                        return <SearchIcon style={{ marginRight: 10 }} />;
                     }}
                     onChangeText={(value) => {
-                      searchFilterFunction(value);
+                        searchFilterFunction(value);
                     }}
                 />
             </View>
@@ -163,7 +163,9 @@ export default CartDeliveryAdd = (props) => {
                     </View>
                     <TouchableOpacity style={[styles.selectContainer, !isEmpty(errorCity) ? common.borderColorRed : common.borderColorGrey]} onPress={() => setActive(!active)}>
                         <MapPinIcon />
-                        <Text style={styles.itemText} numberOfLines={1}></Text>
+                        <Text style={styles.itemText} numberOfLines={1}>
+                            {isEmpty(filterCitys) ? '' : (filterCitys.filter((c) => { return c.id == cityObj.id; }).length > 0 ? cityObj.cities : filterCitys[0].cities)}
+                        </Text>
                         <Icon type='material' name='keyboard-arrow-down' size={30} color={colors.GREY.PRIMARY} />
                     </TouchableOpacity>
                     {/* <Text style={common.errorText}>{errorCity}</Text> */}
@@ -351,12 +353,12 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 10,
         borderColor: colors.GREY.PRIMARY,
-      },
-      inputContainer2: {
+    },
+    inputContainer2: {
         width: '100%',
         marginTop: -20,
         borderWidth: 0,
-      },
+    },
     itemText: {
         width: '75%',
         fontSize: 16,

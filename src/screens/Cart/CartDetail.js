@@ -408,7 +408,7 @@ export default CartDetail = (props) => {
 
     navi && getCities();
 
-    navi && logged && getDeliveryAddress();
+    // navi && logged && getDeliveryAddress();
 
     return () => console.log("Unmounted");
   }, [navi]);
@@ -799,10 +799,10 @@ export default CartDetail = (props) => {
 
   useEffect(() => {
     if (navi) {
-      dispatch(setLoading(true));
+      // dispatch(setLoading(true));
       FoodService.getDownSellProducts(cartRestaurant.restaurant_id, country)
         .then((response) => {
-          dispatch(setLoading(false));
+          // dispatch(setLoading(false));
           if (response.status == 200) {
             setUpSellProducts(response.result);
           }
@@ -1239,7 +1239,7 @@ export default CartDetail = (props) => {
                   >
                     <MapPinIcon />
                     <Text style={styles.itemText1} numberOfLines={1}>
-                      {/* {cityObj.cities} */}
+                      {isEmpty(filterCitys) ? '' : (filterCitys.filter((c) => {return c.id == cityObj.id;}).length > 0 ? cityObj.cities : filterCitys[0].cities)}
                     </Text>
                     <Icon
                       type="material"
