@@ -48,10 +48,10 @@ export default CartDeliveryAdd = (props) => {
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
-                        setCitys(response.locations);
-                        setFilterCitys(response.locations);
+                        setCitys(response.location);
+                        setFilterCitys(response.location);
                         if (props.route.params.type === 2) {
-                            var selectedCity = response.locations.filter(checkCity);
+                            var selectedCity = response.location.filter(checkCity);
                             setCityObj(selectedCity[0]);
                         }
                     }

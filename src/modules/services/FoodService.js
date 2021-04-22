@@ -113,7 +113,18 @@ const FoodService = {
 
     optional: function (country, restaurantId, variantId) {
         console.log(country, restaurantId, variantId);
-        return axios.post(`/product/optional-extra`, {
+        return axios.post(`/product/optional-extra-new`, {
+            restaurantId,
+            lang: country,
+            variantId
+        }).then((response) => {
+            return response.data;
+        });
+    },
+
+    sauces: function (country, restaurantId, variantId) {
+        console.log(country, restaurantId, variantId);
+        return axios.post(`/product/sauces`, {
             restaurantId,
             lang: country,
             variantId

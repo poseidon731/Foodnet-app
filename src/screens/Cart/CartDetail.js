@@ -406,8 +406,9 @@ export default CartDetail = (props) => {
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
+    navi && getCities();
+    
     navi && logged && getDeliveryAddress();
-    navi && !logged && getCities();
 
     return () => console.log("Unmounted");
   }, [navi]);
