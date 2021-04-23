@@ -64,7 +64,7 @@ export default Forgot = (props) => {
             props.navigation.navigate('Reset', { email, code })
         } else {
             setErrorMsg(i18n.translate('Incorrect Code'));
-            setCode('');
+            // setCode('');
             setTimeout(() => setErrorMsg(''), 2000);
         };
     }
