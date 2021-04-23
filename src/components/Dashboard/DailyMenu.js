@@ -50,18 +50,33 @@ const RenderItem = ({ cartRestaurant, cartProducts, dailyMenu, index, onDetail, 
           }
         }}>
         <FastImage style={styles.image} source={{ uri: RES_URL + dailyMenu.item.product_imageUrl }} onLoadEnd={(e) => setLoader(false)} />
-        {((!isEmpty(dailyMenu.item.startTime) &&
-          dailyMenu.item.startTime > moment().format("HH:mm")) ||
-          (!isEmpty(dailyMenu.item.endTime) &&
-            moment().format("HH:mm") > dailyMenu.item.endTime) ||
-          (dailyMenu.item.isDailyMenu == 1 && dailyMenu.item.soldOut == 1) ||
+        {((dailyMenu.item.isDailyMenu == 1 && dailyMenu.item.soldOut == 1) ||
           (dailyMenu.item.isDailyMenu == 0 && dailyMenu.item.soldOut == 0)) && (
             <View style={styles.productImageSold}>
               <Text style={styles.productImageSoldText}>
                 {i18n.translate("Sold Out")}
               </Text>
             </View>
-          )}
+        )}
+        {((!isEmpty(dailyMenu.item.startTime) &&
+          dailyMenu.item.startTime > moment().format("HH:mm"))) && (
+            <View style={styles.productImageSold}>
+              <Text style={styles.productImageSoldText}>
+                {i18n.translate("AVAILABLE SOON")}
+              </Text>
+              <Text style={styles.productImageAvailbleTimeText}>
+                {dailyMenu.item.startTime}
+              </Text>
+            </View>
+        )}
+        {((!isEmpty(dailyMenu.item.endTime) &&
+            moment().format("HH:mm") > dailyMenu.item.endTime)) && (
+            <View style={styles.productImageSold}>
+              <Text style={styles.productImageSoldText}>
+                {i18n.translate("OUT OF STOCK")}
+              </Text>
+            </View>
+        )}
         {!loader && (
           <View style={styles.dailyMenuContent}>
             <Text style={styles.product_description}>
@@ -187,6 +202,12 @@ const styles = StyleSheet.create({
   productImageSoldText: {
     fontSize: 16,
     fontWeight: "700",
+    color: colors.WHITE,
+    textAlign: "center",
+  },
+  productImageAvailbleTimeText: {
+    fontSize: 14,
+    fontWeight: "500",
     color: colors.WHITE,
     textAlign: "center",
   },

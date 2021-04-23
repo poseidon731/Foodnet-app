@@ -275,5 +275,7 @@
   "SHOW MORE": "Több megtekintése",
   "HIDE": "ELREJT",
   "Popular choices for your order": "Kedvelt választások rendelésed mellé", 
-  "Add a new shipping address": "Új szállítási cím hozzáadása"
+  "Add a new shipping address": "Új szállítási cím hozzáadása",
+  "AVAILABLE SOON": "HAMAROSAN RENDELHETŐ",
+  "OUT OF STOCK": "NEM RENDELHETŐ"
 }
