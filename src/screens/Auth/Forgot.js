@@ -40,6 +40,7 @@ export default Forgot = (props) => {
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200 && !isEmpty(response.result)) {
+                    console.log(response.result);
                     setVisible(true);
                     setResend(false);
                     setCode(response.result[0].reset_code);
