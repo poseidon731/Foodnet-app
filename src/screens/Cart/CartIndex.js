@@ -348,7 +348,7 @@ export default CartIndex = (props) => {
         dispatch(setLoading(false));
         setUpSellProducts([]);
       });
-  }, [cartRestaurant]);
+  }, [cartRestaurant, country]);
 
   const onSelectUpSellProduct = (item) => {
     console.log(item);
