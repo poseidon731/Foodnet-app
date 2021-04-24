@@ -926,7 +926,7 @@ export default CartDetail = (props) => {
               </Text>
             </View> */}
             <View>
-              <View style={styles.amount1}>
+              <View style={styles.amount}>
                 <Text style={styles.priceBlack}>
                   {i18n.translate("Delivery")}: {(total > freeDelivery ? 0 : deliveryPrice).toFixed(2)}{" "}
                   {i18n.translate("lei")}
