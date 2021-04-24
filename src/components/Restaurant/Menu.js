@@ -123,11 +123,6 @@ const Product = ({
               <Text style={styles.productDescription}>
                 {product.product_description}
               </Text>
-            </View>
-            <View style={styles.productItemBottom}>
-              <Text style={styles.price}>
-                {product.product_price.toFixed(2)} {i18n.translate("lei")}
-              </Text>
               {!isEmpty(product.soldOut) && (
                 !isEmpty(product.startTime) && !isEmpty(product.endTime) && (
                   <Text style={styles.dailyWrapperText} numberOfLines={1}>
@@ -136,6 +131,12 @@ const Product = ({
                   </Text>
                 )
               )}
+            </View>
+            <View style={styles.productItemBottom}>
+              <Text style={styles.price}>
+                {product.product_price.toFixed(2)} {i18n.translate("lei")}
+              </Text>
+              
             </View>
 
           </View>
@@ -146,7 +147,7 @@ const Product = ({
             onLoadEnd={(e) => setLoader(false)}
           />
 
-          {((!isEmpty(product.startTime) &&
+          {/* {((!isEmpty(product.startTime) &&
             product.startTime > moment().format("HH:mm")) ||
             (!isEmpty(product.endTime) &&
               moment().format("HH:mm") > product.endTime) ||
@@ -156,6 +157,34 @@ const Product = ({
               <View style={styles.productImageSold}>
                 <Text style={styles.productImageSoldText}>
                   {i18n.translate("Sold Out")}
+                </Text>
+              </View>
+            )} */}
+          {((product.isDailyMenu == 1 && product.soldOut == 1) ||
+            (product.isDailyMenu == 1 && isToday == 0) ||
+            (product.isDailyMenu == 0 && product.soldOut == 0)) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("Sold Out")}
+                </Text>
+              </View>
+            )}
+          {((!isEmpty(product.startTime) &&
+            product.startTime > moment().format("HH:mm"))) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("AVAILABLE SOON")}
+                </Text>
+                <Text style={styles.productImageAvailbleTimeText}>
+                  {product.startTime}
+                </Text>
+              </View>
+            )}
+          {((!isEmpty(product.endTime) &&
+            moment().format("HH:mm") > product.endTime)) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("OUT OF STOCK")}
                 </Text>
               </View>
             )}
@@ -461,8 +490,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   productImageSoldText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "700",
+    color: colors.WHITE,
+    textAlign: "center",
+  },
+  productImageAvailbleTimeText: {
+    fontSize: 12,
+    fontWeight: "500",
     color: colors.WHITE,
     textAlign: "center",
   },
@@ -560,7 +595,7 @@ const styles = StyleSheet.create({
     color: "#333",
     fontWeight: '700',
     // width: '55%',
-    textAlign: 'right'
+    // textAlign: 'right'
   },
   extrasText: {
     width: "100%",
