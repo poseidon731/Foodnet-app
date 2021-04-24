@@ -114,9 +114,6 @@ const Product = ({
           }
         }}
       >
-
-
-
         <View style={styles.productItemGroup}>
           <View style={styles.productItem} >
             <View style={styles.productItemText}>

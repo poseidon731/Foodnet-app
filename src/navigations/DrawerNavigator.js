@@ -124,10 +124,10 @@ const DrawerContent = (props) => {
                     <LanguageIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Language selector')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
+                {/* <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
                     <ServiceIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Customer service')}</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 {logged ? (
                     // <Footer style={styles.header}>
                         <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>

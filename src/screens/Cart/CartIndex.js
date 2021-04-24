@@ -542,9 +542,6 @@ export default CartIndex = (props) => {
                   "Are you sure you want to delete the contents of your cart all"
                 )}
               </Text>
-              <Text style={styles.modalDescription}>
-                {/* {i18n.translate("This operation cannot be undone")} */}
-              </Text>
             </View>
             <TouchableOpacity
               style={styles.modalButton}
@@ -803,14 +800,14 @@ const styles = StyleSheet.create({
   modalView: {
     justifyContent: "space-between",
     width: wp("70%"),
-    height: 200,
+    // height: 200,
     backgroundColor: "#1E1E1E",
     borderRadius: 14,
   },
   modalMain: {
     justifyContent: "center",
     alignItems: "center",
-    height: 110,
+    // height: 80,
   },
   modalTitle: {
     width: "80%",
@@ -818,6 +815,8 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     color: colors.WHITE,
+    paddingTop: 15,
+    paddingBottom: 5
   },
   modalDescription: {
     width: "80%",

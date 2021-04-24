@@ -347,8 +347,7 @@ export default Detail = (props) => {
                     <View style={styles.overlay} />
                     <View style={styles.modalView}>
                         <View style={styles.modalMain}>
-                            <Text style={styles.modalTitle}>{i18n.translate('You havent placed your order from the')} {restaurant.restaurant_name} {i18n.translate('yet')}</Text>
-                            <Text style={styles.modalDescription}>{i18n.translate('An order can only be from one restaurant')}</Text>
+                            <Text style={styles.modalTitle}>{i18n.translate('An order can only be from one restaurant')}</Text>
                         </View>
                         <TouchableOpacity style={styles.modalButton} onPress={() => {
                             setModal(false);
@@ -616,21 +615,23 @@ const styles = StyleSheet.create({
     modalView: {
         justifyContent: 'space-between',
         width: wp('70%'),
-        height: 230,
+        // height: 230,
         backgroundColor: '#1E1E1E',
         borderRadius: 14,
     },
     modalMain: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 120
+        // height: 120
     },
     modalTitle: {
         width: '80%',
         textAlign: 'center',
         fontSize: 17,
         fontWeight: 'bold',
-        color: colors.WHITE
+        color: colors.WHITE,
+        paddingTop: 15,
+        paddingBottom: 5
     },
     modalDescription: {
         width: '80%',

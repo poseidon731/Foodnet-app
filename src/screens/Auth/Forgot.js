@@ -123,7 +123,7 @@ export default Forgot = (props) => {
                                 style={[common.button, (isEmpty(email) || !isEmpty(errorEmail) || visible) ? common.backColorGrey : common.backColorYellow]}
                                 onPress={() => onVerification()}
                             >
-                                <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
+                                <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Send')}</Text>
                             </TouchableOpacity>
                         </View>
                     </Fragment> :

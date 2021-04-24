@@ -920,7 +920,7 @@ export default CartDetail = (props) => {
               </View>
             )}
             <View style={styles.amount}>
-              <Text style={styles.priceGrey}>
+              <Text style={styles.priceBlack}>
                 {i18n.translate("Total")}: {total.toFixed(2)}{" "}
                 {i18n.translate("lei")}
               </Text>
@@ -2202,6 +2202,11 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingTop: 10,
     paddingBottom: 10,
+  },
+  priceBlack: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.BLACK
   },
   priceGrey: {
     fontSize: 18,
