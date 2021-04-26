@@ -290,9 +290,12 @@ export default CartDetail = (props) => {
   const [filterCitys, setFilterCitys] = useState([]);
   const [filterText, setFilterText] = useState('');
   const [citys, setCitys] = useState([]);
-  const [cityObj, setCityObj] = useState({
+  const [cityObj, setCityObj] = useState(logged ? {
     id: user.city.id,
     cities: user.city.name,
+  } : {
+    id: city.id,
+    cities: city.name
   });
   const [disabled, setDisabled] = useState(false);
   const [navi, setNavi] = useState(true);
@@ -390,7 +393,7 @@ export default CartDetail = (props) => {
   };
 
   const getCities = () => {
-    console.log("----- getCities ----", cartRestaurant.restaurant_id);
+    console.log("----- getCities ----", cartRestaurant.restaurant_id, cityObj.id);
     dispatch(setLoading(true));
     AuthService.deliveryCities(country, cartRestaurant.restaurant_id)
       .then((response) => {
@@ -660,21 +663,10 @@ export default CartDetail = (props) => {
 
   const getDeliveryPrice = (city_id) => {
     console.log(city_id, "  : ==========  ", cartRestaurant.restaurant_id);
+    let cityExist = false;
     citys.map((city) => {
       if (city.id == city_id) {
-        // if (city.locationType == 0) {
-        //   setDeliveryPrice(
-        //     cartRestaurant.delivery_price_city
-        //       ? cartRestaurant.delivery_price_city
-        //       : 0
-        //   );
-        // } else if (city.locationType == 1) {
-        //   setDeliveryPrice(
-        //     cartRestaurant.delivery_price_village
-        //       ? cartRestaurant.delivery_price_village
-        //       : 0
-        //   );
-        // }
+        cityExist = true;
         dispatch(setLoading(true));
         ProfileService.getDeliveryPrice(user.token, city_id, cartRestaurant.restaurant_id)
           .then((response) => {
@@ -699,6 +691,10 @@ export default CartDetail = (props) => {
           });
       }
     });
+
+    if(cityExist == false) {
+      dispatch(setLoading(false));
+    }
   };
 
   useEffect(() => {
