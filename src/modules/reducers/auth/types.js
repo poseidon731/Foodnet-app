@@ -4,5 +4,6 @@ export default {
     SET_CITY: 'SET_CITY',
     SET_USER: 'SET_USER',
     SET_USER_CITY: 'SET_USER_CITY',
-    DELETE_USER: 'DELETE_USER'
+    DELETE_USER: 'DELETE_USER',
+    SET_CUR_VER: 'SET_CUR_VER'
 }
