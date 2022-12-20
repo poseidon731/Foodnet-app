@@ -9,6 +9,7 @@ const initialState = {
         status: false
     },
     logged: false,
+    currentVer: 0,
     user: {
         token: null,
         email: '',
@@ -54,6 +55,11 @@ export default function authReducer(state = initialState, action) {
                 ...state,
                 logged: false,
                 user: action.payload,
+            };
+        case types.SET_CUR_VER:
+            return {
+                ...state,
+                currentVer: action.payload
             };
 
 

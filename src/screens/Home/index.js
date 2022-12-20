@@ -6,16 +6,18 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
 import { setFilters } from '@modules/reducers/food/actions';
+import { setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
 import { Cities, Dashboard, Filters } from '@components';
 import { common, colors } from '@constants/themes';
 import { CartYellowIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
+import { callOnceInInterval } from '@utils/functions';
 
 export default Home = (props) => {
     const dispatch = useDispatch();
     const { logged, country, city, user } = useSelector(state => state.auth);
-    const { cartBadge, filters } = useSelector(state => state.food);
+    const { cartBadge, cartRestaurant, filters } = useSelector(state => state.food);
 
     const [cityStatus, setCityStatus] = useState(false);
     const [filterStatus, setFilterStatus] = useState(false);
@@ -24,11 +26,35 @@ export default Home = (props) => {
     const [result, setResult] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [search, setSearch] = useState('');
+    const [dailyMenu, setDailyMenu] = useState([]);
+    const [modal, setModal] = useState(false);
+    const [restaurantName, setRestaurantName] = useState('');
+    const [promotionHeader, setPromotionHeader] = useState([]);
 
     useEffect(() => {
         setCityStatus(false);
         setFilterStatus(false);
         dispatch(setLoading(true));
+        FoodService.getPromotionHeader(country, logged ? user.city.id : city.id)
+            .then(response => {
+                console.log(response);
+                if(response.status == 200) setPromotionHeader(response.result);
+            })
+            .catch(error => {
+                setRefresh(false);
+            });
+
+        console.log("index home = ", logged ? user.city.name : city.name);
+        FoodService.getDailyMenu(country, logged ? user.city.id : city.id)
+            .then(response => {
+                setRefresh(false);
+                if(response.status == 200) {
+                    setDailyMenu(response.result);
+                }
+            })
+            .catch(error => {
+                setRefresh(false);
+            })
         FoodService.promotion(country, logged ? user.city.name : city.name)
             .then((response) => {
                 setRefresh(false);
@@ -77,13 +103,23 @@ export default Home = (props) => {
     }, [search]);
 
     useEffect(() => {
-        function getRestaurantList() {
-            console.log((new Date()).getMinutes() + " : " + (new Date()).getSeconds(), "  ==  get restaurant status");
-            FoodService.promotion(country, logged ? user.city.name : city.name)
+        function getRestaurantList(country, cityId, cityName, search, filters) {
+            console.log((new Date()).getMinutes() + " : " + (new Date()).getSeconds(), "  ==  get restaurant status", cityName);
+            FoodService.getDailyMenu(country, cityId)
+            .then(response => {
+                setRefresh(false);
+                if(response.status == 200) {
+                    setDailyMenu(response.result);
+                }
+            })
+            .catch(error => {
+                setRefresh(false);
+            })
+            FoodService.promotion(country, cityName)
                 .then((response) => {
                     setRefresh(false);
                     if (response.status == 200) {
-                        console.log(response.result[0].restaurant_open);
+                        console.log("restaurant = ", response.result[0]);
                         setPromotion(response.result);
                     }
                 })
@@ -92,7 +128,7 @@ export default Home = (props) => {
                 });
 
             if (search == '') {
-                FoodService.all(country, logged ? user.city.name : city.name, search, filters)
+                FoodService.all(country, cityName, search, filters)
                     .then((response) => {
                         dispatch(setLoading(false));
                         setRefresh(false);
@@ -105,7 +141,7 @@ export default Home = (props) => {
                         setRefresh(false);
                     });
             } else {
-                FoodService.result(country, logged ? user.city.name : city.name, search, filters)
+                FoodService.result(country, cityName, search, filters)
                     .then((response) => {
                         setRefresh(false);
                         if (response.status == 200) {
@@ -118,11 +154,11 @@ export default Home = (props) => {
             }
         }
 
-        const interval = setInterval(() => getRestaurantList(), 45000)
+        const interval = setInterval(() => getRestaurantList(country, logged ? user.city.id : city.id, logged ? user.city.name : city.name, search, filters), 45000)
         return () => {
             clearInterval(interval);
         }
-    }, [])
+    }, [country, user, city, search, filters])
 
     return (
         <Container style={common.container}>
@@ -170,10 +206,14 @@ export default Home = (props) => {
                         refresh={refresh}
                         search={search}
                         filters={filters}
+                        dailyMenu={dailyMenu}
+                        promotionHeader={promotionHeader}
                         onFilter={() => setFilterStatus(!filterStatus)}
                         onRefresh={() => setRefresh(true)}
                         onSearch={(value) => setSearch(value)}
-                        onDetail={(item) => props.navigation.push('Detail', { restaurant: item })}
+                        onDetail={(item) => callOnceInInterval(() => props.navigation.push('Detail', { restaurant: item }))}
+                        onExtra={(item) => callOnceInInterval(() => props.navigation.push('DailyMenuExtra', { item }))}
+                        onModal={(restaurant_name) => {setModal(true); setRestaurantName(restaurant_name);}}
                     /> :
                     <Filters
                         filters={filters}
@@ -188,6 +228,32 @@ export default Home = (props) => {
                         onLoading={(load) => dispatch(setLoading(load))}
                     />
             }
+            {modal && (
+                <View style={styles.modalContainer}>
+                    <View style={styles.overlay} />
+                    <View style={styles.modalView}>
+                        <View style={styles.modalMain}>
+                            <Text style={styles.modalTitle}>{i18n.translate('You havent placed your order from the')} {restaurantName} {i18n.translate('yet')}</Text>
+                            <Text style={styles.modalDescription}>{i18n.translate('An order can only be from one restaurant')}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => {
+                            setModal(false);
+                            // dispatch(setCartRestaurant(null));
+                            dispatch(setCartBadge(0));
+                            dispatch(setCartProducts([]));
+                        }}>
+                            <Text style={styles.cancelText}>{i18n.translate('Empty cart add new product to the cart')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => {
+                            setModal(false);
+                            // setRestaurant(cartRestaurant);
+                        }}>
+                            {/* <Text style={styles.saveText}>{i18n.translate('Back to the')} {cartRestaurant.restaurant_name} {i18n.translate('restaurant')}</Text> */}
+                            <Text style={styles.saveText}>{i18n.translate('Cancel')}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
         </Container>
     );
 }
@@ -217,5 +283,67 @@ const styles = StyleSheet.create({
         fontSize: 10,
         fontWeight: 'bold',
         color: colors.WHITE
+    },
+    modalContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: wp('100%'),
+        height: hp('100%'),
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    overlay: {
+        position: 'absolute',
+        width: wp('100%'),
+        height: hp('100%'),
+        backgroundColor: '#00000080'
+    },
+    modalView: {
+        justifyContent: 'space-between',
+        width: wp('70%'),
+        height: 230,
+        backgroundColor: '#1E1E1E',
+        borderRadius: 14,
+    },
+    modalMain: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 120
+    },
+    modalTitle: {
+        width: '80%',
+        textAlign: 'center',
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: colors.WHITE
+    },
+    modalDescription: {
+        width: '80%',
+        textAlign: 'center',
+        fontSize: 13,
+        color: colors.WHITE
+    },
+    modalButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: 55,
+        borderTopWidth: 2,
+        borderTopColor: colors.BLACK
+    },
+    saveText: {
+        width: '80%',
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#0AB4FF',
+        textAlign: 'center'
+    },
+    cancelText: {
+        width: '80%',
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#F05050',
+        textAlign: 'center'
     },
 });

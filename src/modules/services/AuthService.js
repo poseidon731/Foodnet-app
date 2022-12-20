@@ -44,6 +44,14 @@ const AuthService = {
             return response.data;
         });
     },
+    deliveryCities: function (country, restaurantId) {
+        return axios.post(`/location/delivery`, {
+            lang: country,
+            restaurantId
+        }).then((response) => {
+            return response.data;
+        });
+    },
     citiesRes: function (country) {
         return axios.get(`/location/${country}/cities`).then((response) => {
             return response.data;

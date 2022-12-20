@@ -91,6 +91,7 @@
     "Within 1 hour": "Within 1 hour",
     "Payment options": "Payment options",
     "Cash": "Cash",
+    "Credit card at the courier": "Credit card at the courier",
     "Search": "Search",
     "No restaurant found": "No restaurant found",
     "All results": "All results",
@@ -191,6 +192,7 @@
     "Required extras (": "Required extras (",
     "is required)": "is required)",
     "Optional extras (Not required)": "Optional extras (Not required)",
+    "Sauce extras (Not required)": "Sauce extras (Not required)",
     "Optional Things(optional)": "Optional Things(optional)",
     "Show me the rest": "SHOW ME THE REST",
     "Comment": "Comment",
@@ -262,5 +264,12 @@
     "Restaurant does not delivery in here": "Restaurant does not delivery in here",
     "Search for a place": "Search for a place",
     "Coupon code used successfully": "Coupon code used successfully",
-    "Invalid coupon code": "Invalid coupon code"
+    "Invalid coupon code": "Invalid coupon code",
+    "Go to cart": "Go to cart",
+    "SHOW MORE": "SHOW MORE",
+    "HIDE": "HIDE",
+    "Popular choices for your order": "Popular choices for your order", 
+    "Add a new shipping address": "Add a new shipping address",
+    "AVAILABLE SOON": "AVAILABLE SOON",
+    "OUT OF STOCK": "OUT OF STOCK"
 }

@@ -249,7 +249,7 @@ export default SignUp = (props) => {
                         <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/terms')}>{i18n.translate('Terms and Conditions')}</Text>
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.rememberMe} onPress={() => setPrivacy(!privacy)}>
+                {/* <TouchableOpacity style={styles.rememberMe} onPress={() => setPrivacy(!privacy)}>
                     <Icon
                         type='material-community'
                         name={privacy ? 'check-box-outline' : 'checkbox-blank-outline'}
@@ -259,7 +259,7 @@ export default SignUp = (props) => {
                     <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
                         <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/privacy')}>{i18n.translate('Privacy')}</Text>
                     </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={[styles.rememberMe, common.marginTop10]} onPress={() => setNewsLetter(!newsLetter)}>
                     <Icon
                         type='material-community'
@@ -271,8 +271,8 @@ export default SignUp = (props) => {
                 </TouchableOpacity>
                 <View style={[styles.buttonView, common.marginTop35]}>
                     <TouchableOpacity
-                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || !privacy || errorMsg || errorMobile ? true : false}
-                        style={[common.button, (isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || !privacy || errorMsg || errorMobile) ? common.backColorGrey : common.backColorYellow]}
+                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg || errorMobile ? true : false}
+                        style={[common.button, (isEmpty(name) || isEmpty(email) || isEmpty(password) || isEmpty(confirm) || errorName || errorEmail || errorPassword || errorConfirm || !termOfService || errorMsg || errorMobile) ? common.backColorGrey : common.backColorYellow]}
                         onPress={() => onSignup()}
                     >
                         <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Registration')}</Text>

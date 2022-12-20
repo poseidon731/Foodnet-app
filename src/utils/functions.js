@@ -4,6 +4,22 @@ import 'intl/locale-data/jsonp/en';
 
 import { NAME_PATTERN, EMAIL_PATTERN, PASSWORD_PATTERN, ALIAS_PATTERN, MOBILE_PATTERN } from '@constants/regexs';
 
+
+let isCalled = false, timer;
+ 
+export const callOnceInInterval = (functionTobeCalled, interval = 1500) => {
+    console.log("isCalled = ", isCalled);
+    if (!isCalled) {
+        isCalled = true;
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            isCalled = false;
+        }, interval);
+        return functionTobeCalled();
+    }
+}
+
+
 export const navOptionHandler = () => ({
     headerShown: false,
     animationEnabled: true,

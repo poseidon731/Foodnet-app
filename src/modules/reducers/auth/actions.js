@@ -25,3 +25,7 @@ export const deleteUser = (data) => ({
     type: types.DELETE_USER,
     payload: data,
 });
+export const setCurVer = (data) => ({
+    type: types.SET_CUR_VER,
+    payload: data
+})

@@ -34,7 +34,22 @@ const FoodService = {
             return response.data;
         });
     },
-
+    getPromotionHeader: function (country, locationId) {
+        return axios.post('/promotion/header', {
+            locationId: locationId,
+            lang: country
+        }).then(response => {
+            return response.data;
+        });
+    },
+    getDailyMenu: function (country, locationId) {
+        return axios.post('/product/daily-menu', {
+            locationId: locationId,
+            lang: country
+        }).then(response => {
+            return response.data;
+        });
+    },
     categories: function (country, restaurantId) {
         return axios.post(`/product/category`, {
             restaurantId,
@@ -98,7 +113,18 @@ const FoodService = {
 
     optional: function (country, restaurantId, variantId) {
         console.log(country, restaurantId, variantId);
-        return axios.post(`/product/optional-extra`, {
+        return axios.post(`/product/optional-extra-new`, {
+            restaurantId,
+            lang: country,
+            variantId
+        }).then((response) => {
+            return response.data;
+        });
+    },
+
+    sauces: function (country, restaurantId, variantId) {
+        console.log(country, restaurantId, variantId);
+        return axios.post(`/product/sauces`, {
             restaurantId,
             lang: country,
             variantId
@@ -124,7 +150,7 @@ const FoodService = {
         });
     },
 
-    order: function (token, city, deliveryAddressId, restaurantId, take, cutlery, products, comment, deliveryPrice, country) {
+    order: function (token, city, deliveryAddressId, restaurantId, take, cutlery, products, comment, deliveryPrice, country, payment) {
         setClientToken(token);
 
         var totalPrice = 0;
@@ -152,14 +178,15 @@ const FoodService = {
             deliveryPrice,
             totalPrice,
             finalPrice,
-            lang: country
+            lang: country,
+            payment
         }).then((response) => {
             removeClientToken();
             console.log(response.data);
             return response.data;
         });
     },
-    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment, deliveryPrice, phone, fullName, email, country) {
+    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment, deliveryPrice, phone, fullName, email, country, payment) {
         !isEmpty(token) && setClientToken(token);
 
         var totalPrice = 0;
@@ -193,7 +220,8 @@ const FoodService = {
             phone,
             fullName,
             email,
-            lang: country
+            lang: country,
+            payment
         }).then((response) => {
             !isEmpty(token) && removeClientToken(token);
             console.log(response.data);
@@ -225,6 +253,30 @@ const FoodService = {
 
             // return data;
         });
+    },
+    getUpSellProducts: function (restaurant_id, country) {
+
+        return axios.post('/product/upsell', {
+            restaurantId: restaurant_id,
+            lang: country
+        }).then((response) => {
+            return response.data;
+        }).catch((error) => {
+            return {};
+        })
+
+    },
+    getDownSellProducts: function (restaurant_id, country) {
+
+        return axios.post('/product/downsell', {
+            restaurantId: restaurant_id,
+            lang: country
+        }).then((response) => {
+            return response.data;
+        }).catch((error) => {
+            return {};
+        })
+
     }
 }
 

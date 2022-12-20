@@ -34,6 +34,7 @@ import { ProfileService, FoodService, AuthService } from "@modules/services";
 import { isEmpty, validateBetween, validateName, validateMobile, validateEmail } from "@utils/functions";
 import { common, colors } from "@constants/themes";
 import { RES_URL } from "@constants/configs";
+import FastImage from "react-native-fast-image";
 import {
   BackWhiteIcon,
   TrustIcon,
@@ -58,11 +59,28 @@ const CartItem = ({
   onDelete,
 }) => {
   // const [count, setCount] = useState(cartProduct.quantity);
+  const cartFinalPrice = () => {
+    let final = cartProduct.productPrice;
+
+    cartProduct.extras.map((extra) => {
+      final += extra.extraPrice;
+    })
+
+    if (!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0) {
+      final += cartProduct.boxPrice;
+    }
+
+    final = final * cartProduct.quantity;
+
+    return final;
+  }
+
   return (
     <View key={`cart${index}`} style={styles.cart}>
       <View style={styles.cartMain}>
         <Text style={styles.cartText}>
-          {cartProduct.quantity}*{cartProduct.productName}
+          {cartProduct.quantity}*{cartProduct.productName} - {(cartProduct.productPrice * cartProduct.quantity).toFixed(2)}{" "}
+          {i18n.translate("lei")}
         </Text>
         <TouchableOpacity
           style={{ marginLeft: 20 }}
@@ -71,7 +89,7 @@ const CartItem = ({
           <TrustIcon />
         </TouchableOpacity>
       </View>
-      <Text style={styles.allergen}>{cartProduct.productDescription}</Text>
+      {/* <Text style={styles.allergen}>{cartProduct.productDescription}</Text>
       {!isEmpty(cartProduct.allergens) ? (
         <Text style={styles.allergenList}>
           ({i18n.translate("Allergens")}:{" "}
@@ -83,7 +101,7 @@ const CartItem = ({
           ))}
           )
         </Text>
-      ) : null}
+      ) : null} */}
       {!isEmpty(cartProduct.extras)
         ? // <Text style={styles.extraList}>+{cartProduct.extras.map((extra, key) => (
         //     <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
@@ -100,10 +118,6 @@ const CartItem = ({
         : null}
       <View style={styles.cartBottom}>
         <View style={styles.cartLeft}>
-          <Text style={styles.price}>
-            {(cartProduct.productPrice * cartProduct.quantity).toFixed(2)}{" "}
-            {i18n.translate("lei")}
-          </Text>
           {!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0 && (
             <Text style={styles.boxPrice}>
               {i18n.translate("Box price")}:{" "}
@@ -111,6 +125,11 @@ const CartItem = ({
               {i18n.translate("lei")}
             </Text>
           )}
+          <Text style={styles.price}>
+            {cartFinalPrice().toFixed(2)}{" "}
+            {i18n.translate("lei")}
+          </Text>
+
         </View>
         <View style={styles.cartButton}>
           <TouchableOpacity
@@ -156,9 +175,60 @@ const CartItem = ({
   );
 };
 
+const UpSellProductItem = ({
+  upSellProduct,
+  index,
+  onSelectUpSellProduct,
+}) => {
+  const [loader, setLoader] = useState(true);
+
+  return (
+    <TouchableOpacity key={`product${index}`} style={styles.product} activeOpacity={1}>
+      <View style={styles.productItemGroup}>
+        <FastImage
+          style={styles.productImage}
+          source={{ uri: RES_URL + upSellProduct.product_imageUrl }}
+          resizeMode="cover"
+          onLoadEnd={(e) => setLoader(false)}
+        />
+        <View style={styles.productItem} >
+          <View style={styles.productItemText}>
+            <Text style={styles.productTitle}>
+              {upSellProduct.product_name}
+            </Text>
+            <Text style={styles.productDescription} numberOfLines={1}>
+              {upSellProduct.product_description}
+            </Text>
+          </View>
+          <View style={styles.productItemBottom}>
+            <Text style={styles.productPrice}>
+              {upSellProduct.product_price.toFixed(2)} {i18n.translate("lei")}
+            </Text>
+            <TouchableOpacity
+              style={styles.plusButton}
+              onPress={() => onSelectUpSellProduct(upSellProduct)}
+            >
+              <Icon
+                type="material-community"
+                name="plus"
+                color={colors.WHITE}
+                size={22}
+              />
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+
 const HEADER_MAX_HEIGHT = Platform.OS === "ios" ? 300 : 260;
 const HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 110 : 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 40 : 26;
 
 export default CartDetail = (props) => {
   const dispatch = useDispatch();
@@ -220,9 +290,12 @@ export default CartDetail = (props) => {
   const [filterCitys, setFilterCitys] = useState([]);
   const [filterText, setFilterText] = useState('');
   const [citys, setCitys] = useState([]);
-  const [cityObj, setCityObj] = useState({
+  const [cityObj, setCityObj] = useState(logged ? {
     id: user.city.id,
     cities: user.city.name,
+  } : {
+    id: city.id,
+    cities: city.name
   });
   const [disabled, setDisabled] = useState(false);
   const [navi, setNavi] = useState(true);
@@ -239,6 +312,8 @@ export default CartDetail = (props) => {
 
   const [termOfService, setTermOfService] = useState(false);
   const [privacy, setPrivacy] = useState(false);
+
+  const [upSellProducts, setUpSellProducts] = useState([]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -268,25 +343,44 @@ export default CartDetail = (props) => {
     extrapolate: "clamp",
   });
 
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      console.log("cart detail focus ---- ");
+      setNavi(true);
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
   const getDeliveryAddress = () => {
     dispatch(setLoading(true));
     console.log("country = ", country);
     ProfileService.getDeliveryList(user.token, country)
       .then((response) => {
-        dispatch(setLoading(false));
+        // dispatch(setLoading(false));
         if (response.status == 200) {
-          setDeliveryList(response.result);
-          if (!isEmpty(response.result)) {
-            setDeliveryAddress({
-              value: response.result[0].id,
-              label:
-                response.result[0].city +
-                ", " +
-                response.result[0].street +
-                ", " +
-                response.result[0].houseNumber,
+          let deliveryAddr = [];
+          if(!isEmpty(response.result)) {
+            response.result.map((addr) => {
+              if (citys.filter((c) => { return c.id == addr.city_id;}).length > 0) {
+                deliveryAddr.push(addr);
+              }
             });
-            getDeliveryPrice(response.result[0].city_id);
+
+            setDeliveryList(deliveryAddr);
+            
+          }
+
+          if(!isEmpty(deliveryAddr)) {
+            setDeliveryAddress({
+              value: deliveryAddr[0].id,
+              label:
+                deliveryAddr[0].city +
+                ", " +
+                deliveryAddr[0].street +
+                ", " +
+                deliveryAddr[0].houseNumber,
+            });
+            getDeliveryPrice(deliveryAddr[0].city_id);
           } else {
             getDeliveryPrice(cityObj.id);
           }
@@ -295,6 +389,25 @@ export default CartDetail = (props) => {
       .catch((error) => {
         dispatch(setLoading(false));
         console.log(error.message);
+      });
+  };
+
+  const getCities = () => {
+    console.log("----- getCities ----", cartRestaurant.restaurant_id, cityObj.id);
+    dispatch(setLoading(true));
+    AuthService.deliveryCities(country, cartRestaurant.restaurant_id)
+      .then((response) => {
+        // dispatch(setLoading(false));
+        if (response.status == 200) {
+          setCitys(response.location);
+          setFilterCitys(response.location);
+          if (cityObj.id == 0) {
+            setCityObj(response.location[0]);
+          }
+        }
+      })
+      .catch((error) => {
+        dispatch(setLoading(false));
       });
   };
 
@@ -307,29 +420,12 @@ export default CartDetail = (props) => {
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
-    const getCities = () => {
-      dispatch(setLoading(true));
-      AuthService.cities(country)
-        .then((response) => {
-          dispatch(setLoading(false));
-          if (response.status == 200) {
-            setCitys(response.locations);
-            setFilterCitys(response.locations);
-            if (cityObj.id == 0) {
-              setCityObj(response.locations[0]);
-            }
-          }
-        })
-        .catch((error) => {
-          dispatch(setLoading(false));
-        });
-    };
-    getCities();
+    navi && getCities();
 
-    logged && getDeliveryAddress();
+    // navi && logged && getDeliveryAddress();
 
     return () => console.log("Unmounted");
-  }, []);
+  }, [navi]);
 
   useEffect(() => {
     (visitStreet && isEmpty(addressStreet)) ||
@@ -371,17 +467,19 @@ export default CartDetail = (props) => {
       // setNavi(false);
       // props.navigation.pop();
     }
-    if (isEmpty(cartProducts) && navi) {
-      console.log("empty cartproducts");
-      setTimeout(() => {
-        props.navigation.goBack(null);
-      }, 50);
-
-    }
   });
 
   useEffect(() => {
-    console.log("setCities", logged, cityObj.id, citys);
+    if (isEmpty(cartProducts) && navi) {
+      console.log("empty cartproducts");
+      setNavi(false);
+      setTimeout(() => {
+        props.navigation.pop();
+      }, 1500);
+    }
+  }, [cartProducts]);
+
+  useEffect(() => {
     if (logged) !isEmpty(citys) && getDeliveryAddress();
     else {
       !isEmpty(citys) && getDeliveryPrice((cityObj.id == 0) ? citys[0].id : cityObj.id);
@@ -411,6 +509,17 @@ export default CartDetail = (props) => {
       });
       dispatch(setCartProducts(cartProducts));
       dispatch(setCartBadge(totalBadge));
+
+      var totalAmount = 0;
+      cartProducts.map((cartProduct, key) => {
+        totalAmount += cartProduct.quantity * cartProduct.productPrice;
+        if (cartProduct.boxPrice)
+          totalAmount += cartProduct.quantity * cartProduct.boxPrice;
+        cartProduct.extras.map((extra, key) => {
+          totalAmount += extra.quantity * extra.extraPrice;
+        });
+      });
+      setTotal(totalAmount);
 
       if (cartProducts[index].extras.length != 0) setIsExtra(1);
       else setIsExtra(0);
@@ -470,7 +579,8 @@ export default CartDetail = (props) => {
           phone,
           userName,
           email,
-          country
+          country,
+          payment
         )
           .then((response) => {
             dispatch(setLoading(false));
@@ -498,7 +608,8 @@ export default CartDetail = (props) => {
         cartProducts,
         comment,
         (total > freeDelivery ? 0 : deliveryPrice),
-        country
+        country,
+        payment
       )
         .then((response) => {
           dispatch(setLoading(false));
@@ -552,26 +663,15 @@ export default CartDetail = (props) => {
 
   const getDeliveryPrice = (city_id) => {
     console.log(city_id, "  : ==========  ", cartRestaurant.restaurant_id);
+    let cityExist = false;
     citys.map((city) => {
       if (city.id == city_id) {
-        // if (city.locationType == 0) {
-        //   setDeliveryPrice(
-        //     cartRestaurant.delivery_price_city
-        //       ? cartRestaurant.delivery_price_city
-        //       : 0
-        //   );
-        // } else if (city.locationType == 1) {
-        //   setDeliveryPrice(
-        //     cartRestaurant.delivery_price_village
-        //       ? cartRestaurant.delivery_price_village
-        //       : 0
-        //   );
-        // }
+        cityExist = true;
         dispatch(setLoading(true));
         ProfileService.getDeliveryPrice(user.token, city_id, cartRestaurant.restaurant_id)
           .then((response) => {
             dispatch(setLoading(false));
-            console.log("delivery price ==== ", response);
+            console.log("******  city id", city_id, " : restaurant id = ", cartRestaurant.restaurant_id, " : delivery price ==== ", response);
             if (response.status == 200) {
               if (response.result.length > 0) {
                 let free_delivery = (response.result[0].free_delivery == null ? 0 : response.result[0].free_delivery);
@@ -591,6 +691,10 @@ export default CartDetail = (props) => {
           });
       }
     });
+
+    if(cityExist == false) {
+      dispatch(setLoading(false));
+    }
   };
 
   useEffect(() => {
@@ -625,13 +729,13 @@ export default CartDetail = (props) => {
           if (response.result[0].active == 0 || response.result[0].active == 2 || response.result[0].active == 3) {
             // setErrorCouponCode(response.msg);
             setErrorCouponCode(i18n.translate('Invalid coupon code'));
-            setTimeout(() => {setErrorCouponCode('')}, 5000);
+            setTimeout(() => { setErrorCouponCode('') }, 5000);
 
             setCouponActive(0);
           } else if (response.result[0].active == 1) {
             // setSuccessCouponCode(response.msg);
             setSuccessCouponCode(i18n.translate('Coupon code used successfully'));
-            setTimeout(() => {setSuccessCouponCode('')}, 5000);
+            setTimeout(() => { setSuccessCouponCode('') }, 5000);
 
             setCouponActive(1);
             setCouponType(response.result[0].type);
@@ -641,7 +745,7 @@ export default CartDetail = (props) => {
         else if (response.status == 404) {
           // setErrorCouponCode(response.msg);
           setErrorCouponCode(i18n.translate('Invalid coupon code'));
-          setTimeout(() => {setErrorCouponCode('')}, 5000);
+          setTimeout(() => { setErrorCouponCode('') }, 5000);
 
           setCouponActive(0);
         }
@@ -656,8 +760,8 @@ export default CartDetail = (props) => {
     setFilterText(text);
 
     const newCitys = citys.filter(item => {
-      const itemData = item.cities.toUpperCase();
-      const textData = text.toUpperCase();
+      const itemData = item.cities.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const textData = text.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
       return itemData.indexOf(textData) > -1;
     });
@@ -700,6 +804,61 @@ export default CartDetail = (props) => {
     );
   };
 
+  useEffect(() => {
+    if (navi) {
+      // dispatch(setLoading(true));
+      FoodService.getDownSellProducts(cartRestaurant.restaurant_id, country)
+        .then((response) => {
+          // dispatch(setLoading(false));
+          if (response.status == 200) {
+            setUpSellProducts(response.result);
+          }
+          else {
+            setUpSellProducts([]);
+          }
+        })
+        .catch(error => {
+          dispatch(setLoading(false));
+          setUpSellProducts([]);
+        });
+    }
+
+  }, [navi]);
+
+  const onSelectUpSellProduct = (item) => {
+    console.log(item);
+    // if (item.modal == 0) // add cart
+    // {
+    //   var counter = cartProducts.length + 1;
+    //   cartProducts.push({
+    //     cartId: Date.now(),
+    //     variantId: item.variant_id,
+    //     productId: item.product_id,
+    //     productName: item.product_name,
+    //     productDescription: item.product_description,
+    //     allergens: item.allergens_name,
+    //     productPrice: item.product_price,
+    //     boxPrice: isEmpty(item.box_price) ? 0 : item.box_price,
+    //     quantity: 1,
+    //     message: '',
+    //     extras: [],
+    //     counter
+    //   });
+    //   var totalBadge = 0;
+    //   cartProducts.map((cartProduct, key) => {
+    //     totalBadge += cartProduct.quantity;
+    //   });
+
+    //   dispatch(setCartProducts(cartProducts));
+    //   dispatch(setCartBadge(totalBadge));
+    //   // dispatch(setCartToast(!cartToast));
+    // }
+    // else if (item.modal == 1) //go to extra
+    // {
+    props.navigation.push('CartExtra', { restaurant: cartRestaurant, product: item, count: 1 })
+    // }
+  }
+
   return (
     <SafeAreaView style={styles.saveArea}>
       <Animated.ScrollView
@@ -713,7 +872,7 @@ export default CartDetail = (props) => {
         )}
       >
         {!success ? (
-          <View style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }}>
+          <TouchableOpacity style={{ flex: 1, paddingLeft: 20, paddingRight: 20 }} activeOpacity={1} onPress={() => setActive(false)}>
             <Text
               style={[styles.cartText, { marginTop: 10 }]}
               numberOfLines={1}
@@ -737,15 +896,34 @@ export default CartDetail = (props) => {
                 />
               )}
             />
-            <View style={styles.amount}>
-              <Text style={styles.priceGrey}>
+            {!isEmpty(upSellProducts) && (
+              <View>
+                <Text style={styles.upsellproduct_title}>{i18n.translate('Popular choices for your order')}</Text>
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  horizontal={true}
+                  data={upSellProducts}
+                  keyExtractor={(upSellProduct, index) => index.toString()}
+                  renderItem={(upSellProduct, index) => (
+                    <UpSellProductItem
+                      upSellProduct={upSellProduct.item}
+                      onSelectUpSellProduct={(item) =>
+                        onSelectUpSellProduct(item)
+                      }
+                    />
+                  )}
+                />
+              </View>
+            )}
+            {/* <View style={styles.amount}>
+              <Text style={styles.priceBlack}>
                 {i18n.translate("Total")}: {total.toFixed(2)}{" "}
                 {i18n.translate("lei")}
               </Text>
-            </View>
+            </View> */}
             <View>
-              <View style={styles.amount1}>
-                <Text style={styles.priceGrey}>
+              <View style={styles.amount}>
+                <Text style={styles.priceBlack}>
                   {i18n.translate("Delivery")}: {(total > freeDelivery ? 0 : deliveryPrice).toFixed(2)}{" "}
                   {i18n.translate("lei")}
                 </Text>
@@ -995,6 +1173,33 @@ export default CartDetail = (props) => {
                     </Text>
                   </TouchableOpacity>
                 ))}
+                <TouchableOpacity
+                  onPress={() => {
+                    setNavi(false);
+                    props.navigation.push("CartDeliveryAdd", { type: 1, item: null });
+                  }}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    marginTop: 10
+                  }}
+                >
+                  <Icon
+                    type="material-community"
+                    name="plus"
+                    size={20}
+                    color={colors.YELLOW.PRIMARY}
+                  />
+                  <Text style={{
+                    color: colors.YELLOW.PRIMARY,
+                    marginLeft: 10,
+                    fontSize: 16
+                  }}>
+                    {i18n.translate("Add a new shipping address")}
+                  </Text>
+                </TouchableOpacity>
                 {(isDelivery == 0) && (
                   <View style={styles.notDeliveryBack}>
                     <ErrorIcon />
@@ -1041,7 +1246,7 @@ export default CartDetail = (props) => {
                   >
                     <MapPinIcon />
                     <Text style={styles.itemText1} numberOfLines={1}>
-                      {cityObj.cities}
+                      {isEmpty(filterCitys) ? '' : (filterCitys.filter((c) => {return c.id == cityObj.id;}).length > 0 ? cityObj.cities : filterCitys[0].cities)}
                     </Text>
                     <Icon
                       type="material"
@@ -1265,7 +1470,7 @@ export default CartDetail = (props) => {
                 >
                   {i18n.translate("Coupon Codes")}
                 </Text>
-                <Text
+                {/* <Text
                   style={[
                     styles.labelTextNormal1,
                     !isEmpty(errorCouponCode)
@@ -1275,7 +1480,7 @@ export default CartDetail = (props) => {
                 >
                   {" "}
                     ({i18n.translate("If exist")})
-                  </Text>
+                </Text> */}
               </View>
               <View style={styles.couponCodeContainer}>
                 <TextField
@@ -1401,17 +1606,46 @@ export default CartDetail = (props) => {
             >
               {i18n.translate("Payment method")}
             </Text>
-            <TouchableOpacity style={styles.radioButton} disabled={true}>
+            <TouchableOpacity style={styles.radioButton} onPress={() => setPayment(1)}>
               <Icon
                 type="material"
-                name={"radio-button-on"}
-                color={colors.YELLOW.PRIMARY}
+                name={
+                  payment == 1
+                    ? "radio-button-on"
+                    : "radio-button-off"
+                }
+                color={
+                  payment == 1
+                    ? colors.YELLOW.PRIMARY
+                    : colors.BLACK
+                }
                 size={20}
               />
               <Text style={styles.radioText} numberOfLines={1}>
                 {i18n.translate("Cash")}
               </Text>
             </TouchableOpacity>
+            {restaurant.card == 1 && (
+              <TouchableOpacity style={styles.radioButton} onPress={() => setPayment(2)}>
+                <Icon
+                  type="material"
+                  name={
+                    payment == 2
+                      ? "radio-button-on"
+                      : "radio-button-off"
+                  }
+                  color={
+                    payment == 2
+                      ? colors.YELLOW.PRIMARY
+                      : colors.BLACK
+                  }
+                  size={20}
+                />
+                <Text style={styles.radioText} numberOfLines={1}>
+                  {i18n.translate("Credit card at the courier")}
+                </Text>
+              </TouchableOpacity>
+            )}
             {!logged && (
               <TouchableOpacity style={styles.rememberMe} onPress={() => setTermOfService(!termOfService)}>
                 <Icon
@@ -1425,7 +1659,7 @@ export default CartDetail = (props) => {
                 </Text>
               </TouchableOpacity>
             )}
-            {!logged && (
+            {/* {!logged && (
               <TouchableOpacity style={styles.rememberMe} onPress={() => setPrivacy(!privacy)}>
                 <Icon
                   type='material-community'
@@ -1437,85 +1671,9 @@ export default CartDetail = (props) => {
                   <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => Linking.openURL('http://foodnet.ro/ro/privacy')}>{i18n.translate('Privacy')}</Text>
                 </Text>
               </TouchableOpacity>
-            )}
-
-            <View
-              style={{
-                marginTop: 30,
-                marginBottom: 50,
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {logged ? (
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    (isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)
-                      ? common.backColorGrey
-                      : common.backColorYellow,
-                  ]}
-                  disabled={
-                    disabled ||
-                    (isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                    !validateBetween(comment, 0, 300)
-                  }
-                  onPress={() => onOrder()}
-                >
-                  {minimumOrderPrice > finalPrice ? (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("More")}{" "}
-                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
-                      {i18n.translate("lei")}
-                    </Text>
-                  ) : (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("Order Now")}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    ((isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
-                      ? common.backColorGrey
-                      : common.backColorYellow,
-                  ]}
-                  disabled={
-                    disabled ||
-                    ((isEmpty(deliveryList) &&
-                      (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
-                      (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
-                      !validateBetween(comment, 0, 300)) || (!termOfService || !privacy || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
-                  }
-                  onPress={() => onOrder()}
-                >
-                  {minimumOrderPrice > finalPrice ? (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("More")}{" "}
-                      {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
-                      {i18n.translate("lei")}
-                    </Text>
-                  ) : (
-                    <Text style={styles.buttonText}>
-                      {i18n.translate("Order Now")}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              )}
-
-            </View>
-          </View>
+            )} */}
+            <View style={{ height: 160 }}></View>
+          </TouchableOpacity>
         ) : (
           <View style={styles.success}>
             <View style={common.height50} />
@@ -1642,6 +1800,88 @@ export default CartDetail = (props) => {
           <View style={common.headerRight} />
         </Header>
       </Animated.View>
+      {!success && (
+        <View style={styles.goToOrder}>
+          <View style={styles.orderAmount}>
+            <Text style={styles.orderPrice}>
+              {i18n.translate("Final")}
+            </Text>
+            <Text style={styles.orderPrice}>
+              {(couponActive == 0) ? (total + (total > freeDelivery ? 0 : deliveryPrice)).toFixed(2) : finalPrice.toFixed(2)}{" "}{i18n.translate("lei")}
+            </Text>
+          </View>
+          <View
+            style={styles.orderButtonView}
+          >
+            {logged ? (
+              <TouchableOpacity
+                style={[
+                  styles.orderButton,
+                  (isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                    !validateBetween(comment, 0, 300)
+                    ? common.backColorGrey
+                    : common.backColorYellow,
+                ]}
+                disabled={
+                  disabled ||
+                  (isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                  (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                  !validateBetween(comment, 0, 300)
+                }
+                onPress={() => onOrder()}
+              >
+                {minimumOrderPrice > finalPrice ? (
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("More")}{" "}
+                    {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
+                    {i18n.translate("lei")}
+                  </Text>
+                ) : (
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("Order Now")}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[
+                  styles.orderButton,
+                  ((isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                    !validateBetween(comment, 0, 300)) || (!termOfService || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
+                    ? common.backColorGrey
+                    : common.backColorYellow,
+                ]}
+                disabled={
+                  disabled ||
+                  ((isEmpty(deliveryList) &&
+                    (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ||
+                    (isDelivery == 0 || finalPrice < minimumOrderPrice) ||
+                    !validateBetween(comment, 0, 300)) || (!termOfService || errorPhone || errorName || isEmpty(phone) || isEmpty(userName) || errorEmail || isEmpty(email))
+                }
+                onPress={() => onOrder()}
+              >
+                {minimumOrderPrice > finalPrice ? (
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("More")}{" "}
+                    {(minimumOrderPrice - finalPrice).toFixed(2)}{" "}
+                    {i18n.translate("lei")}
+                  </Text>
+                ) : (
+                  <Text style={styles.buttonText}>
+                    {i18n.translate("Order Now")}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            )}
+
+          </View>
+        </View>
+      )}
       {visible && (
         <View style={styles.modalContainer}>
           <View style={styles.overlay} />
@@ -1959,6 +2199,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
   },
+  priceBlack: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.BLACK
+  },
   priceGrey: {
     fontSize: 18,
     fontWeight: "bold",
@@ -1981,6 +2226,44 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#6D6D6D",
+  },
+  goToOrder: {
+    width: wp('100%'),
+    position: 'absolute',
+    bottom: 0,
+    paddingBottom: BOTTOM_BUTTON_DISTANCE,
+    paddingTop: 9,
+    paddingHorizontal: '5%',
+    backgroundColor: colors.WHITE,
+    shadowColor: colors.BLACK,
+    shadowOffset: { width: 4, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  orderAmount: {
+    width: "100%",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 9,
+  },
+  orderPrice: {
+    fontSize: 15,
+    fontWeight: '700'
+  },
+  orderButtonView: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  orderButton: {
+    width: "100%",
+    height: 42,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: '#F78F1E',
   },
   button: {
     marginBottom: 20,
@@ -2027,7 +2310,7 @@ const styles = StyleSheet.create({
     width: "100%",
     // height: 30,
     marginTop: 15,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   cartText: {
     width: "70%",
@@ -2047,7 +2330,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   extraList: {
-    marginTop: 10,
+    marginTop: 5,
     width: "100%",
     fontSize: 16,
     color: colors.BLACK,
@@ -2057,17 +2340,18 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
   cartBottom: {
+    marginTop: 7,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    height: 50,
+    // height: 50,
   },
   cartLeft: {
     alignItems: "flex-start",
   },
   boxPrice: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#999",
   },
 
@@ -2386,5 +2670,96 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: '#FF000089'
-  }
+  },
+  upsellproduct_title: {
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 24,
+    marginTop: 12,
+    marginBottom: 8
+  },
+  product: {
+    zIndex: 9999,
+    marginBottom: 10,
+    width: wp("80%") - 40,
+    marginRight: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.WHITE,
+    backgroundColor: colors.WHITE,
+    shadowColor: "rgba(0, 0, 0, 0.1)",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  productItemGroup: {
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    display: 'flex'
+  },
+  productItem: {
+    width: '70%',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-start',
+    alignContent: 'space-between',
+    paddingTop: 10,
+    paddingRight: 20,
+    paddingBottom: 10
+  },
+  productItemText: {
+    width: '100%'
+  },
+  productImage: {
+    width: "30%",
+    minHeight: 100,
+    height: "100%",
+    borderTopLeftRadius: 6,
+    borderBottomLeftRadius: 6,
+    // borderRightWidth: 1,
+    // borderRightColor: '#C4C4C4',
+    marginRight: 8
+  },
+  productTitle: {
+    width: "100%",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#111",
+  },
+  productDescription: {
+    marginTop: 8,
+    width: "100%",
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 16,
+    color: "#666",
+  },
+  productItemBottom: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // alignSelf: 'flex-start',
+    marginTop: 10
+  },
+  productPrice: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.YELLOW.PRIMARY,
+  },
+  plusButton: {
+    marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 25,
+    height: 25,
+    borderRadius: 15,
+    borderWidth: 1,
+    backgroundColor: '#F78F1E',
+    borderColor: colors.WHITE,
+  },
 });

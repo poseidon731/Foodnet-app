@@ -5,7 +5,6 @@ const ProfileService = {
         setClientToken(token);
         return axios.get(`/location/delivery-price/${restaurant_id}/${city_id}`).then((response) => {
             removeClientToken();
-            console.log("delivery price == ", response.data);
             return response.data;
         });
     },

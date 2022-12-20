@@ -88,173 +88,108 @@ const Product = ({
         loading={loader}
         containerStyles={styles.loader}
       />
-      <View key={index} style={loader ? styles.default : styles.product}>
-        {/* // (!isEmpty(product.startTime) && moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A') > moment().format('MM/DD/YYYY, h:mm:ss A')) ||
-                    // (!isEmpty(product.endTime) && moment().format('MM/DD/YYYY, h:mm:ss A') > moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A')) || */}
-        {((!isEmpty(product.startTime) &&
-          product.startTime > moment().format("HH:mm")) ||
+      <TouchableOpacity key={index} style={loader ? styles.default : styles.product}
+        disabled={
+          parseInt(moment().format("HH:mm").replace(":", "")) <=
+          parseInt(restaurant.restaurant_open.replace(":", "")) ||
+          parseInt(moment().format("HH:mm").replace(":", "")) >=
+          parseInt(restaurant.restaurant_close.replace(":", "")) ||
+          (!isEmpty(product.startTime) &&
+            product.startTime > moment().format("HH:mm")) ||
           (!isEmpty(product.endTime) &&
             moment().format("HH:mm") > product.endTime) ||
           (product.isDailyMenu == 1 && product.soldOut == 1) ||
           (product.isDailyMenu == 1 && isToday == 0) ||
-          (product.isDailyMenu == 0 && product.soldOut == 0)) && (
-          <View style={styles.productImageSold}>
-            <Text style={styles.productImageSoldText}>
-              {i18n.translate("Sold Out")}
-            </Text>
-          </View>
-        )}
-        <FastImage
-          style={styles.productImage}
-          source={{ uri: RES_URL + product.product_imageUrl }}
-          resizeMode="cover"
-          onLoadEnd={(e) => setLoader(false)}
-        />
-        <Text style={styles.productTitle}>
-          {product.product_name}
-        </Text>
-        {/* {!isEmpty(product.soldOut) && ( */}
-        <Text style={styles.productDescription}>
-          {product.product_description}
-        </Text>
-        {/* )} */}
-        {!isEmpty(product.allergens_name) ? (
-          <Text style={styles.allergenList}>
-            ({i18n.translate("Allergens")}:{" "}
-            {product.allergens_name.map((allergen, key) => (
-              <Text key={key} style={styles.allergen}>
-                {allergen.allergen_name}
-                {key != product.allergens_name.length - 1 ? ", " : ""}
+          (product.isDailyMenu == 0 && product.soldOut == 0)
+        }
+        onPress={() => {
+          if (
+            !isEmpty(cartProducts) &&
+            cartRestaurant.restaurant_id != restaurant.restaurant_id
+          ) {
+            onModal();
+          } else {
+            flag ? onCart() : onExtra(product, count);
+            // checkExtr(cartProducts, restaurant, product, count);
+          }
+        }}
+      >
+        <View style={styles.productItemGroup}>
+          <View style={styles.productItem} >
+            <View style={styles.productItemText}>
+              <Text style={styles.productTitle}>
+                {product.product_name}
               </Text>
-            ))}
-            )
-          </Text>
-        ) : null}
-        {!isEmpty(product.soldOut) && (
-          <View style={styles.dailyWrapper}>
-            {/* <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Soup')}: </Text>{'Product name'}</Text>
-                        {!isEmpty(product.allergens_name) ? (
-                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
-                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
-                            ))})</Text>
-                        ) : null}
-                        <View style={{ height: 20 }} />
-                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Main course')}: </Text>{'Product name'}</Text>
-                        {!isEmpty(product.allergens_name) ? (
-                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
-                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
-                            ))})</Text>
-                        ) : null}
-                        <View style={{ height: 20 }} />
-                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Dessert')}: </Text>{'Product name'}</Text>
-                        {!isEmpty(product.allergens_name) ? (
-                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
-                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
-                            ))})</Text>
-                        ) : null}
-                        <View style={{ height: 20 }} /> */}
-            {!isEmpty(product.startTime) && !isEmpty(product.endTime) && (
-              <Text style={styles.extrasText} numberOfLines={1}>
-                <Text style={{ fontWeight: "bold" }} numberOfLines={1}>
-                  {i18n.translate("Order time")}:{" "}
-                </Text>
-                {product.startTime}-{product.endTime}
+              <Text style={styles.productDescription}>
+                {product.product_description}
               </Text>
-            )}
-          </View>
-        )}
-        <View style={styles.productCart}>
-          <Text style={styles.price}>
-            {product.product_price.toFixed(2)} {i18n.translate("lei")}
-          </Text>
-          <View style={styles.cart}>
-            <TouchableOpacity
-              style={styles.countButton1}
-              disabled={count == 1 || flag}
-              onPress={() => count > 1 && setCount(count - 1)}
-            >
-              <Icon
-                type="material-community"
-                name="minus"
-                color="#333"
-                size={25}
-              />
-            </TouchableOpacity>
-            <View style={styles.count}>
-              <Text style={{ color: "#333" }}>{count} db</Text>
-            </View>
-            <TouchableOpacity
-              style={styles.countButton2}
-              disabled={flag}
-              onPress={() => setCount(count + 1)}
-            >
-              <Icon
-                type="material-community"
-                name="plus"
-                color="#333"
-                size={25}
-              />
-            </TouchableOpacity>
-            <View style={{ width: 10 }} />
-            <TouchableOpacity
-              style={[
-                styles.check,
-                {
-                  backgroundColor:
-                    parseInt(moment().format("HH:mm").replace(":", "")) <=
-                      parseInt(restaurant.restaurant_open.replace(":", "")) ||
-                    parseInt(moment().format("HH:mm").replace(":", "")) >=
-                      parseInt(restaurant.restaurant_close.replace(":", "")) ||
-                    (!isEmpty(product.startTime) &&
-                      product.startTime > moment().format("HH:mm")) ||
-                    (!isEmpty(product.endTime) &&
-                      moment().format("HH:mm") > product.endTime) ||
-                    (product.isDailyMenu == 1 && product.soldOut == 1) ||
-                    (product.isDailyMenu == 1 && isToday == 0) ||
-                    (product.isDailyMenu == 0 && product.soldOut == 0)
-                      ? "#F78F1E80"
-                      : colors.YELLOW.PRIMARY,
-                },
-              ]}
-              disabled={
-                parseInt(moment().format("HH:mm").replace(":", "")) <=
-                  parseInt(restaurant.restaurant_open.replace(":", "")) ||
-                parseInt(moment().format("HH:mm").replace(":", "")) >=
-                  parseInt(restaurant.restaurant_close.replace(":", "")) ||
-                (!isEmpty(product.startTime) &&
-                  product.startTime > moment().format("HH:mm")) ||
-                (!isEmpty(product.endTime) &&
-                  moment().format("HH:mm") > product.endTime) ||
-                (product.isDailyMenu == 1 && product.soldOut == 1) ||
-                (product.isDailyMenu == 1 && isToday == 0) ||
-                (product.isDailyMenu == 0 && product.soldOut == 0)
-              }
-              onPress={() => {
-                if (
-                  !isEmpty(cartProducts) &&
-                  cartRestaurant.restaurant_id != restaurant.restaurant_id
-                ) {
-                  onModal();
-                } else {
-                  flag ? onCart() : onExtra(product, count);
-                  // checkExtr(cartProducts, restaurant, product, count);
-                }
-              }}
-            >
-              {flag ? (
-                <Icon
-                  type="material"
-                  name="check"
-                  color={colors.WHITE}
-                  size={25}
-                />
-              ) : (
-                <CartWhiteIcon />
+              {!isEmpty(product.soldOut) && (
+                !isEmpty(product.startTime) && !isEmpty(product.endTime) && (
+                  <Text style={styles.dailyWrapperText} numberOfLines={1}>
+                    {i18n.translate("Order time")}
+                    {": "}{product.startTime}-{product.endTime}
+                  </Text>
+                )
               )}
-            </TouchableOpacity>
+            </View>
+            <View style={styles.productItemBottom}>
+              <Text style={styles.price}>
+                {product.product_price.toFixed(2)} {i18n.translate("lei")}
+              </Text>
+              
+            </View>
+
           </View>
+          <FastImage
+            style={styles.productImage}
+            source={{ uri: RES_URL + product.product_imageUrl }}
+            resizeMode="cover"
+            onLoadEnd={(e) => setLoader(false)}
+          />
+
+          {/* {((!isEmpty(product.startTime) &&
+            product.startTime > moment().format("HH:mm")) ||
+            (!isEmpty(product.endTime) &&
+              moment().format("HH:mm") > product.endTime) ||
+            (product.isDailyMenu == 1 && product.soldOut == 1) ||
+            (product.isDailyMenu == 1 && isToday == 0) ||
+            (product.isDailyMenu == 0 && product.soldOut == 0)) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("Sold Out")}
+                </Text>
+              </View>
+            )} */}
+          {((product.isDailyMenu == 1 && product.soldOut == 1) ||
+            (product.isDailyMenu == 1 && isToday == 0) ||
+            (product.isDailyMenu == 0 && product.soldOut == 0)) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("Sold Out")}
+                </Text>
+              </View>
+            )}
+          {((!isEmpty(product.startTime) &&
+            product.startTime > moment().format("HH:mm"))) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("AVAILABLE SOON")}
+                </Text>
+                <Text style={styles.productImageAvailbleTimeText}>
+                  {product.startTime}
+                </Text>
+              </View>
+            )}
+          {((!isEmpty(product.endTime) &&
+            moment().format("HH:mm") > product.endTime)) && (
+              <View style={styles.productImageSold}>
+                <Text style={styles.productImageSoldText}>
+                  {i18n.translate("OUT OF STOCK")}
+                </Text>
+              </View>
+            )}
         </View>
-      </View>
+      </TouchableOpacity>
     </Fragment>
   );
 };
@@ -270,6 +205,8 @@ export default Menu = (props) => {
     props.subCategory.index
   );
 
+  let _textInput = null;
+
   useEffect(
     () => LogBox.ignoreLogs(["VirtualizedLists should never be nested"]),
     []
@@ -279,7 +216,7 @@ export default Menu = (props) => {
     if (!isEmpty(props.categories) && !isEmpty(props.subCategories)) {
       dispatch(setLoading(true));
     }
-    if(props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
+    if (props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
       console.log(props.category.category_id, "sub = ", props.subCategory);
       setSubCategoryIndex(props.subCategory.index);
       setProducts([]);
@@ -305,12 +242,12 @@ export default Menu = (props) => {
           setProducts([]);
         });
     }
-    
+
   }, [props.subCategory, cartRestaurant, cartProducts]);
 
   useEffect(() => {
     setProducts([]);
-    if(props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
+    if (props.category.category_id != 0 && props.subCategory.subcategoryId != 0) {
       console.log(props.category.category_id, "search = ", props.subCategory);
       FoodService.products(
         country,
@@ -354,7 +291,7 @@ export default Menu = (props) => {
                   : common.borderColorGrey,
               ]}
               onPress={() => {
-                this.textInput.clear();
+                _textInput.clear();
                 props.onCategory(item.item);
               }}
             >
@@ -381,12 +318,12 @@ export default Menu = (props) => {
               style={[
                 styles.category,
                 props.subCategory.propertyValTransId ==
-                item.item.propertyValTransId
+                  item.item.propertyValTransId
                   ? common.borderColorYellow
                   : common.borderColorGrey,
               ]}
               onPress={() => {
-                this.textInput.clear();
+                _textInput.clear();
                 props.onSubCategory(item.item);
               }}
             >
@@ -397,9 +334,6 @@ export default Menu = (props) => {
       </Card>
       <View style={{ height: 10 }} />
       <Card key="food" style={styles.card}>
-        {/* <Text style={[styles.cardTitle, { fontSize: 14 }]}>
-          {i18n.translate("Find food")}
-        </Text> */}
         <TextField
           placeholder={i18n.translate("Name of food")}
           placeholderTextColor="#666"
@@ -408,7 +342,7 @@ export default Menu = (props) => {
           enablesReturnKeyAutomatically={true}
           // value={props.search}
           ref={(input) => {
-            this.textInput = input;
+            _textInput = input;
           }}
           containerStyle={styles.textContainer}
           inputContainerStyle={styles.inputContainer}
@@ -512,30 +446,43 @@ const styles = StyleSheet.create({
     height: 0,
   },
   product: {
-    marginBottom: 24,
+    marginBottom: 10,
     width: wp("100%") - 40,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.15)",
-    backgroundColor: colors.WHITE,
-    shadowColor: "rgba(0, 0, 0, 0.4)",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
-    shadowRadius: 5,
-    elevation: 5,
-    borderRadius: 6,
+    paddingBottom: 10,
+    padding: 5,
+    borderBottomWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.15)"
+  },
+  productItemGroup: {
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    display: 'flex'
+  },
+  productItem: {
+    paddingRight: 5,
+    width: '70%',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-start',
+    alignContent: 'space-between'
+  },
+  productItemText: {
+    width: '100%'
   },
   productImage: {
-    width: "100%",
-    height: 200,
+    width: "30%",
+    height: 100,
     borderRadius: 6,
+    marginTop: 13
   },
   productImageSold: {
     position: "absolute",
-    top: 16,
-    left: 16,
-    width: "100%",
-    height: 200,
+    top: 13,
+    right: 0,
+    width: "30%",
+    height: 100,
     borderRadius: 6,
     zIndex: 2000,
     backgroundColor: "#000000D0",
@@ -543,23 +490,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   productImageSoldText: {
-    fontSize: 32,
-    fontWeight: "bold",
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.WHITE,
+    textAlign: "center",
+  },
+  productImageAvailbleTimeText: {
+    fontSize: 12,
+    fontWeight: "500",
     color: colors.WHITE,
     textAlign: "center",
   },
   productTitle: {
     width: "100%",
-    marginTop: 16,
-    fontSize: 18,
-    fontWeight: "bold",
+    // marginTop: 16,
+    fontSize: 16,
+    fontWeight: "700",
     color: "#111",
   },
   productDescription: {
     marginTop: 8,
     width: "100%",
     fontSize: 16,
-    lineHeight: 24,
+    fontWeight: '400',
+    lineHeight: 18.2,
     color: "#666",
   },
   allergenList: {
@@ -580,10 +534,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  productItemBottom: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    marginTop: 10
+  },
   price: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "700",
     color: colors.YELLOW.PRIMARY,
+    // width: '45%',
+    textAlign: 'left'
   },
   cart: {
     flexDirection: "row",
@@ -626,9 +590,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#C4C4C4",
   },
-  dailyWrapper: {
-    marginTop: 10,
-    width: "100%",
+  dailyWrapperText: {
+    fontSize: 13,
+    color: "#333",
+    fontWeight: '700',
+    // width: '55%',
+    // textAlign: 'right'
   },
   extrasText: {
     width: "100%",
@@ -643,5 +610,5 @@ const styles = StyleSheet.create({
     left: 16,
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     zIndex: 2000,
-  },
+  }
 });

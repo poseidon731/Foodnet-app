@@ -1,7 +1,7 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Content, Header } from 'native-base';
-import { Platform, StatusBar, StyleSheet, FlatList, View, Text, TouchableOpacity } from 'react-native';
+import { Platform, StatusBar, StyleSheet, FlatList, View, Text, TouchableOpacity, Animated, Image, SafeAreaView } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
@@ -9,107 +9,85 @@ import { setCartRestaurant, setCartProducts, setCartBadge, setCartToast } from '
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
+import { RES_URL } from '@constants/configs';
 import i18n from '@utils/i18n';
-
+import moment from 'moment';
 import { TextField } from 'react-native-material-textfield';
 
-const Required = ({ required, index, onSelect }) => {
+const HEADER_MAX_HEIGHT = Platform.OS === 'ios' ? 300 : 260;
+const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 110 : 60;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 40 : 26;
+
+const Required = ({ required, index, quantity, onSelect }) => {
     const [check, setCheck] = useState(false);
-    const [count, setCount] = useState(required.extra_minQuantity == undefined ? 1 : required.extra_minQuantity);
+
     return (
         <Fragment>
             <TouchableOpacity key={index} style={styles.items} onPress={() => {
                 setCheck(!check);
-                onSelect(!check, required, count);
+                onSelect(!check, required, quantity);
             }}>
                 <View style={styles.check}>
-                    <Icon type='material-community' name={check ? 'check-box-outline' : 'checkbox-blank-outline'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
-                </View>
-                <View style={styles.item}>
-                    <Text style={{ fontSize: 16 }} numberOfLines={1}>{required.extra_name}</Text>
-                    {!isEmpty(required.allergens_name) ? (
+                    <Icon type='material' name={check ? 'radio-button-on' : 'radio-button-off'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
+                    <Text style={{ fontSize: 16 }}>{required.extra_name}</Text>
+                    {/* {!isEmpty(required.allergens_name) ? (
                         <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {required.allergens_name.map((allergen, key) => (
                             <Text key={`allergen${key}`} style={styles.allergen}>{allergen.allergen}{key != required.allergens_name.length - 1 ? ', ' : ''}</Text>
                         ))})</Text>
-                    ) : null}
+                    ) : null} */}
                 </View>
+                <Text style={styles.price}>{(required.extra_price * quantity).toFixed(2)} {i18n.translate('lei')}</Text>
             </TouchableOpacity>
-            <View style={styles.items}>
-                <View style={styles.check} />
-                <View style={styles.item}>
-                    <View style={styles.productCart}>
-                        <Text style={styles.price}>{(required.extra_price * count).toFixed(2)} {i18n.translate('lei')}</Text>
-                        {/* <View style={styles.cart}>
-                            <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
-                                count > required.extra_minQuantity && setCount(count - 1);
-                                count > required.extra_minQuantity && onSelect(check, required, count - 1);
-                            }}>
-                                <Icon type='material-community' name='minus' color='#333' size={25} />
-                            </TouchableOpacity>
-                            <View style={styles.count}>
-                                <Text style={{ color: '#333' }}>{count} db</Text>
-                            </View>
-                            <TouchableOpacity style={styles.countButton2} disabled={!check} onPress={() => {
-                                count < required.extra_maxQuantity && setCount(count + 1);
-                                count < required.extra_maxQuantity && onSelect(check, required, count + 1);
-                            }}>
-                                <Icon type='material-community' name='plus' color='#333' size={25} />
-                            </TouchableOpacity>
-                        </View> */}
-                    </View>
-                </View>
-            </View>
         </Fragment>
     )
 }
 
-const Optional = ({ optional, index, onSelect }) => {
+const Optional = ({ optional, index, quantity, onSelect }) => {
     const [check, setCheck] = useState(false);
-    const [count, setCount] = useState(optional.extra_minQuantity == undefined ? 1 : optional.extra_minQuantity);
 
     return (
         <Fragment>
             <TouchableOpacity key={index} style={styles.items} onPress={() => {
                 setCheck(!check);
-                onSelect(!check, optional, count);
+                onSelect(!check, optional, quantity);
             }}>
                 <View style={styles.check}>
                     <Icon type='material-community' name={check ? 'check-box-outline' : 'checkbox-blank-outline'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
-                </View>
-                <View style={styles.item}>
-                    <Text style={{ fontSize: 16 }} numberOfLines={1}>{optional.extra_name}</Text>
-                    {!isEmpty(optional.allergens_name) ? (
+                    <Text style={{ fontSize: 16 }}>{optional.extra_name}</Text>
+                    {/* {!isEmpty(optional.allergens_name) ? (
                         <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {optional.allergens_name.map((allergen, key) => (
                             <Text key={`allergensop${key}`} style={styles.allergen}>{allergen.allergen}{key != optional.allergens_name.length - 1 ? ', ' : ''}</Text>
                         ))})</Text>
-                    ) : null}
+                    ) : null} */}
                 </View>
+                <Text style={styles.price}>{(optional.extra_price * quantity).toFixed(2)} {i18n.translate('lei')}</Text>
             </TouchableOpacity>
-            <View style={styles.items}>
-                <View style={styles.check} />
-                <View style={styles.item}>
-                    <View style={styles.productCart}>
-                        <Text style={styles.price}>{(optional.extra_price * count).toFixed(2)} {i18n.translate('lei')}</Text>
-                        {/* <View style={styles.cart}>
-                            <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
-                                count > optional.extra_minQuantity && setCount(count - 1);
-                                count > optional.extra_minQuantity && onSelect(check, optional, count - 1);
-                            }}>
-                                <Icon type='material-community' name='minus' color='#333' size={25} />
-                            </TouchableOpacity>
-                            <View style={styles.count}>
-                                <Text style={{ color: '#333' }}>{count} db</Text>
-                            </View>
-                            <TouchableOpacity style={styles.countButton2} disabled={!check} onPress={() => {
-                                count < optional.extra_maxQuantity && setCount(count + 1);
-                                count < optional.extra_maxQuantity && onSelect(check, optional, count + 1);
-                            }}>
-                                <Icon type='material-community' name='plus' color='#333' size={25} />
-                            </TouchableOpacity>
-                        </View> */}
-                    </View>
+        </Fragment>
+    )
+}
+
+const Sauce = ({ sauce, index, quantity, onSelect }) => {
+    const [check, setCheck] = useState(false);
+
+    return (
+        <Fragment>
+            <TouchableOpacity key={index} style={styles.items} onPress={() => {
+                setCheck(!check);
+                onSelect(!check, sauce, quantity);
+            }}>
+                <View style={styles.check}>
+                    <Icon type='material-community' name={check ? 'check-box-outline' : 'checkbox-blank-outline'} size={25} color={check ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY} />
+                    <Text style={{ fontSize: 16 }}>{sauce.extra_name}</Text>
+                    {/* {!isEmpty(optional.allergens_name) ? (
+                        <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {optional.allergens_name.map((allergen, key) => (
+                            <Text key={`allergensop${key}`} style={styles.allergen}>{allergen.allergen}{key != optional.allergens_name.length - 1 ? ', ' : ''}</Text>
+                        ))})</Text>
+                    ) : null} */}
                 </View>
-            </View>
+                <Text style={styles.price}>{(sauce.extra_price * quantity).toFixed(2)} {i18n.translate('lei')}</Text>
+            </TouchableOpacity>
         </Fragment>
     )
 }
@@ -121,15 +99,44 @@ export default Extra = (props) => {
 
     const [restaurant] = useState(props.route.params.restaurant);
     const [product] = useState(props.route.params.product);
-    const [quantity] = useState(props.route.params.count);
+    const [quantity, setQuantity] = useState(props.route.params.count);
     const [minRequired, setMinRequired] = useState(0);
     const [requireds, setRequireds] = useState([]);
     const [requiredList, setRequiredList] = useState([]);
+    const [requiredsAll, setRequiredsAll] = useState([]);
+    const [isShowRequireds, setIsShowRequireds] = useState(false);
+
     const [optionals, setOptionals] = useState([]);
     const [optionalList, setOptionalList] = useState([]);
+    const [optionalsAll, setOptionalsAll] = useState([]);
+    const [isShowOptionals, setIsShowOptionals] = useState(false);
+
+    const [sauces, setSauces] = useState([]);
+    const [sauceList, setSauceList] = useState([]);
+    const [saucesAll, setSaucesAll] = useState([]);
+    const [isShowSauces, setIsShowSauces] = useState(false);
     const [comment, setComment] = useState('');
 
+    const scrollY = useRef(new Animated.Value(0)).current;
+
+    const headerTranslateY = scrollY.interpolate({
+        inputRange: [0, HEADER_SCROLL_DISTANCE],
+        outputRange: [0, -HEADER_SCROLL_DISTANCE],
+        extrapolate: 'clamp',
+    });
+    const imageTranslateY = scrollY.interpolate({
+        inputRange: [0, HEADER_SCROLL_DISTANCE],
+        outputRange: [0, HEADER_MIN_HEIGHT],
+        extrapolate: 'clamp',
+    });
+    const headerTopTranslateY = scrollY.interpolate({
+        inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+        outputRange: [0, 0, 0],
+        extrapolate: 'clamp',
+    });
+
     useEffect(() => {
+        console.log(product);
         const getRequired = () => {
             dispatch(setLoading(true));
             FoodService.required(country, restaurant.restaurant_id, product.variant_id)
@@ -138,20 +145,15 @@ export default Extra = (props) => {
                     if (response.status == 200) {
                         setMinRequired(response.minRequired);
                         setRequireds(response.result);
-                        if (!isEmpty(response.result)) {
-                            var tempList = [];
-                            response.result.map((requiredOne, index) => {
-                                tempList.push({
-                                    extra_id: requiredOne.extra_id,
-                                    extra_name: requiredOne.extra_name,
-                                    extra_minQuantity: 1,
-                                    extra_price: requiredOne.extra_price,
-                                    extra_maxQuantity: requiredOne.extra_maxQuantity,
-                                    allergens_name: requiredOne.allergens_name,
-                                    extra_dash: 1
-                                });
-                            })
-                            // setRequiredList(tempList);
+                        console.log("requireds length - ", response.result.length, response.result);
+
+                        if (response.result.length <= 5) setRequiredsAll(response.result);
+                        else {
+                            let tmp = [];
+                            for (var i = 0; i < 5; i++) {
+                                tmp.push(response.result[i]);
+                            }
+                            setRequiredsAll(tmp);
                         }
                     }
                 })
@@ -167,6 +169,15 @@ export default Extra = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setOptionals(response.result);
+
+                        if (response.result.length <= 5) setOptionalsAll(response.result);
+                        else {
+                            let tmp = [];
+                            for (var i = 0; i < 5; i++) {
+                                tmp.push(response.result[i]);
+                            }
+                            setOptionalsAll(tmp);
+                        }
                     }
                 })
                 .catch((error) => {
@@ -175,7 +186,71 @@ export default Extra = (props) => {
         }
         getOptional();
 
+        const getSauce = () => {
+            FoodService.sauces(country, restaurant.restaurant_id, product.variant_id)
+                .then((response) => {
+                    dispatch(setLoading(false));
+                    if (response.status == 200) {
+                        setSauces(response.result);
+
+                        if (response.result.length <= 5) setSaucesAll(response.result);
+                        else {
+                            let tmp = [];
+                            for (var i = 0; i < 5; i++) {
+                                tmp.push(response.result[i]);
+                            }
+                            setSaucesAll(tmp);
+                        }
+                    }
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false));
+                });
+        }
+        getSauce();
+
     }, []);
+
+    useEffect(() => {
+        if (isShowRequireds) {
+            setRequiredsAll(requireds);
+        } else {
+            if (requireds.length <= 5) setRequiredsAll(requireds);
+            else {
+                let tmp = [];
+                for (var i = 0; i < 5; i++) {
+                    tmp.push(requireds[i]);
+                }
+                setRequiredsAll(tmp);
+            }
+        }
+
+        if (isShowOptionals) {
+            setOptionalsAll(optionals);
+        } else {
+            if (optionals.length <= 5) setOptionalsAll(optionals);
+            else {
+                let tmp = [];
+                for (var i = 0; i < 5; i++) {
+                    tmp.push(optionals[i]);
+                }
+                setOptionalsAll(tmp);
+            }
+        }
+
+        if (isShowSauces) {
+            setSaucesAll(sauces);
+        } else {
+            if (sauces.length <= 5) setSaucesAll(sauces);
+            else {
+                let tmp = [];
+                for (var i = 0; i < 5; i++) {
+                    tmp.push(sauces[i]);
+                }
+                setSaucesAll(tmp);
+            }
+        }
+    }, [isShowRequireds, isShowOptionals, isShowSauces]);
 
     const onSelect = (type, check, item, count) => {
         if (type == 1) {
@@ -186,7 +261,6 @@ export default Extra = (props) => {
                 setRequiredList([...requiredResult, {
                     extra_id: item.extra_id,
                     extra_name: item.extra_name,
-                    // extra_minQuantity: item.extra_minQuantity,
                     extra_minQuantity: count,
                     extra_price: item.extra_price,
                     extra_maxQuantity: item.extra_maxQuantity,
@@ -197,9 +271,10 @@ export default Extra = (props) => {
                 setRequiredList(requiredResult);
             }
 
-            console.log(requiredList.length, "  : minRequired = " , minRequired);
+            console.log(requiredList.length, "  : minRequired = ", minRequired);
 
-        } else {
+        }
+        else if (type == 2) {
             var optionalResult = optionalList.filter((optional) => {
                 return optional.extra_id != item.extra_id
             });
@@ -207,7 +282,6 @@ export default Extra = (props) => {
                 setOptionalList([...optionalResult, {
                     extra_id: item.extra_id,
                     extra_name: item.extra_name,
-                    // extra_minQuantity: item.extra_minQuantity,
                     extra_minQuantity: count,
                     extra_price: item.extra_price,
                     extra_maxQuantity: item.extra_maxQuantity,
@@ -216,6 +290,24 @@ export default Extra = (props) => {
                 }]);
             } else {
                 setOptionalList(optionalResult);
+            }
+        }
+        else if (type == 3) {
+            var sauceResult = sauceList.filter((sauce) => {
+                return sauce.extra_id != item.extra_id
+            });
+            if (check) {
+                setSauceList([...sauceResult, {
+                    extra_id: item.extra_id,
+                    extra_name: item.extra_name,
+                    extra_minQuantity: count,
+                    extra_price: item.extra_price,
+                    extra_maxQuantity: item.extra_maxQuantity,
+                    allergens_name: item.allergens_name,
+                    extra_dash: count
+                }]);
+            } else {
+                setSauceList(sauceResult);
             }
         }
     }
@@ -227,7 +319,6 @@ export default Extra = (props) => {
             requiredList.map((required, key) => {
                 extras.push({
                     id: required.extra_id,
-                    // quantity: required.extra_dash,
                     quantity: quantity,
                     extraName: required.extra_name,
                     extraPrice: required.extra_price,
@@ -237,10 +328,18 @@ export default Extra = (props) => {
             optionalList.map((optional, key) => {
                 extras.push({
                     id: optional.extra_id,
-                    // quantity: optional.extra_dash,
                     quantity: quantity,
                     extraName: optional.extra_name,
                     extraPrice: optional.extra_price,
+                    type: 'opt'
+                })
+            });
+            sauceList.map((sauce, key) => {
+                extras.push({
+                    id: sauce.extra_id,
+                    quantity: quantity,
+                    extraName: sauce.extra_name,
+                    extraPrice: sauce.extra_price,
                     type: 'opt'
                 })
             });
@@ -277,101 +376,293 @@ export default Extra = (props) => {
     }
 
     return (
-        <Container style={common.container}>
-            <StatusBar />
-            <Header style={common.header}>
-                <View style={common.headerLeft} />
-                <Text style={common.headerTitleText}>{i18n.translate('Extra')}</Text>
-                <View style={common.headerRight}>
-                    <TouchableOpacity onPress={() => props.navigation.goBack()}>
-                        <Icon type='ionicon' name='ios-close' size={30} color={colors.YELLOW.PRIMARY} />
-                    </TouchableOpacity>
-                </View>
-            </Header>
-            <Content contentContainerStyle={{ width: wp('100%'), padding: 15 }}>
-                <Text style={{ marginTop: 20, fontSize: 18, fontWeight: 'bold' }}>{product.product_name}</Text>
-                <Text style={{ marginTop: 10, fontSize: 14 }}>{product.product_description}</Text>
-                {!isEmpty(product.allergens_name) ? (
-                    <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
-                        <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
-                    ))})</Text>
-                ) : null}
-                {!isEmpty(requireds) && (
-                    <Text style={{ marginTop: 30, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Required extras (')}{minRequired} {i18n.translate('is required)')}</Text>
-                )}
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={requireds}
-                    keyExtractor={(required, index) => index.toString()}
-                    renderItem={(required, index) => (
-                        <Required
-                            required={required.item}
-                            index={index}
-                            requiredList={requiredList}
-                            onSelect={(check, required, count) => onSelect(1, check, required, count)}
-                        />
-                    )}
-                />
-                {/* <View style={{ width: wp('100%'), marginLeft: -10, height: 1, backgroundColor: '#C4C4C4' }} /> */}
-                {!isEmpty(optionals) && (
-                    <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional extras (Not required)')}</Text>
-                )}
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={optionals}
-                    keyExtractor={(optional, index) => index.toString()}
-                    renderItem={(optional, index) => (
-                        <Optional
-                            optional={optional.item}
-                            index={index}
-                            optionalList={optionalList}
-                            onSelect={(check, optional, count) => onSelect(2, check, optional, count)}
-                        />
-                    )}
-                />
-                {/* {(!isEmpty(requireds) || !isEmpty(optionals)) && (
-                    <Fragment>
-                        <View style={{ width: wp('100%'), marginLeft: -10, height: 1, backgroundColor: '#C4C4C4' }} />
-                        <View style={{ width: '100%', height: 80, justifyContent: 'center', alignItems: 'center' }}>
-                            <TouchableOpacity>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#F78F1E' }}>{i18n.translate('Show me the rest')}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Fragment>
-                )} */}
+        <SafeAreaView style={styles.saveArea}>
+            <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
+                onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
 
-                <Card key='review' style={styles.card}>
-                    <View style={[common.flexRow, { marginTop: 10 }]}>
-                        <Text style={styles.labelText}>{i18n.translate('Special requests')}</Text>
-                    </View>
-                    <View style={[common.flexRow, { marginTop: 2 }]}>
-                        <Text style={styles.labelDesText}>({i18n.translate('Tell me if you have any allergies or if we need to omit any ingredients')})</Text>
-                    </View>
-                    <TextField
-                        keyboardType='default'
-                        returnKeyType='next'
-                        fontSize={16}
-                        autoCorrect={false}
-                        enablesReturnKeyAutomatically={true}
-                        value={comment}
-                        multiline={true}
-                        height={85}
-                        lineWidth={0}
-                        activeLineWidth={0}
-                        containerStyle={[styles.textContainer, common.borderColorGrey]}
-                        inputContainerStyle={styles.inputContainer}
-                        onChangeText={(value) => setComment(value)}
+                <View style={{ width: wp('100%'), paddingHorizontal: 15, paddingBottom: 15, paddingTop: Platform.OS === 'ios' ? 0 : 10, marginTop: Platform.OS === 'ios' ? -15 : 0 }}>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{product.product_name}</Text>
+                    <Text style={{ marginTop: 10, fontSize: 14 }}>{product.product_description}</Text>
+                    {!isEmpty(product.allergens_name) ? (
+                        <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
+                            <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
+                        ))})</Text>
+                    ) : null}
+                    {!isEmpty(requiredsAll) && (
+                        <Text style={{ marginTop: 30, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Required extras (')}{minRequired} {i18n.translate('is required)')}</Text>
+                    )}
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={requiredsAll}
+                        keyExtractor={(required, index) => index.toString()}
+                        renderItem={(required, index) => (
+                            <Required
+                                required={required.item}
+                                index={index}
+                                requiredList={requiredList}
+                                quantity={quantity}
+                                onSelect={(check, required, count) => onSelect(1, check, required, count)}
+                            />
+                        )}
                     />
-                </Card>
-                <TouchableOpacity disabled={minRequired != requiredList.length} style={[styles.button, { backgroundColor: minRequired != requiredList.length ? '#AAA' : colors.YELLOW.PRIMARY }]} onPress={() => onAdd()}>
+                    {!isEmpty(requiredsAll) && (requireds.length > 5) && (!isShowRequireds ? (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowRequireds(true)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('SHOW MORE')}</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowRequireds(false)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('HIDE')}</Text>
+                        </TouchableOpacity>
+                    ))}
+
+                    {!isEmpty(saucesAll) && (
+                        <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Sauce extras (Not required)')}</Text>
+                    )}
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={saucesAll}
+                        keyExtractor={(sauce, index) => index.toString()}
+                        renderItem={(sauce, index) => (
+                            <Sauce
+                                sauce={sauce.item}
+                                index={index}
+                                sauceList={sauceList}
+                                quantity={quantity}
+                                onSelect={(check, sauce, count) => onSelect(3, check, sauce, count)}
+                            />
+                        )}
+                    />
+                    {!isEmpty(saucesAll) && (sauces.length > 5) && (!isShowSauces ? (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowSauces(true)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('SHOW MORE')}</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowSauces(false)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('HIDE')}</Text>
+                        </TouchableOpacity>
+                    ))}
+
+                    {!isEmpty(optionalsAll) && (
+                        <Text style={{ marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Optional extras (Not required)')}</Text>
+                    )}
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={optionalsAll}
+                        keyExtractor={(optional, index) => index.toString()}
+                        renderItem={(optional, index) => (
+                            <Optional
+                                optional={optional.item}
+                                index={index}
+                                optionalList={optionalList}
+                                quantity={quantity}
+                                onSelect={(check, optional, count) => onSelect(2, check, optional, count)}
+                            />
+                        )}
+                    />
+                    {!isEmpty(optionalsAll) && (optionals.length > 5) && (!isShowOptionals ? (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowOptionals(true)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('SHOW MORE')}</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity style={styles.showHideExtras} onPress={() => setIsShowOptionals(false)}>
+                            <Text style={styles.showHideExtrasText}>{i18n.translate('HIDE')}</Text>
+                        </TouchableOpacity>
+                    ))}
+
+                    <Card key='review' style={styles.card}>
+                        <View style={[common.flexRow, { marginTop: 10 }]}>
+                            <Text style={styles.labelText}>{i18n.translate('Special requests')}</Text>
+                        </View>
+                        <View style={[common.flexRow, { marginTop: 2 }]}>
+                            <Text style={styles.labelDesText}>({i18n.translate('Tell me if you have any allergies or if we need to omit any ingredients')})</Text>
+                        </View>
+                        <TextField
+                            keyboardType='default'
+                            returnKeyType='next'
+                            fontSize={16}
+                            autoCorrect={false}
+                            enablesReturnKeyAutomatically={true}
+                            value={comment}
+                            multiline={true}
+                            height={85}
+                            lineWidth={0}
+                            activeLineWidth={0}
+                            containerStyle={[styles.textContainer, common.borderColorGrey]}
+                            inputContainerStyle={styles.inputContainer}
+                            onChangeText={(value) => setComment(value)}
+                        />
+                    </Card>
+                    <View style={{ height: 150 }}></View>
+                </View>
+            </Animated.ScrollView>
+            <Animated.View style={[styles.header, { transform: [{ translateY: headerTranslateY }] }]}>
+                <Animated.Image style={[styles.headerBackground, { transform: [{ translateY: imageTranslateY }] }]} source={{ uri: RES_URL + product.product_imageUrl }} />
+            </Animated.View>
+            <Animated.View style={[styles.headerTop, { transform: [{ translateY: headerTopTranslateY }] }]}>
+                <Header style={styles.headerContent}>
+                    <View style={common.headerLeft}>
+                        <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                            <Icon type='ionicon' name='ios-close' size={30} color={colors.YELLOW.PRIMARY} />
+                        </TouchableOpacity>
+                    </View>
+                </Header>
+            </Animated.View>
+
+            <View style={styles.productCart}>
+                <View style={styles.cart}>
+                    <TouchableOpacity
+                        style={styles.countButton1}
+                        disabled={quantity == 1}
+                        onPress={() => quantity > 1 && setQuantity(quantity - 1)}
+                    >
+                        <Icon
+                            type="material-community"
+                            name="minus"
+                            color={colors.WHITE}
+                            size={25}
+                        />
+                    </TouchableOpacity>
+                    <View style={styles.count}>
+                        <Text style={styles.countText}>{quantity} db</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.countButton2}
+                        onPress={() => setQuantity(quantity + 1)}
+                    >
+                        <Icon
+                            type="material-community"
+                            name="plus"
+                            color={colors.WHITE}
+                            size={25}
+                        />
+                    </TouchableOpacity>
+
+                </View>
+                <TouchableOpacity
+                    disabled={minRequired != requiredList.length}
+                    style={[styles.button, { backgroundColor: minRequired != requiredList.length ? '#AAA' : '#F78F1E' }]}
+                    onPress={() => onAdd()}
+                >
                     <Text style={styles.buttonText}>{i18n.translate('Add to the cart')}</Text>
                 </TouchableOpacity>
-            </Content>
-        </Container>
+            </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    saveArea: {
+        flex: 1,
+        backgroundColor: colors.WHITE,
+        justifyContent: 'center'
+    },
+    header: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#00000080',
+        overflow: 'hidden',
+        height: HEADER_MAX_HEIGHT,
+        marginTop: 0
+    },
+    headerBackgroundGrey: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: null,
+        height: HEADER_MAX_HEIGHT,
+        resizeMode: 'cover',
+        zIndex: 2000,
+        backgroundColor: "#000000D0"
+    },
+    headerBackground: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: null,
+        height: HEADER_MAX_HEIGHT,
+        resizeMode: 'cover',
+    },
+    headerContent: {
+        width: wp('100%'),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+        borderBottomWidth: 0,
+        paddingHorizontal: 10,
+        elevation: 0
+    },
+    headerTop: {
+        marginTop: Platform.OS === 'ios' ? 40 : 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+    },
+    headerTitle: {
+        width: wp('60%'),
+        height: 25,
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: colors.WHITE,
+        textAlign: 'center'
+    },
+    headerMiddle: {
+        marginTop: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: '100%',
+    },
+    headerRating: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 8,
+        width: 50,
+        height: 25,
+        backgroundColor: '#FEEBD6',
+        borderRadius: 6
+    },
+    headerRate: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: colors.YELLOW.PRIMARY
+    },
+    headerBottom: {
+        top: HEADER_MAX_HEIGHT - 50,
+        height: 50,
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: wp('100%'),
+        backgroundColor: colors.WHITE,
+        zIndex: 2001,
+    },
+    avatar: {
+        marginTop: -55,
+        marginLeft: 16,
+        height: 100,
+        width: 100,
+        borderRadius: 100 / 2,
+        borderWidth: 5,
+        borderColor: colors.WHITE,
+        backgroundColor: '#C4C4C4',
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    avatarView: {
+        height: 90,
+        width: 90,
+    },
+    content: {
+        paddingTop: HEADER_MAX_HEIGHT
+    },
     allergenList: {
         marginTop: 12,
         width: '100%',
@@ -384,31 +675,48 @@ const styles = StyleSheet.create({
         color: '#999'
     },
     items: {
-        width: '100%',
+        width: wp('100%') - 40,
+        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         marginBottom: 15
     },
 
     check: {
+        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'flex-start',
+        alignItems: 'center',
+        width: '65%'
     },
     item: {
         width: wp('100%') - 70,
     },
     productCart: {
-        width: '100%',
+        width: wp('100%'),
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 25,
+        position: 'absolute',
+        bottom: 0,
+        paddingBottom: BOTTOM_BUTTON_DISTANCE,
+        paddingTop: 14,
+        paddingHorizontal: '5%',
+        backgroundColor: colors.WHITE,
+        shadowColor: colors.BLACK,
+        shadowOffset: { width: 4, height: 10 },
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
+        elevation: 10,
     },
     price: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: colors.YELLOW.PRIMARY
+        color: colors.YELLOW.PRIMARY,
+        width: '35%',
+        textAlign: 'right'
     },
     cart: {
         flexDirection: 'row',
@@ -419,29 +727,30 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 10,
         height: 30,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: '#C4C4C4'
+    },
+    countText: {
+        fontWeight: '700',
+        fontSize: 15
     },
     countButton1: {
         justifyContent: 'center',
         alignItems: 'center',
         width: 30,
         height: 30,
-        borderTopLeftRadius: 4,
-        borderBottomLeftRadius: 4,
+        borderRadius: 15,
         borderWidth: 1,
-        borderColor: '#C4C4C4'
+        backgroundColor: '#F78F1E',
+        borderColor: colors.WHITE
     },
     countButton2: {
         justifyContent: 'center',
         alignItems: 'center',
         width: 30,
         height: 30,
-        borderTopRightRadius: 4,
-        borderBottomRightRadius: 4,
+        borderRadius: 15,
         borderWidth: 1,
-        borderColor: '#C4C4C4'
+        backgroundColor: '#F78F1E',
+        borderColor: colors.WHITE
     },
     card: {
         width: '100%',
@@ -465,6 +774,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingLeft: 15,
         paddingRight: 20,
+        marginBottom: 100
     },
     inputContainer: {
         marginTop: -20,
@@ -472,16 +782,28 @@ const styles = StyleSheet.create({
         overflow: "scroll"
     },
     button: {
-        marginTop: 30,
-        width: '100%',
-        height: 50,
+        width: '60%',
+        height: 42,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 8
+        borderRadius: 6
     },
     buttonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 15,
+        fontWeight: '600',
         color: colors.WHITE
+    },
+    showHideExtras: {
+        marginTop: 10,
+        borderTopWidth: 1,
+        borderColor: "#C4C4C4",
+        marginHorizontal: -20
+    },
+    showHideExtrasText: {
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: colors.YELLOW.PRIMARY,
+        padding: 8
     }
 });

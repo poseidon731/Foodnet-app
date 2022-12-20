@@ -7,7 +7,7 @@ import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
 import { setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
-import { isEmpty } from '@utils/functions';
+import { isEmpty, callOnceInInterval } from '@utils/functions';
 import { Menu, Information, Reviews } from '@components';
 import { common, colors } from '@constants/themes';
 import { RES_URL } from '@constants/configs';
@@ -21,10 +21,12 @@ const HEADER_MAX_HEIGHT = Platform.OS === 'ios' ? 300 : 260;
 const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 110 : 60;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 40 : 26;
+
 export default Detail = (props) => {
     const dispatch = useDispatch();
     const { country } = useSelector(state => state.auth);
-    const { filters, cartRestaurant, cartBadge, cartToast } = useSelector(state => state.food);
+    const { filters, cartRestaurant, cartBadge, cartProducts, cartToast } = useSelector(state => state.food);
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
@@ -63,6 +65,7 @@ export default Detail = (props) => {
     const [visible, setVisible] = useState(false);
     const [first, setFirst] = useState(false);
     const [modal, setModal] = useState(false);
+    const [total, setTotal] = useState(0);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -134,52 +137,52 @@ export default Detail = (props) => {
 
     useEffect(() => {
         // dispatch(setLoading(true));
-        if(category.category_id != 0) {
+        if (category.category_id != 0) {
             console.log("--subcategory-- country = ", country, "  :  restaurant id = ", restaurant.restaurant_id, "  :  category id = ", category.category_id);
             FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
-            .then(async (response) => {
-                // dispatch(setLoading(false));
-                if (response.status == 200) {
-                    var data = [];
-                    for(var i = 0; i < response.result.length; i++) {
-                        data.push({
-                            ordered: response.result[i].ordered,
-                            subcategoryId: response.result[i].subcategoryId,
-                            propertyValTransId: response.result[i].propertyValTransId,
-                            subcategories_name: response.result[i].subcategories_name,
-                            index: i
-                        })
-                    }
-                    setSubCategories(data);
-                    if (!isEmpty(response.result)) {
-                        if (category.category_name === 'Daily Menu' || category.category_name === 'Daily menu' || category.category_name === 'Meniul Zilei' || category.category_name === 'Meniul zilei' || category.category_name === 'Napi Menü' || category.category_name === 'Napi menü') {
-                            var d = new Date();
-                            var n = d.getDay();
-                            setSubCategory({
-                                ordered: response.result[n === 0 ? 6 : n - 1].ordered,
-                                subcategoryId: response.result[n === 0 ? 6 : n - 1].subcategoryId,
-                                propertyValTransId: response.result[n === 0 ? 6 : n - 1].propertyValTransId,
-                                subcategories_name: response.result[n === 0 ? 6 : n - 1].subcategories_name,
-                                index: (n === 0 ? 6 : n - 1)
-                            });
-                        } else {
-                            setSubCategory({
-                                ordered: response.result[0].ordered,
-                                subcategoryId: response.result[0].subcategoryId,
-                                propertyValTransId: response.result[0].propertyValTransId,
-                                subcategories_name: response.result[0].subcategories_name,
-                                index: 0
-                            });
+                .then(async (response) => {
+                    // dispatch(setLoading(false));
+                    if (response.status == 200) {
+                        var data = [];
+                        for (var i = 0; i < response.result.length; i++) {
+                            data.push({
+                                ordered: response.result[i].ordered,
+                                subcategoryId: response.result[i].subcategoryId,
+                                propertyValTransId: response.result[i].propertyValTransId,
+                                subcategories_name: response.result[i].subcategories_name,
+                                index: i
+                            })
+                        }
+                        setSubCategories(data);
+                        if (!isEmpty(response.result)) {
+                            if (category.category_name === 'Daily Menu' || category.category_name === 'Daily menu' || category.category_name === 'Meniul Zilei' || category.category_name === 'Meniul zilei' || category.category_name === 'Napi Menü' || category.category_name === 'Napi menü') {
+                                var d = new Date();
+                                var n = d.getDay();
+                                setSubCategory({
+                                    ordered: response.result[n === 0 ? 6 : n - 1].ordered,
+                                    subcategoryId: response.result[n === 0 ? 6 : n - 1].subcategoryId,
+                                    propertyValTransId: response.result[n === 0 ? 6 : n - 1].propertyValTransId,
+                                    subcategories_name: response.result[n === 0 ? 6 : n - 1].subcategories_name,
+                                    index: (n === 0 ? 6 : n - 1)
+                                });
+                            } else {
+                                setSubCategory({
+                                    ordered: response.result[0].ordered,
+                                    subcategoryId: response.result[0].subcategoryId,
+                                    propertyValTransId: response.result[0].propertyValTransId,
+                                    subcategories_name: response.result[0].subcategories_name,
+                                    index: 0
+                                });
+                            }
                         }
                     }
-                }
-            })
-            .catch((error) => {
-                console.log("getting subcategory - ", error);
-                // dispatch(setLoading(false));
-            });
+                })
+                .catch((error) => {
+                    console.log("getting subcategory - ", error);
+                    // dispatch(setLoading(false));
+                });
         }
-        
+
     }, [category]);
 
     useEffect(() => {
@@ -205,6 +208,19 @@ export default Detail = (props) => {
             setFirst(true);
         }
     }, [cartToast]);
+
+    useEffect(() => {
+        var totalAmount = 0;
+        cartProducts.map((cartProduct, key) => {
+            totalAmount += cartProduct.quantity * cartProduct.productPrice;
+            if (cartProduct.boxPrice)
+                totalAmount += cartProduct.quantity * cartProduct.boxPrice;
+            cartProduct.extras.map((extra, key) => {
+                totalAmount += extra.quantity * extra.extraPrice;
+            });
+        });
+        setTotal(totalAmount);
+    });
 
     return (
         <SafeAreaView style={styles.saveArea}>
@@ -237,8 +253,8 @@ export default Detail = (props) => {
                                     onCategory={(value) => setCategory(value)}
                                     onSubCategory={(value) => setSubCategory(value)}
                                     // onSubCategory={(value) => console.log(value)}
-                                    onSearch={(value) => {setSearch(value); console.log("set search - ", value);}}
-                                    onExtra={(product, count) => props.navigation.push('Extra', { restaurant, product, count })}
+                                    onSearch={(value) => { setSearch(value); console.log("set search - ", value); }}
+                                    onExtra={(product, count) => callOnceInInterval(() => props.navigation.push('Extra', { restaurant, product, count }))}
                                     onCart={() => props.navigation.navigate('Cart')}
                                     onModal={() => setModal(true)}
                                 />;
@@ -250,7 +266,12 @@ export default Detail = (props) => {
                     }}
                     onIndexChange={setIndex}
                 />
-                <View style={{ height: 50 }} />
+                {(cartBadge > 0) ? (
+                    <View style={{ height: 100 }} />
+                ) : (
+                    <View style={{ height: 20 }} />
+                )}
+                
             </Animated.ScrollView>
 
             <Animated.View style={[styles.header, { transform: [{ translateY: headerTranslateY }] }]}>
@@ -292,7 +313,7 @@ export default Detail = (props) => {
                     <Animated.View style={[{ transform: [{ translateY: titleTranslateY }] }]}>
                         <Text style={styles.headerTitle} numberOfLines={1}>{restaurant.restaurant_name}</Text>
                         <Animated.View style={[styles.headerMiddle, { opacity: titleOpacity }]}>
-                            <View style={{height: 25}}>
+                            <View style={{ height: 25 }}>
                                 {/* <Icon type='material' name='star-border' size={15} color={colors.YELLOW.PRIMARY} />
                                 <Text style={styles.headerRate}>{isEmpty(average) ? 0 : average}/5</Text> */}
                                 <Text> </Text>
@@ -300,40 +321,33 @@ export default Detail = (props) => {
                         </Animated.View>
                     </Animated.View>
                     <View style={common.headerRight}>
-                        <TouchableOpacity onPress={() => {
-                            props.navigation.navigate('Cart');
-                        }}>
-                            {cartBadge > 0 ? (
-                                <Fragment>
-                                    <CartYellowIcon />
-                                    <View style={styles.badge}>
-                                        <Text style={styles.badgeText}>{cartBadge}</Text>
-                                    </View>
-                                </Fragment>
-                            ) : (
-                                    <Fragment>
-                                        {/* <CartWhiteIcon />
-                                        <View style={styles.badgeEmpty} /> */}
-                                        <View />
-                                    </Fragment>
-                                )}
-                        </TouchableOpacity>
                     </View>
                 </Header>
             </Animated.View>
-            {visible && (
+            {cartBadge > 0 && (
+                <View style={styles.gotToCartView}>
+                    <TouchableOpacity
+                        style={styles.goToCart}
+                        onPress={() => props.navigation.navigate('Cart')}
+                    >
+                        <View style={styles.cartBadgeView}><Text style={styles.cartBadgeText}>{cartBadge}</Text></View>
+                        <Text style={styles.goToCartText}>{i18n.translate('Go to cart')}</Text>
+                        <Text style={styles.priceText}>{total.toFixed(2)} {i18n.translate("lei")}</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+            {/* {visible && (
                 <TouchableOpacity style={styles.toast} onPress={() => setVisible(false)}>
                     <CheckIcon />
                     <Text style={styles.toastText}>{i18n.translate('Product in the cart')}</Text>
                 </TouchableOpacity>
-            )}
+            )} */}
             {modal && (
                 <View style={styles.modalContainer}>
                     <View style={styles.overlay} />
                     <View style={styles.modalView}>
                         <View style={styles.modalMain}>
-                            <Text style={styles.modalTitle}>{i18n.translate('You havent placed your order from the')} {restaurant.restaurant_name} {i18n.translate('yet')}</Text>
-                            <Text style={styles.modalDescription}>{i18n.translate('An order can only be from one restaurant')}</Text>
+                            <Text style={styles.modalTitle}>{i18n.translate('An order can only be from one restaurant')}</Text>
                         </View>
                         <TouchableOpacity style={styles.modalButton} onPress={() => {
                             setModal(false);
@@ -361,6 +375,7 @@ const styles = StyleSheet.create({
     saveArea: {
         flex: 1,
         backgroundColor: colors.WHITE,
+        justifyContent: 'center'
     },
     header: {
         position: 'absolute',
@@ -600,21 +615,23 @@ const styles = StyleSheet.create({
     modalView: {
         justifyContent: 'space-between',
         width: wp('70%'),
-        height: 230,
+        // height: 230,
         backgroundColor: '#1E1E1E',
         borderRadius: 14,
     },
     modalMain: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 120
+        // height: 120
     },
     modalTitle: {
         width: '80%',
         textAlign: 'center',
         fontSize: 17,
         fontWeight: 'bold',
-        color: colors.WHITE
+        color: colors.WHITE,
+        paddingTop: 15,
+        paddingBottom: 5
     },
     modalDescription: {
         width: '80%',
@@ -644,4 +661,59 @@ const styles = StyleSheet.create({
         color: '#F05050',
         textAlign: 'center'
     },
+    gotToCartView: {
+        position: 'absolute',
+        bottom: 0,
+        paddingBottom: BOTTOM_BUTTON_DISTANCE,
+        paddingTop: 14,
+        paddingHorizontal: 14,
+        width: wp('100%'),
+        backgroundColor: colors.WHITE,
+        shadowColor: colors.BLACK,
+        shadowOffset: { width: 4, height: 10 },
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
+        elevation: 10,
+    },
+    goToCart: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 10,
+        height: 42,
+        borderRadius: 6,
+        backgroundColor: "#F78F1E",
+        width: wp('100%') - 30,
+        shadowColor: colors.BLACK,
+        shadowOffset: { width: 4, height: 5 },
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 10,
+    },
+    cartBadgeView: {
+        padding: 5,
+        borderRadius: 30,
+        borderWidth: 1,
+        borderColor: colors.WHITE,
+        width: 25,
+        height: 25,
+        justifyContent: 'center'
+    },
+    cartBadgeText: {
+        color: colors.WHITE,
+        fontSize: 11,
+        fontWeight: '700',
+        textAlign: 'center'
+    },
+    goToCartText: {
+        color: colors.WHITE,
+        fontSize: 15,
+        fontWeight: '600'
+    },
+    priceText: {
+        color: colors.WHITE,
+        fontSize: 13,
+        fontWeight: '700'
+    }
 });

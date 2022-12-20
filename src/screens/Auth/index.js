@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Platform, NativeModules, StatusBar, StyleSheet, ImageBackground, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setLoading, setCountry } from '@modules/reducers/auth/actions';
+import { setLoading, setCountry, setCurVer } from '@modules/reducers/auth/actions';
 import { colors, common } from '@constants/themes';
 import { images } from '@constants/assets';
 import { LogoIcon } from '@constants/svgs';
@@ -17,12 +17,16 @@ const titles = [
     "Foodnet coupon code shopping",
 ];
 
+const cur_ver = 1
+
 export default Start = (props) => {
     const dispatch = useDispatch();
     const { country, city, user } = useSelector(state => state.auth);
 
     useEffect(() => {
         dispatch(setLoading(false));
+        dispatch(setCurVer(cur_ver));
+        
         const onLanguage = () => {
             const deviceLanguage = Platform.OS === 'ios' ? NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0] : NativeModules.I18nManager.localeIdentifier;
             var deviceCode = deviceLanguage.substring(0, 2);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Container, Content, Header } from "native-base";
+import { Card, Container, Content, Header } from "native-base";
 import {
   Platform,
   StatusBar,
@@ -16,7 +16,8 @@ import {
 } from "react-native-responsive-screen";
 import { Icon } from "react-native-elements";
 import { setLoading } from "@modules/reducers/auth/actions";
-import { setCartProducts, setCartBadge } from "@modules/reducers/food/actions";
+import { setCartProducts, setCartBadge, setCartToast } from "@modules/reducers/food/actions";
+import { FoodService } from "@modules/services";
 import { isEmpty } from "@utils/functions";
 import { common, colors } from "@constants/themes";
 import {
@@ -25,7 +26,11 @@ import {
   CartWhiteIcon,
   WarningIcon,
 } from "@constants/svgs";
+import { RES_URL } from "@constants/configs";
+import FastImage from "react-native-fast-image";
 import i18n from "@utils/i18n";
+
+const BOTTOM_BUTTON_DISTANCE = Platform.OS === 'ios' ? 40 : 26;
 
 const CartItem = ({
   cartRestaurant,
@@ -34,11 +39,28 @@ const CartItem = ({
   onSelect,
   onDelete,
 }) => {
+  const cartFinalPrice = () => {
+    let final = cartProduct.productPrice;
+
+    cartProduct.extras.map((extra) => {
+      final += extra.extraPrice;
+    })
+
+    if (!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0) {
+      final += cartProduct.boxPrice;
+    }
+
+    final = final * cartProduct.quantity;
+
+    return final;
+  }
+
   return (
     <View key={`cart${index}`} style={styles.cart}>
       <View style={styles.cartMain}>
         <Text style={styles.cartText}>
-          {cartProduct.quantity}*{cartProduct.productName}
+          {cartProduct.quantity}*{cartProduct.productName} - {(cartProduct.productPrice * cartProduct.quantity).toFixed(2)}{" "}
+          {i18n.translate("lei")}
         </Text>
         <TouchableOpacity
           style={{ marginLeft: 20 }}
@@ -47,7 +69,7 @@ const CartItem = ({
           <TrustIcon />
         </TouchableOpacity>
       </View>
-      <Text style={styles.allergen}>
+      {/* <Text style={styles.allergen}>
         {cartProduct.productDescription}
       </Text>
       {!isEmpty(cartProduct.allergens) ? (
@@ -61,27 +83,20 @@ const CartItem = ({
           ))}
           )
         </Text>
-      ) : null}
+      ) : null} */}
       {!isEmpty(cartProduct.extras)
         ? cartProduct.extras.map((extra, key) => (
-            <Text style={styles.extraList} key={`extra${key}`}>
-              +
-              <Text style={styles.extra}>
-                {extra.quantity}*{extra.extraName} :{" "}
-                {extra.quantity * extra.extraPrice} {i18n.translate("lei")}
-              </Text>
+          <Text style={styles.extraList} key={`extra${key}`}>
+            +
+            <Text style={styles.extra}>
+              {extra.quantity}*{extra.extraName} :{" "}
+              {extra.quantity * extra.extraPrice} {i18n.translate("lei")}
             </Text>
-          ))
-        : // <Text style={styles.extraList}>+ {
-
-          // </Text>
-          null}
+          </Text>
+        ))
+        : null}
       <View style={styles.cartBottom}>
         <View style={styles.cartLeft}>
-          <Text style={styles.price}>
-            {(cartProduct.productPrice * cartProduct.quantity).toFixed(2)}{" "}
-            {i18n.translate("lei")}
-          </Text>
           {!isEmpty(cartProduct.boxPrice) && cartProduct.boxPrice != 0 && (
             <Text style={styles.boxPrice}>
               {i18n.translate("Box price")}:{" "}
@@ -89,6 +104,10 @@ const CartItem = ({
               {i18n.translate("lei")}
             </Text>
           )}
+          <Text style={styles.price}>
+            {cartFinalPrice().toFixed(2)}{" "}
+            {i18n.translate("lei")}
+          </Text>
         </View>
         <View style={styles.cartButton}>
           <TouchableOpacity
@@ -134,6 +153,54 @@ const CartItem = ({
   );
 };
 
+const UpSellProductItem = ({
+  upSellProduct,
+  index,
+  onSelectUpSellProduct,
+}) => {
+  const [loader, setLoader] = useState(true);
+
+  return (
+    <Card key={`product${index}`} style={styles.product}>
+      <View style={styles.productItemGroup}>
+        <FastImage
+          style={styles.productImage}
+          source={{ uri: RES_URL + upSellProduct.product_imageUrl }}
+          resizeMode="cover"
+          onLoadEnd={(e) => setLoader(false)}
+        />
+        <View style={styles.productItem} >
+          <View style={styles.productItemText}>
+            <Text style={styles.productTitle}>
+              {upSellProduct.product_name}
+            </Text>
+            <Text style={styles.productDescription} numberOfLines={1}>
+              {upSellProduct.product_description}
+            </Text>
+          </View>
+          <View style={styles.productItemBottom}>
+            <Text style={styles.productPrice}>
+              {upSellProduct.product_price.toFixed(2)} {i18n.translate("lei")}
+            </Text>
+            <TouchableOpacity
+              style={styles.plusButton}
+              onPress={() => onSelectUpSellProduct(upSellProduct)}
+            >
+              <Icon
+                type="material-community"
+                name="plus"
+                color={colors.WHITE}
+                size={22}
+              />
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </View>
+    </Card>
+  );
+};
+
 export default CartIndex = (props) => {
   const dispatch = useDispatch();
   const { logged, country, city, user } = useSelector((state) => state.auth);
@@ -151,8 +218,19 @@ export default CartIndex = (props) => {
   const [visibleNotiPlus, setVisibleNotiPlus] = useState(0);
   const [visibleNotiMinus, setVisibleNotiMinus] = useState(0);
   const [isExtra, setIsExtra] = useState(0);
+  const [upSellProducts, setUpSellProducts] = useState([]);
+  const [navi, setNavi] = useState(true);
 
   useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      console.log("cart index focus ---- ");
+      setNavi(true);
+    });
+    return unsubscribe;
+  }, [props.navigation]);
+
+  useEffect(() => {
+    console.log("cart index calculating total amount -= ", navi);
     var totalAmount = 0;
     cartProducts.map((cartProduct, key) => {
       totalAmount += cartProduct.quantity * cartProduct.productPrice;
@@ -163,9 +241,18 @@ export default CartIndex = (props) => {
       });
     });
     setTotal(totalAmount);
-    // console.log(cartRestaurant);
-    // if(isEmpty(cartProducts)) props.navigation.pop();
   });
+
+  useEffect(() => {
+    if (isEmpty(cartProducts) && navi) {
+      console.log("cart screen empty cartproducts === ", navi);
+      setNavi(false);
+      setTimeout(() => {
+        props.navigation.goBack(null);
+      }, 50);
+
+    }
+  }, [cartProducts, navi]);
 
   const onDelete = (check, item, count) => {
     setType(false);
@@ -192,6 +279,17 @@ export default CartIndex = (props) => {
       dispatch(setCartBadge(totalBadge));
       dispatch(setCartProducts(cartProducts));
 
+      var totalAmount = 0;
+      cartProducts.map((cartProduct, key) => {
+        totalAmount += cartProduct.quantity * cartProduct.productPrice;
+        if (cartProduct.boxPrice)
+          totalAmount += cartProduct.quantity * cartProduct.boxPrice;
+        cartProduct.extras.map((extra, key) => {
+          totalAmount += extra.quantity * extra.extraPrice;
+        });
+      });
+      setTotal(totalAmount);
+
       if (cartProducts[index].extras.length != 0) setIsExtra(1);
       else setIsExtra(0);
 
@@ -213,7 +311,13 @@ export default CartIndex = (props) => {
       dispatch(setCartBadge(totalBadge));
       dispatch(setCartProducts(result));
       // dispatch(setCartBadge(cartBadge - 1));
-      if(isEmpty(result)) props.navigation.goBack();
+      if (isEmpty(result)) {
+        console.log("cart screen empty cart ");
+        setNavi(false);
+        setTimeout(() => {
+          props.navigation.goBack(null);
+        }, 300);
+      }
     }
     setVisible(false);
   };
@@ -223,15 +327,70 @@ export default CartIndex = (props) => {
     dispatch(setCartProducts([]));
     setVisible(false);
 
+    setNavi(false);
     props.navigation.goBack();
   };
 
+  useEffect(() => {
+    dispatch(setLoading(true));
+    console.log("++++++++getting upsell list ++++++");
+    FoodService.getUpSellProducts(cartRestaurant.restaurant_id, country)
+      .then((response) => {
+        dispatch(setLoading(false));
+        if (response.status == 200) {
+          setUpSellProducts(response.result);
+        }
+        else {
+          setUpSellProducts([]);
+        }
+      })
+      .catch(error => {
+        dispatch(setLoading(false));
+        setUpSellProducts([]);
+      });
+  }, [cartRestaurant, country]);
+
+  const onSelectUpSellProduct = (item) => {
+    console.log(item);
+    // if (item.modal == 0) // add cart
+    // {
+    //   var counter = cartProducts.length + 1;
+    //   cartProducts.push({
+    //     cartId: Date.now(),
+    //     variantId: item.variant_id,
+    //     productId: item.product_id,
+    //     productName: item.product_name,
+    //     productDescription: item.product_description,
+    //     allergens: item.allergens_name,
+    //     productPrice: item.product_price,
+    //     boxPrice: isEmpty(item.box_price) ? 0 : item.box_price,
+    //     quantity: 1,
+    //     message: '',
+    //     extras: [],
+    //     counter
+    //   });
+    //   var totalBadge = 0;
+    //   cartProducts.map((cartProduct, key) => {
+    //     totalBadge += cartProduct.quantity;
+    //   });
+
+    //   dispatch(setCartProducts(cartProducts));
+    //   dispatch(setCartBadge(totalBadge));
+    //   // dispatch(setCartToast(!cartToast));
+    // }
+    // else if (item.modal == 1) //go to extra
+    // {
+      setNavi(false);
+    props.navigation.push('CartExtra', { restaurant: cartRestaurant, product: item, count: 1 })
+    // }
+  }
+
   return (
     <Container style={common.container}>
-      <StatusBar />
+      {/* <StatusBar /> */}
       <Header style={common.header}>
         <View style={common.headerLeft}>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <TouchableOpacity onPress={() => {setNavi(false);props.navigation.goBack();}}>
             <Icon
               type="material"
               name="arrow-back"
@@ -241,12 +400,16 @@ export default CartIndex = (props) => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={common.headerTitle}>
-          <Text style={common.headerTitleText} numberOfLines={1}>
-            {i18n.translate("Basket")}
-          </Text>
+          <View style={{ display: 'flex', flexDirection: 'column' }}>
+            <Text style={common.headerTitleText} numberOfLines={1}>
+              {i18n.translate("Basket")}
+            </Text>
+            <Text>{cartRestaurant.restaurant_name}</Text>
+          </View>
         </TouchableOpacity>
+
         <View style={common.headerRight}>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             {cartBadge > 0 ? (
               <Fragment>
                 <CartYellowIcon />
@@ -260,10 +423,10 @@ export default CartIndex = (props) => {
                 <View style={styles.badgeEmpty} />
               </Fragment>
             )}
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </Header>
-      <Content style={{ flex: 1, padding: 20 }}>
+      <Content style={styles.cartItemContent}>
         {isExtra == 1 && visibleNotiPlus == 1 && (
           <View style={styles.notificationBack}>
             <WarningIcon />
@@ -281,6 +444,25 @@ export default CartIndex = (props) => {
               {i18n.translate("decrease items")}
             </Text>
           </View>
+        )}
+        {!isEmpty(upSellProducts) && (
+          <Fragment>
+            <Text style={styles.upsellproduct_title}>{i18n.translate('Popular choices for your order')}</Text>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              data={upSellProducts}
+              keyExtractor={(upSellProduct, index) => index.toString()}
+              renderItem={(upSellProduct, index) => (
+                <UpSellProductItem
+                  upSellProduct={upSellProduct.item}
+                  onSelectUpSellProduct={(item) =>
+                    onSelectUpSellProduct(item)
+                  }
+                />
+              )}
+            />
+          </Fragment>
         )}
         {!isEmpty(cartProducts) && (
           <Fragment>
@@ -301,55 +483,44 @@ export default CartIndex = (props) => {
                 />
               )}
             />
-            <View style={styles.amount}>
-              <Text style={styles.price}>
-                {i18n.translate("Total")}: {total.toFixed(2)}{" "}
-                {i18n.translate("lei")}
-              </Text>
-            </View>
-            {/* {(cartRestaurant.minimumOrderUser > total.toFixed(2)) && (
-              <View>
-                <Text>{i18n.translate('Restaurant minimum order')}{': '}{cartRestaurant.minimumOrderUser}{" "}{i18n.translate("lei")}</Text>
-              </View>
-            )} */}
-            <View
-              style={{
-                marginTop: 20,
-                marginBottom: 50,
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  disabled
-                    ? common.backColorGrey
-                    : common.backColorYellow,
-                ]}
-                disabled={
-                  disabled
-                }
-                onPress={() => {
-                  setDisabled(true);
-                  props.navigation.push("CartDetail");
-                  setTimeout(() => setDisabled(false), 1000);
-                }}
-              >
-                {/* {cartRestaurant.minimumOrderUser > total.toFixed(2) ? (
-                  <Text style={styles.buttonText}>
-                    {i18n.translate("More")}{" "}
-                    {(cartRestaurant.minimumOrderUser - total).toFixed(2)}{" "}
-                    {i18n.translate("lei")}
-                  </Text>
-                ) : ( */}
-                  <Text style={styles.buttonText}>
-                    {i18n.translate("Send order")}
-                  </Text>
-                {/* )} */}
-              </TouchableOpacity>
-              <TouchableOpacity
+          </Fragment>
+        )}
+        <View style={styles.cartItemtContentBottom}></View>
+      </Content>
+      <View style={styles.goToOrder}>
+        <View style={styles.amount}>
+          <Text style={styles.orderPrice}>
+            {i18n.translate("Total")}
+          </Text>
+          <Text style={styles.orderPrice}>
+            {total.toFixed(2)}{" "}{i18n.translate("lei")}
+          </Text>
+        </View>
+        <View
+          style={styles.orderButtonView}
+        >
+          <TouchableOpacity
+            style={[
+              styles.button,
+              disabled
+                ? common.backColorGrey
+                : '#F78F1E',
+            ]}
+            disabled={
+              disabled
+            }
+            onPress={() => {
+              setDisabled(true);
+              setNavi(false);
+              props.navigation.push("CartDetail");
+              setTimeout(() => setDisabled(false), 1000);
+            }}
+          >
+            <Text style={styles.buttonText}>
+              {i18n.translate("Send order")}
+            </Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity
                 onPress={() => {
                   setType(true);
                   setVisible(true);
@@ -358,38 +529,9 @@ export default CartIndex = (props) => {
                 <Text style={styles.price}>
                   {i18n.translate("Delete cart items")}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </Fragment>
-        ) 
-        // : 
-        // (
-        //   <View style={styles.emptyView}>
-        //     <Text style={styles.emptyText1}>
-        //       {i18n.translate("Your cart is currently empty")}
-        //     </Text>
-        //     <Text style={styles.emptyText2}>
-        //       {i18n.translate(
-        //         "But tomorrow versatile and mass I hate football and a valuable asset to free macro as an integer"
-        //       )}
-        //     </Text>
-        //     <TouchableOpacity
-        //       style={[
-        //         common.button,
-        //         common.backColorYellow,
-        //         common.marginTop35,
-        //       ]}
-        //       onPress={() => props.navigation.goBack()}
-        //     >
-        //       <Text style={[common.buttonText, common.fontColorWhite]}>
-        //         {i18n.translate("Minimum")} {cartRestaurant.minimumOrderUser}{" "}
-        //         {i18n.translate("lei")}
-        //       </Text>
-        //     </TouchableOpacity>
-        //   </View>
-        // )
-      }
-      </Content>
+              </TouchableOpacity> */}
+        </View>
+      </View>
       {visible && (
         <View style={styles.modalContainer}>
           <View style={styles.overlay} />
@@ -399,9 +541,6 @@ export default CartIndex = (props) => {
                 {i18n.translate(
                   "Are you sure you want to delete the contents of your cart all"
                 )}
-              </Text>
-              <Text style={styles.modalDescription}>
-                {/* {i18n.translate("This operation cannot be undone")} */}
               </Text>
             </View>
             <TouchableOpacity
@@ -450,6 +589,15 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     color: colors.YELLOW.PRIMARY,
   },
+  cartItemContent: {
+    flex: 1,
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    paddingBottom: 20
+  },
+  cartItemtContentBottom: {
+    height: 160,
+  },
   descriptionText: {
     width: "100%",
     fontSize: 16,
@@ -471,7 +619,7 @@ const styles = StyleSheet.create({
     width: "100%",
     // height: 30,
     marginTop: 15,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   cartText: {
     width: "70%",
@@ -491,7 +639,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   extraList: {
-    marginTop: 15,
+    marginTop: 5,
     width: "100%",
     fontSize: 16,
     color: colors.BLACK,
@@ -501,12 +649,12 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
   },
   cartBottom: {
-    marginTop: 10,
+    marginTop: 7,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    height: 50,
+    // height: 50,
   },
   cartLeft: {
     alignItems: "flex-start",
@@ -517,7 +665,7 @@ const styles = StyleSheet.create({
     color: colors.YELLOW.PRIMARY,
   },
   boxPrice: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#999",
   },
 
@@ -562,10 +710,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
   },
+  goToOrder: {
+    width: wp('100%'),
+    position: 'absolute',
+    bottom: 0,
+    paddingBottom: BOTTOM_BUTTON_DISTANCE,
+    paddingTop: 9,
+    paddingHorizontal: '5%',
+    backgroundColor: colors.WHITE,
+    shadowColor: colors.BLACK,
+    shadowOffset: { width: 4, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 10,
+  },
   amount: {
     width: "100%",
-    paddingTop: 20,
-    paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 9,
+  },
+  orderPrice: {
+    fontSize: 15,
+    fontWeight: '700'
   },
   mimimumAlert: {
     paddingTop: 10,
@@ -578,18 +746,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#6D6D6D",
   },
+  orderButtonView: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   button: {
-    marginBottom: 20,
-    width: "80%",
-    height: 50,
+    width: "100%",
+    height: 42,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
     backgroundColor: colors.YELLOW.PRIMARY,
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 15,
+    fontWeight: "600",
     color: colors.WHITE,
   },
   emptyView: {
@@ -628,14 +800,14 @@ const styles = StyleSheet.create({
   modalView: {
     justifyContent: "space-between",
     width: wp("70%"),
-    height: 200,
+    // height: 200,
     backgroundColor: "#1E1E1E",
     borderRadius: 14,
   },
   modalMain: {
     justifyContent: "center",
     alignItems: "center",
-    height: 110,
+    // height: 80,
   },
   modalTitle: {
     width: "80%",
@@ -643,6 +815,8 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     color: colors.WHITE,
+    paddingTop: 15,
+    paddingBottom: 5
   },
   modalDescription: {
     width: "80%",
@@ -692,5 +866,94 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
     color: colors.WHITE,
+  },
+  upsellproduct_title: {
+    fontSize: 16,
+    fontWeight: '700',
+    lineHeight: 24,
+    marginTop: 5,
+    marginBottom: 8
+  },
+  product: {
+    marginBottom: 10,
+    width: wp("80%") - 40,
+    marginRight: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.WHITE,
+    shadowColor: "rgba(0, 0, 0, 0.1)",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: Platform.OS === "ios" ? 0.5 : 0.7,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  productItemGroup: {
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    display: 'flex'
+  },
+  productItem: {
+    width: '70%',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-start',
+    alignContent: 'space-between',
+    paddingTop: 10,
+    paddingRight: 20,
+    paddingBottom: 10
+  },
+  productItemText: {
+    width: '100%'
+  },
+  productImage: {
+    width: "30%",
+    minHeight: 100,
+    height: "100%",
+    borderTopLeftRadius: 6,
+    borderBottomLeftRadius: 6,
+    // borderRightWidth: 1,
+    // borderRightColor: '#C4C4C4',
+    marginRight: 8
+  },
+  productTitle: {
+    width: "100%",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#111",
+  },
+  productDescription: {
+    marginTop: 8,
+    width: "100%",
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 16,
+    color: "#666",
+  },
+  productItemBottom: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // alignSelf: 'flex-start',
+    marginTop: 10
+  },
+  productPrice: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.YELLOW.PRIMARY,
+  },
+  plusButton: {
+    marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 25,
+    height: 25,
+    borderRadius: 15,
+    borderWidth: 1,
+    backgroundColor: '#F78F1E',
+    borderColor: colors.WHITE,
   },
 });

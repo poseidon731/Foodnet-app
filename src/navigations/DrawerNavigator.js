@@ -12,11 +12,13 @@ import OrderStack from '@navigations/StackNavigators/OrderStackNavigator';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { deleteUser } from '@modules/reducers/auth/actions';
+import { deleteUser, setCity, setCurVer } from '@modules/reducers/auth/actions';
 import { isEmpty, navOptionHandler } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { CartYellowIcon, OrderIcon, ProfileIcon, LocationIcon, LanguageIcon, ServiceIcon, GoBackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
+
+const cur_ver = 1;
 
 const Drawer = createDrawerNavigator();
 export default DrawerNavigator = () => {
@@ -49,7 +51,7 @@ export default DrawerNavigator = () => {
 
 const DrawerContent = (props) => {
     const dispatch = useDispatch();
-    const { logged, user } = useSelector(state => state.auth);
+    const { logged, user, currentVer } = useSelector(state => state.auth);
     const { cartBadge } = useSelector(state => state.food);
 
     const onLogout = () => {
@@ -58,13 +60,46 @@ const DrawerContent = (props) => {
             email: user.email,
             name: user.name,
             city: {
-                id: user.city.id,
-                name: user.city.name,
+                id: 0,
+                name: "",
                 status: false
             }
         }));
+
+        dispatch(setCity({
+            id: 0,
+            name: "",
+            status: false
+        }));
+
         props.navigation.reset({ index: 1, routes: [{ name: 'Start' }] })
     }
+
+    useEffect(() => {
+        if (currentVer != cur_ver) {
+            dispatch(setCurVer(cur_ver));
+
+            dispatch(deleteUser({
+                token: null,
+                email: user.email,
+                name: user.name,
+                city: {
+                    id: 0,
+                    name: "",
+                    status: false
+                }
+            }));
+
+            dispatch(setCity({
+                id: 0,
+                name: "",
+                status: false
+            }));
+
+            props.navigation.reset({ index: 1, routes: [{ name: 'Start' }] });
+        }
+    }, []);
+
     return (
         <Container style={styles.container}>
             <StatusBar />
@@ -89,12 +124,12 @@ const DrawerContent = (props) => {
                                 </View>
                             </Fragment>
                         ) : (
-                                <Fragment>
-                                    {/* <CartYellowIcon />
+                            <Fragment>
+                                {/* <CartYellowIcon />
                                     <View style={styles.badgeEmpty} /> */}
-                                    <View />
-                                </Fragment>
-                            )}
+                                <View />
+                            </Fragment>
+                        )}
                     </TouchableOpacity>
                 </View>
             </Header>
@@ -124,23 +159,23 @@ const DrawerContent = (props) => {
                     <LanguageIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Language selector')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
+                {/* <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
                     <ServiceIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Customer service')}</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 {logged ? (
                     // <Footer style={styles.header}>
-                        <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
-                            <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
-                            <Text style={styles.menuTitle}>{i18n.translate('Log out')}</Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
+                        <Icon type='material-community' name='logout-variant' size={25} color={colors.YELLOW.PRIMARY} />
+                        <Text style={styles.menuTitle}>{i18n.translate('Log out')}</Text>
+                    </TouchableOpacity>
                     // </Footer>
                 ) : (
                     // <Footer style={styles.header}>
-                        <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
-                            <Icon type='material-community' name='login-variant' size={25} color={colors.YELLOW.PRIMARY} />
-                            <Text style={styles.menuTitle}>{i18n.translate('Back to the login')}</Text>
-                        </TouchableOpacity>
+                    <TouchableOpacity style={styles.menuItem} onPress={() => onLogout()}>
+                        <Icon type='material-community' name='login-variant' size={25} color={colors.YELLOW.PRIMARY} />
+                        <Text style={styles.menuTitle}>{i18n.translate('Back to the login')}</Text>
+                    </TouchableOpacity>
                     // </Footer>
                 )}
             </Content>

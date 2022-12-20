@@ -19,7 +19,7 @@ export default Information = (props) => {
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Average delivery time')}</Text>
                 <Text style={[styles.cardText, { fontSize: 16 }]}>{i18n.translate('Aproximativ')} {isEmpty(props.information.restaurant_avgTransport) ? 0 : props.information.restaurant_avgTransport} {i18n.translate('minute')}</Text>
             </Card>
-            <Card key='delivery_price_city' style={styles.card}>
+            {/* <Card key='delivery_price_city' style={styles.card}>
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Delivery Price City')}</Text>
                 <Text style={[styles.cardText, { fontSize: 16 }]}>{isEmpty(props.information.delivery_price_city) ? 0 : props.information.delivery_price_city} {i18n.translate("lei")}</Text>
             </Card>
@@ -30,7 +30,7 @@ export default Information = (props) => {
             <Card key='Discount' style={styles.card}>
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Discount')}</Text>
                 <Text style={[styles.cardText, { fontSize: 16 }]}>{isEmpty(props.information.restaurant_discount) ? 0 : props.information.restaurant_discount}%</Text>
-            </Card>
+            </Card> */}
             <Card key='Aproximativ' style={styles.card}>
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Address & Contact')}</Text>
                 <Text style={[styles.cardText, { fontSize: 14 }]} numberOfLines={1}>{isEmpty(props.information.restaurant_address) ? '' : props.information.restaurant_address}</Text>

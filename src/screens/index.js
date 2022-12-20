@@ -13,6 +13,7 @@ import Cities from '@screens/Auth/Cities';
 import Home from '@screens/Home';
 import Detail from '@screens/Home/Detail';
 import Extra from '@screens/Home/Extra';
+import DailyMenuExtra from '@screens/Home/DailyMenuExtra';
 
 import DeliveryList from '@screens/Delivery/DeliveryList';
 import DeliveryAdd from '@screens/Delivery/DeliveryAdd';
@@ -28,6 +29,8 @@ import CouponCodes from '@screens/Profile/CouponCodes';
 
 import CartIndex from '@screens/Cart/CartIndex';
 import CartDetail from '@screens/Cart/CartDetail';
+import CartExtra from '@screens/Cart/CartExtra';
+import CartDeliveryAdd from '@screens/Cart/CartDeliveryAdd';
 
 import OrderIndex from '@screens/Order/OrderIndex';
 import OrderDetail from '@screens/Order/OrderDetail';
@@ -49,6 +52,7 @@ export {
     Home,
     Detail,
     Extra,
+    DailyMenuExtra,
 
     Profile,
     DeliveryList,
@@ -63,6 +67,9 @@ export {
 
     CartIndex,
     CartDetail,
+    CartExtra,
+    CartDeliveryAdd,
+    
     OrderIndex,
     OrderDetail,
     OrderSuccess

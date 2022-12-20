@@ -91,8 +91,8 @@ export default DeliveryAdd = (props) => {
         setFilterText(text);
 
         const newCitys = citys.filter(item => {
-            const itemData = item.cities.toUpperCase();
-            const textData = text.toUpperCase();
+            const itemData = item.cities.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const textData = text.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             return itemData.indexOf(textData) > -1;
         });

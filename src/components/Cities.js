@@ -117,7 +117,28 @@ export default Cities = (props) => {
                 {i18n.translate("Quick search:")}
               </Text>
               <View style={styles.searchView}>
-                {!isEmpty(citys) ? (
+                {!isEmpty(citys) ? (citys.length > 1) ? (
+                  <Fragment>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setCityObj(citys[0]);
+                        setVisible(true);
+                        setCityStatus(true);
+                      }}
+                    >
+                      <Text style={styles.searchText}>{citys[0].cities},</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setCityObj(citys[1]);
+                        setVisible(true);
+                        setCityStatus(true);
+                      }}
+                    >
+                      <Text style={styles.searchText}>{citys[1].cities}</Text>
+                    </TouchableOpacity>
+                  </Fragment>
+                ) : (
                   <Fragment>
                     <TouchableOpacity
                       onPress={() => {
@@ -128,20 +149,6 @@ export default Cities = (props) => {
                     >
                       <Text style={styles.searchText}>{citys[0].cities}</Text>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={() => {
-                                                setCityObj(citys[1]);
-                                                setVisible(true);
-                                                setCityStatus(true);
-                                            }}>
-                                                <Text style={styles.searchText}>{citys[1].cities}</Text>
-                                            </TouchableOpacity> */}
-                    {/* <TouchableOpacity onPress={() => {
-                                                setCityObj(citys[2]);
-                                                setVisible(true);
-                                                setCityStatus(true);
-                                            }}>
-                                                <Text style={styles.searchText}>{citys[2].cities}</Text>
-                                            </TouchableOpacity> */}
                   </Fragment>
                 ) : null}
               </View>

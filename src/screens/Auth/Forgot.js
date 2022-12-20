@@ -40,6 +40,7 @@ export default Forgot = (props) => {
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200 && !isEmpty(response.result)) {
+                    console.log(response.result);
                     setVisible(true);
                     setResend(false);
                     setCode(response.result[0].reset_code);
@@ -63,7 +64,7 @@ export default Forgot = (props) => {
             props.navigation.navigate('Reset', { email, code })
         } else {
             setErrorMsg(i18n.translate('Incorrect Code'));
-            setCode('');
+            // setCode('');
             setTimeout(() => setErrorMsg(''), 2000);
         };
     }
@@ -122,7 +123,7 @@ export default Forgot = (props) => {
                                 style={[common.button, (isEmpty(email) || !isEmpty(errorEmail) || visible) ? common.backColorGrey : common.backColorYellow]}
                                 onPress={() => onVerification()}
                             >
-                                <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
+                                <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Send')}</Text>
                             </TouchableOpacity>
                         </View>
                     </Fragment> :
